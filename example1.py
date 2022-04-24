@@ -20,7 +20,3 @@ hubmapbags.magic.do_it( id, \
         copy_output_to = output_directory, \
         instance='prod', \
         debug=True )
-
-uuids = hubmapbags.uuids.get_uuids( id, token=token )
-print('Querying the uuid-api')
-print( uuids )
