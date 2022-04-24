@@ -1,0 +1,223 @@
+import sys
+import pandas as pd
+import os
+import json
+import time
+import requests
+import warnings
+from . import utilities
+
+def __get_instance( instance ):
+	'''
+	Helper method that determines what instance to use.
+	'''
+
+	if instance.lower() == 'dev':
+		return '.dev'
+	elif instance.lower() == 'prod':
+		return ''
+	elif instance.lower() == 'test':
+		return '.test'
+	else:
+		if instance is None:
+			warnings.warn('Instance not set. Setting default value to "test".')
+		else:
+			warnings.warn('Unknown option ' + str(instance) + '. Setting default value to test.')
+		return '.test' 
+
+def __query_uuids( hubmap_id, instance='test', token=None, debug=False ):
+        token = utilities.__get_token( token )
+        if token is None:
+                warnings.warn('Token not set.')
+                return None
+
+        #URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/'+hubmap_id+'/files
+        URL='https://uuid-api.test.hubmapconsortium.org/'+hubmap_id+'/files'
+        headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
+
+        r = requests.get(URL, headers=headers)
+        return r
+
+def get_uuids( hubmap_id, instance='test', token=None, debug=False ):
+	'''
+	Get UUIDs, if any, given a HuBMAP id.
+	'''
+
+	if debug:
+		print('Get UUIDs via the uuid-api')
+	r = __query_uuids( hubmap_id, instance=instance, token=token, debug=debug )
+	j = json.loads(r.text)
+
+	return j
+
+def should_i_generate_uuids( hubmap_id, filename, instance='test', token=None, debug=False ):
+	'''
+	Helper function that compares the number of files on disk versus the number of
+	entries in the UUID-API database.
+	'''
+
+	df = pd.read_pickle( filename )
+	number_of_entries_in_local_file = len(pd.read_pickle( filename )) - df['hubmap_uuid'].isnull().sum()
+	number_of_entries_in_db = get_number_of_uuids( hubmap_id, instance=instance, token=token, debug=debug )
+
+	if number_of_entries_in_local_file != 0 and number_of_entries_in_local_file > number_of_entries_in_db:
+		warnings.warn('There are more entries in local file than in database. Either a job is running computing checksums or a job failed.')
+		return False
+	elif number_of_entries_in_local_file != 0 and number_of_entries_in_local_file < number_of_entries_in_db:
+		warnings.warn('There are more entries in database than files in local db. More than likely UUIDs were generate more than once. Contact a system administrator.')
+	elif number_of_entries_in_local_file == number_of_entries_in_db:
+		return False
+	else:
+		return True
+
+def should_i_generate_uuids2( hubmap_id, filename, instance='test', token=None, debug=False ):
+	'''
+	Helper function that compares the number of files on disk versus the number of
+	entries in the UUID-API database.
+	'''
+
+	df = pd.read_pickle( filename )
+	number_of_entries_in_local_file = len(pd.read_pickle( filename )) - df['hubmap_uuid'].isnull().sum()
+	number_of_entries_in_db = get_number_of_uuids( hubmap_id, instance=instance, token=token, debug=debug )
+
+	if number_of_entries_in_local_file > number_of_entries_in_db:
+		warnings.warn('There are more entries in local file than in database. Either a job is running computing checksums or a job failed.')
+		return False
+	elif number_of_entries_in_local_file < number_of_entries_in_db:
+		warnings.warn('There are more entries in database than files in local db. More than likely UUIDs were generate more than once. Contact a system administrator.')
+	elif number_of_entries_in_local_file == number_of_entries_in_db:
+		return False
+	else:
+		return True
+
+def get_number_of_uuids( hubmap_id, instance='test', token=None, debug=False ):
+	'''
+	Get number of UUIDs associated with this HuBMAP id using the UUID API.
+	'''
+
+	try:
+		return len(get_uuids( hubmap_id, instance=instance, token=token, debug=debug ))
+	except:
+		return 0
+
+def generate( file, instance='dev', debug=True ):
+	'''
+	Main function that generates UUIDs using the uuid-api.
+	'''
+
+	if debug:
+		print('Processing ' + file + '.')
+
+	# icaoberg since neither the hubmap id nor the uuid are save in the dataframe
+	# extract it from the filename
+	duuid=file.split('_')[-1].split('.')[0]
+
+	token = utilities.__get_token()
+	if token is None:
+		warnings.warn('Token not set.')
+		return None
+
+	try:
+		if debug:
+			print('Loading temp file ' + file + '.')
+		df = pd.read_pickle( file )
+	except:
+		if debug:
+			print('Unable to load pickle file ' + file + '. Exiting script.' )
+		return False
+
+	URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/hmuuid/'
+	URL='https://uuid-api.test.hubmapconsortium.org/hmuuid/'
+	headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0','Authorization':'Bearer '+token, 'Content-Type':'application/json'}
+
+	if len(df) <= 1000:
+		if df['hubmap_uuid'].isnull().all():
+			file_info = []
+			for datum in df.iterrows():
+				datum = datum[1]
+				filename = datum['local_id'][datum['local_id'].find(duuid)+len(duuid)+1:]
+				file_info.append({'path':filename, \
+					'size':datum['size_in_bytes'], \
+					'checksum':datum['sha256'], \
+				'base_dir':'DATA_UPLOAD'})
+
+			payload = {}
+			payload['parent_ids']=[duuid]
+			payload['entity_type']='FILE'
+			payload['file_info']=file_info
+			params = {'entity_count':len(file_info)}
+
+			if debug:
+				print('Generating UUIDs')
+			r = requests.post(URL, params=params, headers=headers, data=json.dumps(payload), allow_redirects=True, timeout=120)
+			j = json.loads(r.text)
+
+			if 'message' in j:
+				if debug:
+					print('Request response. Not populating data frame and exiting script.')
+				print(j['message'])
+				return False
+			else:
+				for datum in j:
+					df.loc[df['local_id'].str.contains(datum['file_path']),'hubmap_uuid']=datum['uuid']
+  
+				if debug:
+					print('Updating pickle file ' + file + ' with the request response.')
+
+				df.to_pickle(file)
+				with open(file.replace('pkl','json'),'w') as outfile:
+					json.dump(j, outfile, indent=4)
+		else:
+			if debug:
+				print('HuBMAP uuid column is populated. Skipping generation.')
+	else:
+		if debug:
+			print('Data frame has ' + str(len(df)) + ' items. Partitioning into smaller chunks.')
+
+		n = 1000  #chunk row size
+		dfs = [df[i:i+n] for i in range(0,df.shape[0],n)]
+	
+		counter = 0
+		for frame in dfs:
+			counter=counter+1
+			if debug:
+				print('Computing uuids on partition ' + str(counter) + ' of ' + str(len(dfs)) + '.')
+
+			file_info = []
+			for datum in frame.iterrows():
+				datum = datum[1]
+				filename = datum['local_id'][datum['local_id'].find(duuid)+len(duuid)+1:]
+				file_info.append({'path':filename, \
+					'size':datum['size_in_bytes'], \
+					'checksum':datum['sha256'], \
+				'base_dir':'DATA_UPLOAD'})
+
+			payload = {}
+			payload['parent_ids']=[duuid]
+			payload['entity_type']='FILE'
+			payload['file_info']=file_info
+			params = {'entity_count':len(file_info)}
+
+			if frame['hubmap_uuid'].isnull().all():
+				if debug:
+					print('Generating uuids')
+
+				r = requests.post(URL, params=params, headers=headers, data=json.dumps(payload), allow_redirects=True, timeout=120)
+				j = json.loads(r.text)
+				time.sleep(5)
+
+				if 'message' in j:
+					if debug:
+						print('Request response. Not populating data frame.')
+					print(j['message'])
+					return False
+				else:
+					for datum in j:
+						df.loc[df['local_id'].str.contains(datum['file_path']),'hubmap_uuid']=datum['uuid']
+
+					if debug:
+						print('Updating pickle file ' + file + ' with the results of this chunk.')
+					df.to_pickle(file)
+			else:
+				if debug:
+					print('HuBMAP uuid chunk is populated. Skipping recomputation.')
