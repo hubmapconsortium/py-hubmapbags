@@ -32,7 +32,7 @@ from . import collection_anatomy, collection_compound, \
               file_format, apis, \
               uuids, utilities
 
-def __extract_dataset_info_from_db( id, token=None, instance='test' ):
+def __extract_dataset_info_from_db( id, token=None, instance='test', debug=None ):
 	'''
 	Helper function that uses the HuBMAP APIs to get dataset info.
 	'''
@@ -41,6 +41,14 @@ def __extract_dataset_info_from_db( id, token=None, instance='test' ):
 	if j is None:
 		warnings.warn('Unable to extract data from database.')
 		return None
+
+	try:
+		warnings.warn('Unable to extract data from database.')
+		print('Error message is: ' + j['error'] )
+		return None
+	except:
+		if debug:
+			print( 'Extracting parameters from query.')
 
 	hmid = j.get('hubmap_id')
 	hmuuid = j.get('uuid')
