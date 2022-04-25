@@ -47,6 +47,15 @@ def __get_md5( file ):
 
 	return m.hexdigest()
 
+def __get_relative_local_id( file, hubmap_uuid ):
+	'''
+	Helper function the return the relative local id.
+	'''
+
+	file = str(file)
+	relative_local_id = file[file.find(hubmap_uuid)+len(hubmap_uuid)+1:]
+	return relative_local_id
+
 def __get_sha256( file ):
 	'''
 	Helper method that computes and return a file sha256 checksum.
@@ -185,6 +194,7 @@ def __get_assay_type_from_obi(assay_type):
     assay['snare-atacseq2']='OBI:0003108'
     assay['snare-rnaseq2']='OBI:0003108'
     assay['snareseq']='OBI:0003108'
+    assay['sciatacseq']='OBI:0003104'
 
     return assay[assay_type]
 
@@ -221,7 +231,8 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
                'dbgap_study_id', \
                'hubmap_uuid', \
                'dataset_hmid', \
-               'dataset_uuid']
+               'dataset_uuid', \
+               'relative_local_id']
 
     temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
 
@@ -255,6 +266,7 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
                             'bundle_collection_local_id':'', \
                             'dbgap_study_id':__get_dbgap_study_id(file,dbgap_study_id),
                             'hubmap_uuid':None, \
+                            'relative_local_id': __get_relative_local_id(file,dataset_uuid), \
                             'dataset_hmid':dataset_hmid, \
                             'dataset_uuid':dataset_uuid}, ignore_index=True)
 

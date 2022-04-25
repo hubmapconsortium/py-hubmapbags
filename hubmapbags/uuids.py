@@ -1,11 +1,54 @@
 import sys
 import pandas as pd
 import os
+from os.path import exists
 import json
 import time
 import requests
 import warnings
 from . import utilities
+from . import magic
+
+def populate_local_file_with_remote_uuids( hubmap_id, instance='test', token=None, overwrite=False, debug=False ):
+
+	utilities.pprint('Processing dataset with HuBMAP ID ' + hubmap_id)
+	dataset = magic.__extract_dataset_info_from_db( hubmap_id, token=token, instance=instance )
+
+	if dataset is None:
+		warnings.warn('No datasets found. Exiting.')
+		return False
+
+	dataset = dataset.squeeze()
+	data_directory = dataset['full_path']
+	computing = data_directory.replace('/','_').replace(' ','_') + '.computing'
+	done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
+	broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
+	temp_file = data_directory.replace('/','_').replace(' ','_') + '.pkl'
+	
+	if exists( computing ):
+		warnings.warn('Computing file ' + computing + ' exists. Another process is computing checksums. Not populating local file.')
+		return False
+	elif not exists( computing ) and not exists( done ):
+		print('File ' + done + ' not found on disk. Not populating local file.' )
+		return False
+	elif exists( done ):
+		if exists( temp_file ):
+			if should_i_generate_uuids( hubmap_id, temp_file, instance=instance, token=token, debug=debug ):
+				print('Attempting to populate local file')
+				df = pd.read_pickle( temp_file )
+				uuids = get_uuids( hubmap_id, instance=instance, token=token, debug=debug )
+
+				for i in range(len(df)): 
+					for uuid in uuids: 
+						if df.loc[i,'relative_local_id'] == uuid['path']: 
+							df.loc[i,'hubmap_uuid'] = \
+								uuid['file_uuid'] 
+
+				print('Saving temp file ' + temp_file + ' to disk.')
+				df.to_pickle( temp_file )
+				return True
+			else:
+				return False
 
 def __get_instance( instance ):
 	'''
@@ -43,8 +86,6 @@ def get_uuids( hubmap_id, instance='test', token=None, debug=False ):
 	Get UUIDs, if any, given a HuBMAP id.
 	'''
 
-	if debug:
-		print('Get UUIDs via the uuid-api')
 	r = __query_uuids( hubmap_id, instance=instance, token=token, debug=debug )
 	j = json.loads(r.text)
 

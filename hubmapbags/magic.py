@@ -42,14 +42,6 @@ def __extract_dataset_info_from_db( id, token=None, instance='test', debug=None 
 		warnings.warn('Unable to extract data from database.')
 		return None
 
-	try:
-		warnings.warn('Unable to extract data from database.')
-		print('Error message is: ' + j['error'] )
-		return None
-	except:
-		if debug:
-			print( 'Extracting parameters from query.')
-
 	hmid = j.get('hubmap_id')
 	hmuuid = j.get('uuid')
 	status = j.get('status')
@@ -294,13 +286,19 @@ def do_it( input, dbgap_study_id=None, \
 
 			if compute_uuids:
 				print('Generating UUIDs via the uuid-api')
-				print(token)
 				if uuids.should_i_generate_uuids( hubmap_id=id, \
 					filename=temp_file, \
 					instance=instance, \
 					token=token, \
 					debug=debug):
-					uuids.generate( temp_file, debug=True )
+					print('UUIDs not found in uuid-api database. Generating UUIDs.')
+					uuids.generate( temp_file, debug=debug )
+				else:
+					print('UUIDs found in uuid-api database. Populating local file')
+					uuids.populate_local_file_with_remote_uuids( hubmap_id, \
+						instance=instance, \
+						token=token, \
+						debug=debug )
 			if debug:
 				df=pd.read_pickle( temp_file )
 				df.to_csv(temp_file.replace('pkl','tsv'), sep="\t")
