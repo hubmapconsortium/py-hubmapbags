@@ -11,7 +11,7 @@ def __get_instance( instance ):
 	'''
 	Helper method that returns the proper instance name
 	'''
-	
+
 	if instance.lower() == 'dev':
 		return '.dev'
 	elif instance.lower() == 'prod':
@@ -20,10 +20,10 @@ def __get_instance( instance ):
 		return '.test'
 	else:
 		warnings.warn('Unknown option ' + str(instance) + '. Setting default value to test.')
-		return '.test' 
+		return '.test'
 
 def __query_ancestors_info( hubmap_id, token=None, debug=False ):
-	token =	utilities.__get_token( token ) 
+	token =	utilities.__get_token( token )
 	if token is None:
 		warnings.warn('Token not set.')
 		return None
@@ -40,10 +40,10 @@ def get_ancestors_info( hubmap_id, instance='test', token=None, overwrite=True, 
 	'''
 
 	directory = '.ancestors'
-	file = os.path.join( directory, hubmap_id + '.json' ) 
+	file = os.path.join( directory, hubmap_id + '.json' )
 	if os.path.exists( file ) and not overwrite:
 		print('Loading existing JSON file')
-		j = json.load( open( file, 'r' ) );		
+		j = json.load( open( file, 'r' ) );
 	else:
 		print('Get information from ancestors via the entity-api ')
 		r = __query_ancestors_info( hubmap_id, instance=instance, token=token, debug=debug )
@@ -65,9 +65,9 @@ def get_ancestors_info( hubmap_id, instance='test', token=None, overwrite=True, 
 		return j
 
 def __query_provenance_info( hubmap_id, instance='test', token=None, debug=False ):
-	token =	utilities.__get_token( token ) 
+	token =	utilities.__get_token( token )
 	if token is None:
-		warnings.warn('Token not set.')         
+		warnings.warn('Token not set.')
 		return None
 
 	URL='https://entity.api' + __get_instance( instance ) + '.hubmapconsortium.org/datasets/'+hubmap_id+'/prov-info?format=json'
@@ -82,10 +82,10 @@ def get_provenance_info( hubmap_id, instance='test', token=None, overwrite=False
 	'''
 
 	directory = '.provenance'
-	file = os.path.join( directory, hubmap_id + '.json' ) 
+	file = os.path.join( directory, hubmap_id + '.json' )
 	if os.path.exists( file ) and not overwrite:
 		print('Loading existing JSON file')
-		j = json.load( open( file, 'r' ) );		
+		j = json.load( open( file, 'r' ) );
 	else:
 		print('Get information provenance info via the entity-api')
 		r = __query_provenance_info( hubmap_id, instance=instance, token=token, debug=debug )
@@ -124,10 +124,10 @@ def get_dataset_info( hubmap_id, instance='test', token=None, overwrite=True, de
 	'''
 
 	directory = '.datasets'
-	file = os.path.join( directory, hubmap_id + '.json' ) 
+	file = os.path.join( directory, hubmap_id + '.json' )
 	if os.path.exists( file ) and not overwrite:
 		print('Loading existing JSON file')
-		j = json.load( open( file, 'r' ) );		
+		j = json.load( open( file, 'r' ) );
 	else:
 		print('Get dataset information via the entity-api')
 		r = __query_dataset_info( hubmap_id, instance=instance, token=token, debug=debug )
@@ -179,3 +179,32 @@ def get_assay_types( instance='test', token=None, debug=False ):
 		return None
 	else:
 		return j
+
+def __query_assay_types( assayname, instance='test', token=None, debug=False ):
+	'''
+	Search dataset by a given assaytype name.
+	'''
+	url = 'https://search.api.hubmapconsortium.org/search'
+	headers = {'Accept': 'application/json'}
+	body = {
+	  "query": {
+		"bool": {
+		  "must": [
+			{
+			  "match_phrase": {
+				 "data_types": assayname
+			  }
+			}
+		  ],
+		  "filter": [
+			{
+			  "match": {
+			   "entity_type": "Dataset"
+			  }
+			}
+		  ]
+		}
+	  }
+	}
+	data = requests.post(url=url, headers=headers, json=body).json()
+	return data
