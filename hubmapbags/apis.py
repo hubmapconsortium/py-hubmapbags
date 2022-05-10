@@ -160,13 +160,14 @@ def __query_assay_types( instance='test', token=None, debug=False ):
 	r = requests.get(URL, headers=headers)
 	return r
 
-def get_assay_types( instance='test', token=None, debug=False ):
+def get_assay_types( debug=False ):
 	'''
 	Request list of assay types from primary datasets.
 	'''
 
-	print('Get dataset information via the entity-api')
-	r = __query_assay_types( instance='test', token=token, debug=debug )
+	if debug:
+		print('Get dataset information via the entity-api')
+	r = __query_assay_types( debug=debug )
 	if r is None:
 		warnings.warn('JSON object is empty.')
 		return r
@@ -178,12 +179,43 @@ def get_assay_types( instance='test', token=None, debug=False ):
 		print(j['message'])
 		return None
 	else:
-		return j
+		return j['result']
 
-def __query_assay_types( assayname, instance='test', token=None, debug=False ):
+def __query_assay_types( debug=False ):
 	'''
 	Search dataset by a given assaytype name.
 	'''
+
+	url = 'https://search.api.hubmapconsortium.org/assaytype'
+
+	headers = {'Accept': 'application/json'}
+	params = {'primary':'true', 'simple':'true'}
+
+	data = requests.get(url=url, headers=headers, params=params)
+	return data
+
+def get_hubmap_ids( assay_name, debug=False ):
+	'''
+	Get list of HuBMAP ids given an assay name.
+	'''
+
+	answer =  __query_hubmap_ids( assay_name, debug=False )
+	data = answer['hits']['hits']
+
+	results = []
+	for datum in data:
+		results.append(	{
+			'uuid':datum['_source']['uuid'], \
+			'hubmap_id':datum['_source']['hubmap_id'], \
+			'status':datum['_source']['status'] })
+
+	return results
+
+def __query_hubmap_ids( assayname, debug=False ):
+	'''
+	Search dataset by a given assaytype name.
+	'''
+
 	url = 'https://search.api.hubmapconsortium.org/search'
 	headers = {'Accept': 'application/json'}
 	body = {
@@ -206,5 +238,6 @@ def __query_assay_types( assayname, instance='test', token=None, debug=False ):
 		}
 	  }
 	}
+
 	data = requests.post(url=url, headers=headers, json=body).json()
 	return data

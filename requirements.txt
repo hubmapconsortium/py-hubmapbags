@@ -1,3 +1,4 @@
 pandas
 numpy
 tabulate
+requests
