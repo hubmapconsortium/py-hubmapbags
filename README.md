@@ -3,14 +3,15 @@
 ## Examples
 
 ### Get list of assay names
-``
+
+```
 import hubmapbags
 from datetime import datetime
 from pathlib import Path
 
 answer = hubmapbags.apis.get_assay_types()
 print(answer)
-``
+```
 
 will result in something like
 
