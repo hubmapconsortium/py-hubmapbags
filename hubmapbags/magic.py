@@ -105,7 +105,24 @@ def do_it( input, dbgap_study_id=None, \
 		instance='test', \
 		debug=True ):
 	'''
-	Magic function that builds computes checksums, generates UUIDs and builds a bdbag from a HuBMAP ID.
+
+	Magic function that (1) computes checksums, (2) generates UUIDs and, (3) builds a big data bag given a HuBMAP ID.
+
+	:param input: A string representing a HuBMAP ID or a TSV file with one line per dataset, e.g. HBM632.JSNP.578
+	:type input: string
+	:param dbgap_study_id: A string representing a dbGaP study ID, e.g. phs00265
+	:type dbgap_study_id: None or string
+	:param overwrite: If set to TRUE, then it will overwrite an existing pickle file associated with the HuBMAP ID
+	:type overwrite: boolean
+	:param copy_output_to: If set, then a copy of the dataframe and the big data bag will be copied to this location
+	:type copy_output_to: None or string
+	:param token: A token to access HuBMAP resources
+	:type token: string or None
+	:param instance: Either 'dev', 'test' or 'prod'
+	:type instance: string
+	:param compute_uuids: If set to TRUE, then 
+	:type compute_uuids: boolean
+	:rtype: boolean
 	'''
 
 	if os.path.isfile( input ):
@@ -115,6 +132,7 @@ def do_it( input, dbgap_study_id=None, \
 	else:	
 		utilities.pprint('Processing dataset with HuBMAP ID ' + input)
 		datasets = __extract_dataset_info_from_db( input, token=token, instance=instance )
+
 		if datasets is None:
 			warnings.warn('No datasets found. Exiting.')
 			return False

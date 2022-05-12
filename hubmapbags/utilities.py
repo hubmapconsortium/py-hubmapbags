@@ -15,25 +15,48 @@ def __get_token( token=None ):
 
 def add_empty_duuid_column( file ):
 	'''
-	Helper function that adds the UUID to a backup df file.
+	Helper method that adds the UUID column of a backup pickle file.
+
+	:param file: A pickle file 
+	:type file: string
+	:rtype: boolean
 	'''
 
-	duuid=file.split('_')[-1].split('.')[0]
-	print(file)
+	try:
+		duuid=file.split('_')[-1].split('.')[0]
+		print(file)
 
-	df = pd.read_pickle( file )
-	df['duuid']=duuid
-	df.to_pickle( file )
+		df = pd.read_pickle( file )
+		df['duuid']=duuid
+		df.to_pickle( file )
+		return True
+	except:
+		return False
 
 def reset_hubmap_uuid_column( file ):
-	df = pd.read_pickle( file )
-	df['hubmap_uuid']=None
-	
-	df.to_pickle( file )
+	'''
+	Helper method that resets the UUID column of a backup pickle file.
+
+	:param file: A pickle file 
+	:type file: string
+	:rtype: boolean
+	'''
+
+	try:
+		df = pd.read_pickle( file )
+		df['hubmap_uuid']=None
+		df.to_pickle( file )
+		return True
+	except:
+		return False
 
 def add_empty_dbgap_study_id_column( file ):
 	'''
-	Helper function that adds a dbGaP study id column to a backup df file.
+	Helper function that adds a dbGaP study ID column to a backup pickle file.
+
+	:param file: A pickle file 
+	:type file: string
+	:rtype: boolean
 	'''
 
 	duuid=file.split('_')[-1].split('.')[0]
