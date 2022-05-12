@@ -11,12 +11,19 @@ from . import utilities
 import glob
 
 def __compute_number_of_files( directory = None ):
-    pathname = directory + "/**/*"
-    files = glob.glob(pathname, recursive=True)
+	'''
+	Helper function that returns the number of files in a loca directory.
+	'''
+	pathname = directory + "/**/*"
+	files = glob.glob(pathname, recursive=True)
 
-    return len(files)
+	return len(files)
 
 def __check_if_folder_is_empty( directory = None ):
+	'''
+	If the local directory is empty, then it returns true. False, otherwise.
+	'''
+
 	if not os.listdir( directory ):
 		return True
 	else:
@@ -24,7 +31,7 @@ def __check_if_folder_is_empty( directory = None ):
 
 def __get_instance( instance ):
 	'''
-	Helper method that returns the proper instance name
+	Helper method that returns the proper instance name.
 	'''
 
 	if instance.lower() == 'dev':
@@ -38,6 +45,18 @@ def __get_instance( instance ):
 		return '.test'
 
 def __query_ancestors_info( hubmap_id, token=None, debug=False ):
+	'''
+	Helper method that returns the ancestors info give a HuBMAP ID.
+
+	:param hubmap_id: valid HuBMAP ID
+	:type hubmap_id: string
+	:param token: a valid token
+	:type token: None or string
+	:param debug: debug flag 
+	:type debug: boolean
+	:rtype: request response
+	'''
+
 	token =	utilities.__get_token( token )
 	if token is None:
 		warnings.warn('Token not set.')
@@ -51,7 +70,7 @@ def __query_ancestors_info( hubmap_id, token=None, debug=False ):
 
 def get_ancestors_info( hubmap_id, instance='test', token=None, overwrite=True, debug=True ):
 	'''
-	Request ancestor info given a HuBMAP id.
+	Helper method that returns the ancestors info give a HuBMAP ID.
 	'''
 
 	directory = '.ancestors'

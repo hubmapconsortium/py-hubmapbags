@@ -105,7 +105,6 @@ def do_it( input, dbgap_study_id=None, \
 		instance='test', \
 		debug=True ):
 	'''
-
 	Magic function that (1) computes checksums, (2) generates UUIDs and, (3) builds a big data bag given a HuBMAP ID.
 
 	:param input: A string representing a HuBMAP ID or a TSV file with one line per dataset, e.g. HBM632.JSNP.578
@@ -122,6 +121,8 @@ def do_it( input, dbgap_study_id=None, \
 	:type instance: string
 	:param compute_uuids: If set to TRUE, then 
 	:type compute_uuids: boolean
+	:param debug: debug flag
+	:type debug: boolean
 	:rtype: boolean
 	'''
 

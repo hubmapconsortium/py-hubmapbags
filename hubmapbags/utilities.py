@@ -69,6 +69,9 @@ def add_empty_dbgap_study_id_column( file ):
 def pprint( message ):
 	'''
 	Helper method that pretty prints a string.
+
+	:param file: A message 
+	:type file: string
 	'''
 
 	table = [[message]]
