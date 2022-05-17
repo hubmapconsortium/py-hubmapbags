@@ -11,7 +11,7 @@ from os import listdir
 from os.path import isfile, join, exists
 import warnings
 
-from . import collection_anatomy, collection_compound, \
+from cfde import collection_anatomy, collection_compound, \
               biosample_substance, biosample_gene, assay_type, \
               biosample_disease, anatomy, \
               file_describes_collection, project_in_project, \
@@ -29,8 +29,8 @@ from . import collection_anatomy, collection_compound, \
               collection_in_collection, subject_disease, \
               subject_phenotype, subject_race, \
               subject_role_taxonomy, subject_substance, \
-              file_format, apis, \
-              uuids, utilities
+              file_format \
+from . import uuids, utilities, apis
 
 def __extract_dataset_info_from_db( id, token=None, instance='test', debug=None ):
 	'''
