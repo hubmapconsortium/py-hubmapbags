@@ -30,7 +30,9 @@ from cfde import collection_anatomy, collection_compound, \
               subject_phenotype, subject_race, \
               subject_role_taxonomy, subject_substance, \
               file_format \
-from . import uuids, utilities, apis
+from . import uuids
+from . utilities
+from . apis
 
 def __extract_dataset_info_from_db( id, token=None, instance='test', debug=None ):
 	'''
