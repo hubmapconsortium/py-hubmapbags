@@ -30,9 +30,6 @@ def __get_organ_from_uberon( organ ):
     for i in range(1, 12):
         organs["LY%02d"%i] = organs["LY"]
 
-    from pprint import pprint
-    print('ORGAN TABLE FOLLOWS')
-    pprint(organs)
     return organs[organ]
 
 def _build_dataframe( biosample_id, data_provider, organ ):
