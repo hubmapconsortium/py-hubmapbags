@@ -1,4 +1,6 @@
 import pandas as pd
+import yaml
+from urllib.request import urlopen
 import os
 
 def __get_organ_from_uberon( organ ):
@@ -6,32 +8,27 @@ def __get_organ_from_uberon( organ ):
     For full list, visit
     https://github.com/hubmapconsortium/search-api/blob/test-release/src/search-schema/data/definitions/enums/organ_types.yaml
     '''
-   
+
+    url = 'https://raw.githubusercontent.com/hubmapconsortium/search-api/master/src/search-schema/data/definitions/enums/organ_types.yaml'
+    with urlopen(url) as f:
+        tbl = yaml.safe_load(f)
+
     organs = {}
-    organs['small intestine'] = 'UBERON:0002108' #small intestine
-    organs['large intestine'] = 'UBERON:0000059' #large intestine
-    organs['left kidney'] = 'UBERON:0004538' #left kidney
-    organs['right kidney'] = 'UBERON:0004539' #right kidney
-    organs['kidney (left)'] = 'UBERON:0004538' #left kidney
-    organs['kidney (right)'] = 'UBERON:0004539' #right kidney
-    organs['spleen'] = 'UBERON:0002106' #spleen    
-    organs['thymus'] = 'UBERON:0002370' #thymus
-    organs['heart'] = 'UBERON:0000948' #heart
-    organs['LY01'] = 'UBERON:0000029' #lymph node
-    organs['LY02'] = 'UBERON:0000029' #lymph node
-    organs['LY03'] = 'UBERON:0000029' #lymph node
-    organs['LY04'] = 'UBERON:0000029' #lymph node
-    organs['LY05'] = 'UBERON:0000029' #lymph node
-    organs['LY06'] = 'UBERON:0000029' #lymph node
-    organs['LY07'] = 'UBERON:0000029' #lymph node
-    organs['LY08'] = 'UBERON:0000029' #lymph node
-    organs['LY09'] = 'UBERON:0000029' #lymph node
-    organs['LY10'] = 'UBERON:0000029' #lymph node
-    organs['LY11'] = 'UBERON:000029' #lymph node
-    organs['LY11'] = 'UBERON:0000029' #lymph node
-    organs['lymph node'] = 'UBERON:0000029' #lymph node
-    organs['skin'] = 'UBERON:0002097' #skin
-    organs['blood'] = 'UBERON:0000178' #blood 
+    for key in tbl:
+        if 'iri' in tbl[key]:
+            s = tbl[key]['iri']
+            oberon_entry = s[s.rfind('/')+1:]
+            organs[key] = oberon_entry
+            if 'description' in tbl[key]:
+                desc = tbl[key]['description']
+                organs[desc] = oberon_entry
+                organs[desc.lower()] = oberon_entry
+            if key == 'LK':
+                organs['left kidney'] = oberon_entry
+            elif key == 'RK':
+                organs['right kidney'] = oberon_entry
+    for i in range(1, 12):
+        organs["LY%02d"%i] = organs["LY"]
 
     return organs[organ]
 
