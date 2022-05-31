@@ -2,3 +2,5 @@ pandas
 numpy
 tabulate
 requests
+hubmap-sdk
+pyyaml

@@ -53,7 +53,7 @@ def __query_ancestors_info( hubmap_id, token=None, debug=False ):
 	:type hubmap_id: string
 	:param token: a valid token
 	:type token: None or string
-	:param debug: debug flag 
+	:param debug: debug flag
 	:type debug: boolean
 	:rtype: request response
 	'''
@@ -285,22 +285,22 @@ def __is_valid( file ):
 	file1 = open( file, "r")
 	readfile = file1.read()
 
-	answer = 'INVALID' 
-	if string1 in readfile: 
+	answer = 'INVALID'
+	if string1 in readfile:
 		answer='VALID'
-  
-	file1.close() 
-	return answer 
+
+	file1.close()
+	return answer
 
 def __query_donor_info( hubmap_id, instance='dev', token=None, debug=False ):
 	'''
-	Helper method that returns the ancestors info give a HuBMAP ID.
+	Helper method that returns the donor info given a dataset HuBMAP ID.
 
 	:param hubmap_id: valid HuBMAP ID
 	:type hubmap_id: string
 	:param token: a valid token
 	:type token: None or string
-	:param debug: debug flag 
+	:param debug: debug flag
 	:type debug: boolean
 	:rtype: request response
 	'''
@@ -310,23 +310,25 @@ def __query_donor_info( hubmap_id, instance='dev', token=None, debug=False ):
 		warnings.warn('Token not set.')
 		return None
 
-	if __get_instance( instance ) == 'prod':
-		URL='https://entity.api.hubmapconsortium.org/ancestors/'+hubmap_id
+	if __get_instance( instance ) == '':
+		URL='https://entity.api.hubmapconsortium.org/'
 	else:
-		URL='https://entity-api.' + __get_instance( instance ) + '.hubmapconsortium.org/ancestors/'+hubmap_id
-	
+		URL='https://entity-api.' + __get_instance( instance ) + '.hubmapconsortium.org/'
+
 	entity_instance = EntitySdk(token, URL)
-	donor =  entity_instance.get_entity_by_id( hubmap_id )
+
+	provenance = entity_instance.get_prov_info_by_id(hubmap_id)
+	donor_id = provenance['donor_hubmap_id'][0]
+	donor =  entity_instance.get_entity_by_id(donor_id)
 
 	return donor
 
-def get_donor_info( hubmap_id, instance='test', token=None, overwrite=True, debug=True ):
+def get_donor_info( hubmap_id, instance='dev', token=None, debug=True ):
 	'''
-	Helper method that returns the donor info given a HuBMAP ID.
+	Helper method that returns the donor info given a dataset HuBMAP ID.
 	'''
 
-	print('Get information from ancestors via the entity-api ')
-	donor = __query_ancestors_info( hubmap_id, instance=instance, token=token, debug=debug )
+	donor = __query_donor_info( hubmap_id, instance=instance, token=token, debug=debug )
 
 	return donor
 

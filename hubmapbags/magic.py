@@ -130,7 +130,7 @@ def do_it( input, dbgap_study_id=None, \
 		utilities.pprint('Extracting datasets from ' + input)
 		metadata_file = input
 		datasets = pd.read_csv( metadata_file, sep='\t' )
-	else:	
+	else:
 		utilities.pprint('Processing dataset with HuBMAP ID ' + input)
 		datasets = __extract_dataset_info_from_db( input, token=token, instance=instance )
 
@@ -154,7 +154,7 @@ def do_it( input, dbgap_study_id=None, \
 		broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
 		organ_shortcode = dataset['organ_type']
 		organ_id = dataset['organ_id']
-		donor_id = dataset['donor_id']
+		donor = hubmapbags.api.get_donor_info( hubmap_id, instance=instance, token=token )
 
 		if overwrite:
 			print('Erasing old checkpoint. Re-computing checksums.')
@@ -231,13 +231,13 @@ def do_it( input, dbgap_study_id=None, \
 			file_describes_collection.create_manifest( hubmap_id, data_directory, output_directory )
 
 			print('Making dcc.tsv')
-			primary_dcc_contact.create_manifest( output_directory )        
+			primary_dcc_contact.create_manifest( output_directory )
 
 			print('Making id_namespace.tsv')
 			id_namespace.create_manifest( output_directory )
 
 			print('Making subject.tsv')
-			subject.create_manifest( data_provider, donor_id, output_directory )
+			subject.create_manifest( data_provider, donor, output_directory )
 
 			print('Making subject_in_collection.tsv')
 			subject_in_collection.create_manifest( donor_id, hubmap_id, output_directory )
