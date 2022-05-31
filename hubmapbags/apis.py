@@ -9,6 +9,7 @@ from tabulate import tabulate
 import warnings
 from . import utilities
 import glob
+from hubmap_sdk import EntitySdk
 
 def __compute_number_of_files( directory = None ):
 	'''
@@ -290,6 +291,44 @@ def __is_valid( file ):
   
 	file1.close() 
 	return answer 
+
+def __query_donor_info( hubmap_id, instance='dev', token=None, debug=False ):
+	'''
+	Helper method that returns the ancestors info give a HuBMAP ID.
+
+	:param hubmap_id: valid HuBMAP ID
+	:type hubmap_id: string
+	:param token: a valid token
+	:type token: None or string
+	:param debug: debug flag 
+	:type debug: boolean
+	:rtype: request response
+	'''
+
+	token =	utilities.__get_token( token )
+	if token is None:
+		warnings.warn('Token not set.')
+		return None
+
+	if __get_instance( instance ) == 'prod':
+		URL='https://entity.api.hubmapconsortium.org/ancestors/'+hubmap_id
+	else:
+		URL='https://entity-api.' + __get_instance( instance ) + '.hubmapconsortium.org/ancestors/'+hubmap_id
+	
+	entity_instance = EntitySdk(token, URL)
+	donor =  entity_instance.get_entity_by_id( hubmap_id )
+
+	return donor
+
+def get_donor_info( hubmap_id, instance='test', token=None, overwrite=True, debug=True ):
+	'''
+	Helper method that returns the donor info given a HuBMAP ID.
+	'''
+
+	print('Get information from ancestors via the entity-api ')
+	donor = __query_ancestors_info( hubmap_id, instance=instance, token=token, debug=debug )
+
+	return donor
 
 def pretty_print_info_about_new_datasets( assay_name, debug=False ):
 	'''
