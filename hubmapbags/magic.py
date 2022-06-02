@@ -347,3 +347,160 @@ def do_it( input, dbgap_study_id=None, \
 				df.to_csv(temp_file.replace('pkl','tsv'), sep="\t")
 
 	return True
+
+def compute_checksums( ids, dbgap_study_id=None, \
+	 	compute_uuids=False, \
+		overwrite=False, \
+		copy_output_to=None, \
+		token=None, \
+		instance='test', \
+		debug=True ):
+	'''
+	Magic function that (1) computes checksums and (2) generates UUIDs.
+
+	:param ids: A list with strings representing a HuBMAP ID or a TSV file with one line per dataset, e.g. HBM632.JSNP.578
+	:type input: string
+	:param dbgap_study_id: A string representing a dbGaP study ID, e.g. phs00265
+	:type dbgap_study_id: None or string
+	:param overwrite: If set to TRUE, then it will overwrite an existing pickle file associated with the HuBMAP ID
+	:type overwrite: boolean
+	:param copy_output_to: If set, then a copy of the dataframe and the big data bag will be copied to this location
+	:type copy_output_to: None or string
+	:param token: A token to access HuBMAP resources
+	:type token: string or None
+	:param instance: Either 'dev', 'test' or 'prod'
+	:type instance: string
+	:param compute_uuids: If set to TRUE, then 
+	:type compute_uuids: boolean
+	:param debug: debug flag
+	:type debug: boolean
+	:rtype: boolean
+	'''
+
+	for id in ids:
+		utilities.pprint('Processing dataset with HuBMAP ID ' + id)
+		datasets = __extract_dataset_info_from_db( id, token=token, instance=instance )
+
+		for dataset in datasets.iterrows():
+			dataset = dataset[1]
+
+			status = dataset['ds.status'].lower()
+			if status != 'published':
+				warnings.warn('Dataset not published. Skipping computation.')
+				return None
+
+			data_type = dataset['ds.data_types'].replace('[','').replace(']','').replace('\'','').lower()
+			data_provider = dataset['ds.group_name']
+			hubmap_id = dataset['ds.hubmap_id']
+			hubmap_uuid = dataset['dataset_uuid']
+			biosample_id = dataset['first_sample_id']
+			data_directory = dataset['full_path']
+			print('Preparing bag for dataset ' + data_directory )
+			computing = data_directory.replace('/','_').replace(' ','_') + '.computing'
+			done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
+			broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
+			organ_shortcode = dataset['organ_type']
+			organ_id = dataset['organ_id']
+			donor = apis.get_donor_info( hubmap_id, instance=instance, token=token )
+			donor_id = donor.hubmap_id
+
+			if overwrite:
+				print('Erasing old checkpoint. Re-computing checksums.')
+				if Path(done).exists():
+					Path(done).unlink()
+
+			if Path(done).exists():
+				print('Checkpoint found. Avoiding computation. To re-compute erase file ' + done)
+			elif Path(computing).exists():
+				print('Computing checkpoint found. Avoiding computation since another process is building this bag.')
+			else:
+				with open(computing, 'w') as file:
+					pass
+
+				print('Creating checkpoint ' + computing)
+
+				if status.lower() != 'published':
+					print('Dataset is not published. Aborting computation.')
+					return
+
+				print('Checking if output directory exists.')
+				output_directory = data_type + '-' + status + '-' + dataset['dataset_uuid']
+
+				print('Creating output directory ' + output_directory + '.' )
+				if Path(output_directory).exists() and Path(output_directory).is_dir():
+						print('Output directory found. Removing old copy.')
+						rmtree(output_directory)
+						os.mkdir(output_directory)
+				else:
+						print('Output directory does not exist. Creating directory.')
+						os.mkdir(output_directory)
+
+				print('Making file.tsv')
+				temp_file = data_directory.replace('/','_').replace(' ','_') + '.pkl'
+
+				if overwrite:
+					print('Removing precomputed checksums')
+					if Path(temp_file).exists():
+						Path(temp_file).unlink()
+
+				answer = checksums.compute( project_id=data_provider, \
+									assay_type=data_type, \
+									directory=data_directory, \
+									output_directory=output_directory, \
+									dbgap_study_id=dbgap_study_id, \
+									token=token, \
+									dataset_hmid=hubmap_id, \
+									dataset_uuid=hubmap_uuid )
+
+				print('Removing checkpoint ' + computing )
+				Path(computing).unlink()
+
+				print('Creating final checkpoint ' + done )
+				if __get_number_of_files( output_directory ) == 36:
+					with open(done, 'w') as file:
+						pass
+				else:
+					warnings.warn('Wrong number of output files. Labeling dataset as broken.')
+					with open(broken, 'w') as file:
+						pass
+
+				if copy_output_to is not None:
+					print('Checking if output directory destination exists')
+					if Path(copy_output_to).exists() and Path(copy_output_to).is_dir():
+						print('Copying file ' + temp_file + ' to ' + copy_output_to + '.')
+						try:
+							copy( temp_file, copy_output_to )
+						except:
+							print('Unable to copy file to destination. Check permissions.')
+
+						print('Moving directory ' + output_directory + ' to ' + copy_output_to + '.')
+						try:
+							if Path(os.path.join(copy_output_to, output_directory)).exists():
+								rmtree(os.path.join(copy_output_to, output_directory))
+							move( output_directory, copy_output_to )
+						except Exception as e:
+							print('Unable to move folder to destination. Check permissions.')
+							print(e)
+					else:
+						warnings.warn('Output directory ' + copy_output_to + ' does not exist. Not copying results to destination.')
+
+				if compute_uuids:
+					print('Generating UUIDs via the uuid-api')
+					if uuids.should_i_generate_uuids( hubmap_id=id, \
+						filename=temp_file, \
+						instance=instance, \
+						token=token, \
+						debug=debug):
+						print('UUIDs not found in uuid-api database. Generating UUIDs.')
+						uuids.generate( temp_file, debug=debug )
+					else:
+						print('UUIDs found in uuid-api database. Populating local file')
+						uuids.populate_local_file_with_remote_uuids( hubmap_id, \
+							instance=instance, \
+							token=token, \
+							debug=debug )
+				if debug:
+					df=pd.read_pickle( temp_file )
+					df.to_csv(temp_file.replace('pkl','tsv'), sep="\t")
+
+	return True
