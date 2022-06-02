@@ -11,6 +11,7 @@ from os import listdir
 from os.path import isfile, join, exists
 import warnings
 
+warnings.filterwarnings("ignore")
 from . import collection_anatomy, collection_compound, \
               biosample_substance, biosample_gene, assay_type, \
               biosample_disease, anatomy, \
@@ -154,7 +155,8 @@ def do_it( input, dbgap_study_id=None, \
 		broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
 		organ_shortcode = dataset['organ_type']
 		organ_id = dataset['organ_id']
-		donor = hubmapbags.api.get_donor_info( hubmap_id, instance=instance, token=token )
+		donor = apis.get_donor_info( hubmap_id, instance=instance, token=token )
+		donor_id = donor.hubmap_id
 
 		if overwrite:
 			print('Erasing old checkpoint. Re-computing checksums.')

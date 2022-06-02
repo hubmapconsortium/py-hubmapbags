@@ -2,7 +2,9 @@ import pandas as pd
 import yaml
 from urllib.request import urlopen
 import os
+import warnings
 
+warnings.filterwarnings("ignore")
 def __get_organ_from_uberon( organ ):
     '''
     For full list, visit
