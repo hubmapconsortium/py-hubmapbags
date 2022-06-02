@@ -12,7 +12,7 @@ from os.path import isfile, join, exists
 import warnings
 
 warnings.filterwarnings("ignore")
-from . import collection_anatomy, collection_compound, \
+from . import checksums, collection_anatomy, collection_compound, \
               biosample_substance, biosample_gene, assay_type, \
               biosample_disease, anatomy, \
               file_describes_collection, project_in_project, \
@@ -46,6 +46,11 @@ def __extract_dataset_info_from_db( id, token=None, instance='test', debug=None 
 	hmid = j.get('hubmap_id')
 	hmuuid = j.get('uuid')
 	status = j.get('status')
+
+	if status != 'Published':
+		warnings.warn('Dataset status is ' + status + '. Avoiding processing non-published status.')
+		return None
+
 	data_types = j.get('data_types')[0]
 	group_name = j.get('group_name')
 	group_uuid = j.get('group_uuid')
@@ -104,6 +109,7 @@ def do_it( input, dbgap_study_id=None, \
 		copy_output_to=None, \
 		token=None, \
 		instance='test', \
+		build_bags=True, \
 		debug=True ):
 	'''
 	Magic function that (1) computes checksums, (2) generates UUIDs and, (3) builds a big data bag given a HuBMAP ID.
@@ -142,7 +148,12 @@ def do_it( input, dbgap_study_id=None, \
 	print( 'Number of datasets found is ' + str(datasets.shape[0]) )
 	for dataset in datasets.iterrows():
 		dataset = dataset[1]
+
 		status = dataset['ds.status'].lower()
+		if status != 'published':
+			warnings.warn('Dataset not published. Skipping computation.')
+			return None
+
 		data_type = dataset['ds.data_types'].replace('[','').replace(']','').replace('\'','').lower()
 		data_provider = dataset['ds.group_name']
 		hubmap_id = dataset['ds.hubmap_id']
@@ -173,7 +184,7 @@ def do_it( input, dbgap_study_id=None, \
 
 			print('Creating checkpoint ' + computing)
 
-			if status == 'new':
+			if status.lower() != 'published':
 				print('Dataset is not published. Aborting computation.')
 				return
 
@@ -196,82 +207,93 @@ def do_it( input, dbgap_study_id=None, \
 				print('Removing precomputed checksums')
 				if Path(temp_file).exists():
 					Path(temp_file).unlink()
-			answer = files.create_manifest( project_id=data_provider, \
-				assay_type=data_type, \
-				directory=data_directory, \
-				output_directory=output_directory, \
-				dbgap_study_id=dbgap_study_id, \
-				token=token, \
-				dataset_hmid=hubmap_id, \
-				dataset_uuid=hubmap_uuid )
 
-			print('Making biosample.tsv')
-			biosample.create_manifest( biosample_id, data_provider, organ_shortcode, output_directory )
+			answer = checksums.compute( project_id=data_provider, \
+                                assay_type=data_type, \
+                                directory=data_directory, \
+                                output_directory=output_directory, \
+                                dbgap_study_id=dbgap_study_id, \
+                                token=token, \
+                                dataset_hmid=hubmap_id, \
+                                dataset_uuid=hubmap_uuid )
 
-			print('Making biosample_in_collection.tsv')
-			biosample_in_collection.create_manifest( biosample_id, hubmap_id, output_directory )
+			if build_bags:
+				answer = files.create_manifest( project_id=data_provider, \
+					assay_type=data_type, \
+					directory=data_directory, \
+					output_directory=output_directory, \
+					dbgap_study_id=dbgap_study_id, \
+					token=token, \
+					dataset_hmid=hubmap_id, \
+					dataset_uuid=hubmap_uuid )
 
-			print('Making project.tsv')
-			projects.create_manifest( data_provider, output_directory )
+				print('Making biosample.tsv')
+				biosample.create_manifest( biosample_id, data_provider, organ_shortcode, output_directory )
 
-			print('Making project_in_project.tsv')
-			project_in_project.create_manifest( data_provider, output_directory )
+				print('Making biosample_in_collection.tsv')
+				biosample_in_collection.create_manifest( biosample_id, hubmap_id, output_directory )
 
-			print('Making biosample_from_subject.tsv')
-			biosample_from_subject.create_manifest( biosample_id, donor_id, output_directory )
+				print('Making project.tsv')
+				projects.create_manifest( data_provider, output_directory )
 
-			print('Making ncbi_taxonomy.tsv')
-			ncbi_taxonomy.create_manifest( output_directory )
+				print('Making project_in_project.tsv')
+				project_in_project.create_manifest( data_provider, output_directory )
 
-			print('Making collection.tsv')
-			collection.create_manifest( hubmap_id, output_directory )
+				print('Making biosample_from_subject.tsv')
+				biosample_from_subject.create_manifest( biosample_id, donor_id, output_directory )
 
-			print('Making collection_defined_by_project.tsv')
-			collection_defined_by_project.create_manifest( hubmap_id, data_provider, output_directory )
+				print('Making ncbi_taxonomy.tsv')
+				ncbi_taxonomy.create_manifest( output_directory )
 
-			print('Making file_describes_collection.tsv')
-			file_describes_collection.create_manifest( hubmap_id, data_directory, output_directory )
+				print('Making collection.tsv')
+				collection.create_manifest( hubmap_id, output_directory )
 
-			print('Making dcc.tsv')
-			primary_dcc_contact.create_manifest( output_directory )
+				print('Making collection_defined_by_project.tsv')
+				collection_defined_by_project.create_manifest( hubmap_id, data_provider, output_directory )
 
-			print('Making id_namespace.tsv')
-			id_namespace.create_manifest( output_directory )
+				print('Making file_describes_collection.tsv')
+				file_describes_collection.create_manifest( hubmap_id, data_directory, output_directory )
 
-			print('Making subject.tsv')
-			subject.create_manifest( data_provider, donor, output_directory )
+				print('Making dcc.tsv')
+				primary_dcc_contact.create_manifest( output_directory )
 
-			print('Making subject_in_collection.tsv')
-			subject_in_collection.create_manifest( donor_id, hubmap_id, output_directory )
+				print('Making id_namespace.tsv')
+				id_namespace.create_manifest( output_directory )
 
-			print('Making file_in_collection.tsv')
-			answer = file_in_collection.create_manifest( hubmap_id, data_directory, output_directory )
+				print('Making subject.tsv')
+				subject.create_manifest( data_provider, donor, output_directory )
 
-			print('Creating empty files')
-			file_describes_subject.create_manifest( output_directory )
-			file_describes_biosample.create_manifest( output_directory )
-			anatomy.create_manifest( output_directory )
-			assay_type.create_manifest( output_directory )
-			biosample_disease.create_manifest( output_directory )
-			biosample_gene.create_manifest( output_directory )
-			biosample_substance.create_manifest( output_directory )
-			collection_anatomy.create_manifest( output_directory )
-			collection_compound.create_manifest( output_directory )
-			collection_disease.create_manifest( output_directory )
-			collection_gene.create_manifest( output_directory )
-			collection_in_collection.create_manifest( output_directory )
-			collection_phenotype.create_manifest( output_directory )
-			collection_protein.create_manifest( output_directory )
-			collection_substance.create_manifest( output_directory )
-			collection_taxonomy.create_manifest( output_directory )
-			file_format.create_manifest( output_directory )
-			ncbi_taxonomy.create_manifest( output_directory )
-			subject_disease.create_manifest( output_directory )
-			subject_phenotype.create_manifest( output_directory )
-			subject_race.create_manifest( output_directory )
-			subject_role_taxonomy.create_manifest( output_directory )
-			subject_substance.create_manifest( output_directory )
-			file_format.create_manifest( output_directory )
+				print('Making subject_in_collection.tsv')
+				subject_in_collection.create_manifest( donor_id, hubmap_id, output_directory )
+
+				print('Making file_in_collection.tsv')
+				answer = file_in_collection.create_manifest( hubmap_id, data_directory, output_directory )
+
+				print('Creating empty files')
+				file_describes_subject.create_manifest( output_directory )
+				file_describes_biosample.create_manifest( output_directory )
+				anatomy.create_manifest( output_directory )
+				assay_type.create_manifest( output_directory )
+				biosample_disease.create_manifest( output_directory )
+				biosample_gene.create_manifest( output_directory )
+				biosample_substance.create_manifest( output_directory )
+				collection_anatomy.create_manifest( output_directory )
+				collection_compound.create_manifest( output_directory )
+				collection_disease.create_manifest( output_directory )
+				collection_gene.create_manifest( output_directory )
+				collection_in_collection.create_manifest( output_directory )
+				collection_phenotype.create_manifest( output_directory )
+				collection_protein.create_manifest( output_directory )
+				collection_substance.create_manifest( output_directory )
+				collection_taxonomy.create_manifest( output_directory )
+				file_format.create_manifest( output_directory )
+				ncbi_taxonomy.create_manifest( output_directory )
+				subject_disease.create_manifest( output_directory )
+				subject_phenotype.create_manifest( output_directory )
+				subject_race.create_manifest( output_directory )
+				subject_role_taxonomy.create_manifest( output_directory )
+				subject_substance.create_manifest( output_directory )
+				file_format.create_manifest( output_directory )
 
 			print('Removing checkpoint ' + computing )
 			Path(computing).unlink()

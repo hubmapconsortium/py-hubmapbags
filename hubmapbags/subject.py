@@ -66,7 +66,12 @@ def __build_dataframe( project_id, donor ):
 		'age_at_enrollment']
 
 	df = pd.DataFrame(columns=headers)
-	metadata = donor.metadata['organ_donor_data']
+	
+	try:
+		metadata = donor.metadata['organ_donor_data']
+	except:
+		metadata = donor.metadata['living_donor_data']
+
 	df = df.append({'id_namespace':id_namespace, \
 			'local_id':donor.hubmap_id, \
 			'project_id_namespace':id_namespace, \
