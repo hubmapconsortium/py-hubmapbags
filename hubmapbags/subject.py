@@ -2,10 +2,10 @@ import pandas as pd
 import os
 
 def __get_subject_granularity(donor):
-	return 'cfde_subject_granularity:0'
+    return 'cfde_subject_granularity:0'
 
 def __get_subject_ethnicity(info):
-	return ''
+    return ''
 
 def __get_subject_age_at_enrollment( info ):
     for datum in info:

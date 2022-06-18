@@ -18,5 +18,5 @@ def create_manifest( output_directory ):
     filename = os.path.join( output_directory, 'collection_compound.tsv' )
     df = _build_dataframe()
     df.to_csv( filename, sep="\t", index=False)
-    
+
     return True

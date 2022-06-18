@@ -160,12 +160,14 @@ def get_dataset_info( hubmap_id, instance='test', token=None, overwrite=True, de
 
 	directory = '.datasets'
 	file = os.path.join( directory, hubmap_id + '.json' )
+
 	if os.path.exists( file ) and not overwrite:
 		print('Loading existing JSON file')
 		j = json.load( open( file, 'r' ) );
 	else:
 		print('Get dataset information via the entity-api')
 		r = __query_dataset_info( hubmap_id, instance=instance, token=token, debug=debug )
+
 		if r is None:
         	        warnings.warn('JSON object is empty.')
                		return r

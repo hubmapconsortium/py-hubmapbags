@@ -161,13 +161,13 @@ def __get_file_format( file ):
 		return ''
 
 def __get_dbgap_study_id( file, dbgap_study_id ):
-    if dbgap_study_id == '':
-        return ''
-    else:
-        if str(file).find('tar.gz') > 0:
-           return dbgap_study_id
-        else:
-           return ''
+	if dbgap_study_id == '':
+		return ''
+	else:
+		if str(file).find('fastq.gz') > 0:
+			return dbgap_study_id
+		else:
+			return ''
 
 def __get_assay_type_from_obi(assay_type):
     assay = {}
@@ -175,7 +175,6 @@ def __get_assay_type_from_obi(assay_type):
     assay['atacseq-bulk'] = 'OBI:0003089' #Bulk ATAC-seq
     assay['bulk-rna'] = 'OBI:0001271' #Bulk RNA-seq
     assay['scrna-seq-10x'] = 'OBI:0002631' #scRNA-seq
-    assay[''] = 'OBI:0002764' #scATACseq
     assay['snatacseq'] = 'OBI:0002762' #snATAC-seq
     assay['wgs'] = 'OBI:0002117' #WGS
     assay['codex'] = 'OBI:0003093' #CODEX    
@@ -196,6 +195,8 @@ def __get_assay_type_from_obi(assay_type):
     assay['snareseq']='OBI:0003108'
     assay['sciatacseq']='OBI:0003104'
     assay['cell-dive']='OBI:0001501'
+    assay['scirnaseq'] = 'OBI:0002631'
+    assay['scrnaseq-10xgenomics-v2'] = 'OBI:0002631'
 
     return assay[assay_type]
 
@@ -228,11 +229,7 @@ def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hm
                'mime_type', \
                'bundle_collection_id_namespace', \
                'bundle_collection_local_id', \
-               'dbgap_study_id', \
-               'hubmap_uuid', \
-               'dataset_hmid', \
-               'dataset_uuid', \
-               'relative_local_id']
+               'dbgap_study_id']
 
     temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
 
@@ -264,11 +261,7 @@ def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hm
                             'mime_type':__get_mime_type(file), \
                             'bundle_collection_id_namespace':'', \
                             'bundle_collection_local_id':'', \
-                            'dbgap_study_id':__get_dbgap_study_id(file,dbgap_study_id),
-                            'hubmap_uuid':None, \
-                            'relative_local_id': __get_relative_local_id(file,dataset_uuid), \
-                            'dataset_hmid':dataset_hmid, \
-                            'dataset_uuid':dataset_uuid}, ignore_index=True)
+                            'dbgap_study_id':__get_dbgap_study_id(file,dbgap_study_id)}, ignore_index=True)
 
         print('Saving df to disk in file ' + temp_file)
         with open( temp_file, 'wb' ) as file:

@@ -7,12 +7,16 @@ def _build_dataframe( donor_id, hubmap_id ):
     '''
 
     id_namespace = 'tag:hubmapconsortium.org,2022:'
-    headers = ['subject_id_namespace', 'subject_local_id', 'collection_id_namespace', 'collection_local_id']
+    headers = ['subject_id_namespace', \
+        'subject_local_id', \
+        'collection_id_namespace', \
+        'collection_local_id']
+    
     df = pd.DataFrame(columns=headers)
     df = df.append({'subject_id_namespace':id_namespace, \
-                     'subject_local_id':donor_id, \
-                     'collection_id_namespace':id_namespace, \
-                     'collection_local_id':hubmap_id}, ignore_index=True)
+        'subject_local_id':donor_id, \
+        'collection_id_namespace':id_namespace, \
+        'collection_local_id':hubmap_id}, ignore_index=True)
 
     return df
 

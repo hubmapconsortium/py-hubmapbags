@@ -4,14 +4,13 @@ from urllib.request import urlopen
 import os
 import warnings
 
-warnings.filterwarnings("ignore")
 def __get_organ_from_uberon( organ ):
     '''
     For full list, visit
     https://github.com/hubmapconsortium/search-api/blob/test-release/src/search-schema/data/definitions/enums/organ_types.yaml
     '''
 
-    url = 'https://raw.githubusercontent.com/hubmapconsortium/search-api/master/src/search-schema/data/definitions/enums/organ_types.yaml'
+    url = 'https://raw.githubusercontent.com/hubmapconsortium/search-api/icaoberg-patch-1/src/search-schema/data/definitions/enums/organ_types.yaml'
     with urlopen(url) as f:
         tbl = yaml.safe_load(f)
 
@@ -29,6 +28,8 @@ def __get_organ_from_uberon( organ ):
                 organs['left kidney'] = oberon_entry
             elif key == 'RK':
                 organs['right kidney'] = oberon_entry
+            elif key == 'SI':
+                organs['small intestine'] = oberon_entry
     for i in range(1, 12):
         organs["LY%02d"%i] = organs["LY"]
 

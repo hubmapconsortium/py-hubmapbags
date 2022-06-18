@@ -7,8 +7,9 @@ def _build_dataframe():
     '''
 
     headers = ['id', \
-               'name', \
-               'description']
+                'name', \
+                'description', \
+                'synonyms']
 
     df = pd.DataFrame( columns = headers )
 
