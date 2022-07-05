@@ -237,7 +237,7 @@ def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hm
 	temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
 
 	if Path(temp_file).exists():
-		df = pickle.load(temp_file)
+		df = df.read_pickle(temp_file)
 	else:
 		df = pd.DataFrame(columns=headers)
 
