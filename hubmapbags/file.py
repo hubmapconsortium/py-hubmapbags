@@ -238,27 +238,27 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
 	temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
 
 	if Path( temp_file ).exists():
-		print( 'Temporary file ' + temp_file + ' found. Loading df into memory.' ) 
-        with open( temp_file, 'rb' ) as file:
-           df = pickle.load(file)
-    else:
+		print( 'Temporary file ' + temp_file + ' found. Loading df into memory.' )
+		with open( temp_file, 'rb' ) as file:
+			df = pickle.load(file)
+	else:
 		if Path(temp_file).exists():
 			df = pickle.load(file)
 		else:
 			df = pd.DataFrame(columns=headers)
 
 		#returns a list of files
-        p = _get_list_of_files( directory ) #problem is CODEX is over 500K
+		p = _get_list_of_files( directory ) #problem is CODEX is over 500K
 
-        print( 'Finding all files in directory' )
+		print( 'Finding all files in directory' )
 		#iterate through list
 		counter = 0
-        for file in p:
+		for file in p:
 			#only compute statistics on file
-            if file.is_file():
-                print('Processing ' + str(file) )
-				if not __is_file_in_dataframe( df, str(file) )
-                	df = df.append({'id_namespace':id_namespace, \
+			if file.is_file():
+				print('Processing ' + str(file) )
+				if not __is_file_in_dataframe( df, str(file) ):
+                			df = df.append({'id_namespace':id_namespace, \
 						'local_id':str(file).replace(' ','%20'), \
 						'project_id_namespace':id_namespace, \
 						'project_local_id':project_id, \
@@ -283,12 +283,12 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
 				if counter % 10000 == 0:
 					with open( temp_file, 'wb' ) as file:
 						pickle.dump( df, file )
-						
-        print('Saving df to disk in file ' + temp_file)
-        with open( temp_file, 'wb' ) as file:
-            pickle.dump( df, file )
+	
+	print('Saving df to disk in file ' + temp_file)
+	with open( temp_file, 'wb' ) as file:
+		pickle.dump( df, file )
 
-    return df
+	return df
 
 def create_manifest( project_id, assay_type, directory, output_directory, dbgap_study_id, token, dataset_hmid, dataset_uuid ):
 	filename = os.path.join( output_directory, 'file.tsv' )
