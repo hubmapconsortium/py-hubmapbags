@@ -234,7 +234,7 @@ def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hm
 		'bundle_collection_local_id', \
 		'dbgap_study_id']
 
-    temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
+	temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
 
 	if Path(temp_file).exists():
 		df = pickle.load(temp_file)
@@ -266,12 +266,12 @@ def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hm
 						'bundle_collection_id_namespace':'', \
 						'bundle_collection_local_id':'', \
 						'dbgap_study_id':__get_dbgap_study_id(file,dbgap_study_id)}, ignore_index=True)
-						counter = counter + 1
+					counter = counter + 1
 
-						if counter % 10000 == 0:
-							print('Saving ' + str(counter) + 'to temporary file on disk.')
-							with open( temp_file, 'wb' ) as file:
-								pickle.dump( df, file )
+					if counter % 10000 == 0:
+						print('Saving ' + str(counter) + 'to temporary file on disk.')
+						with open( temp_file, 'wb' ) as file:
+							pickle.dump( df, file )
 
 	print('Saving final df to disk in file ' + temp_file)
 	with open( temp_file, 'wb' ) as file:
