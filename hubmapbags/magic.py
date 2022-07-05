@@ -216,14 +216,9 @@ def do_it( input, dbgap_study_id=None, \
 
 			print('Creating checkpoint ' + computing)
 
-<<<<<<< HEAD
 			#these should only be computed published datasets
-			if status not 'published':
+			if status != 'published':
 				warnings.warn('Dataset is not published. Aborting computation.')
-=======
-			if status.lower() != 'published':
-				print('Dataset is not published. Aborting computation.')
->>>>>>> 7e6bffef21120dd95d5f31cbfd5cf729fa6f2e56
 				return
 
 			print('Checking if output directory exists.')

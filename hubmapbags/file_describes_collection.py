@@ -25,8 +25,8 @@ def _build_dataframe( hubmap_id, directory ):
 
 	if Path( temp_file ).exists():
 		print('Temporary file ' + temp_file + ' found. Loading df into memory.')
- 		with open( temp_file, 'rb' ) as file:
- 			df = pickle.load(file)
+		with open( temp_file, 'rb' ) as file:
+			df = pickle.load(file)
 
 		#remove unnecesary columns
  		df = df.drop(columns=['project_id_namespace', 'project_local_id', \
