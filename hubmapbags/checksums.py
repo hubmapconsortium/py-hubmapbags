@@ -235,9 +235,8 @@ def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hm
 		'dbgap_study_id']
 
 	temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
-
 	if Path(temp_file).exists():
-		df = df.read_pickle(temp_file)
+		df = pd.read_pickle(temp_file)
 	else:
 		df = pd.DataFrame(columns=headers)
 
@@ -269,7 +268,7 @@ def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hm
 					counter = counter + 1
 
 				if counter % 1000 == 0:
-					print('Saving ' + str(counter) + 'to temporary file on disk.')
+					print('Saving ' + str(counter) + ' entries to temporary file on disk.')
 					with open( temp_file, 'wb' ) as file:
 						pickle.dump( df, file )
 
