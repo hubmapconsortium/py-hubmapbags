@@ -10,6 +10,9 @@ import urllib
 import hashlib
 import pickle
 
+def __is_file_in_dataframe( df, filename ):
+	return any(df['local_id'] == filename )
+
 def __get_filename( file ):
 	'''
 	Helper method that returns a CFDE compatible version of a filename
