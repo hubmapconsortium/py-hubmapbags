@@ -9,10 +9,6 @@ import mimetypes
 import urllib
 import hashlib
 import pickle
-import warnings
-
-def __is_file_in_dataframe( df, filename ):
-	return any(df['local_id'] == filename )
 
 def __get_filename( file ):
 	'''
@@ -179,7 +175,6 @@ def __get_assay_type_from_obi(assay_type):
     assay['atacseq-bulk'] = 'OBI:0003089' #Bulk ATAC-seq
     assay['bulk-rna'] = 'OBI:0001271' #Bulk RNA-seq
     assay['scrna-seq-10x'] = 'OBI:0002631' #scRNA-seq
-    assay[''] = 'OBI:0002764' #scATACseq
     assay['snatacseq'] = 'OBI:0002762' #snATAC-seq
     assay['wgs'] = 'OBI:0002117' #WGS
     assay['codex'] = 'OBI:0003093' #CODEX    
@@ -199,15 +194,20 @@ def __get_assay_type_from_obi(assay_type):
     assay['snare-rnaseq2']='OBI:0003108'
     assay['snareseq']='OBI:0003108'
     assay['sciatacseq']='OBI:0003104'
+    assay['cell-dive']='OBI:0001501'
+    assay['scirnaseq'] = 'OBI:0002631'
+    assay['scrnaseq-10xgenomics-v2'] = 'OBI:0002631'
 
     return assay[assay_type]
 
 def _get_list_of_files( directory ):
+    #p1 = Path(directory).glob('**//[!_drv]*')
+    #p2 = Path(directory).glob('**//[!processed]*')
+    #return chain(p1,p2)
     return Path(directory).glob('**/*')
 
-def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, dataset_hmid=None, dataset_uuid=None ):
+def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hmid=None, dataset_uuid=None ):
     '''
-    Build a dataframe with minimal information for this entity.
     '''
 
     id_namespace = 'tag:hubmapconsortium.org,2022:'
@@ -229,11 +229,7 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
                'mime_type', \
                'bundle_collection_id_namespace', \
                'bundle_collection_local_id', \
-               'dbgap_study_id', \
-               'hubmap_uuid', \
-               'dataset_hmid', \
-               'dataset_uuid', \
-               'relative_local_id']
+               'dbgap_study_id']
 
     temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
 
@@ -243,19 +239,14 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
            df = pickle.load(file)
     else:
         df = pd.DataFrame(columns=headers)
-		#returns a list of files
-        p = _get_list_of_files( directory ) #problem is CODEX is over 500K
-
+        p = _get_list_of_files( directory )
         print( 'Finding all files in directory' )
 
-		#iterate through list
-		counter = 0
         for file in p:
-			#only compute statistics on file
             if file.is_file():
-                	if str(file).find('drv') < 0 or str(file).find('processed') < 0:
-                    	print('Processing ' + str(file) )
-                    	df = df.append({'id_namespace':id_namespace, \
+                   if str(file).find('drv') < 0 or str(file).find('processed') < 0:
+                       print('Processing ' + str(file) )
+                       df = df.append({'id_namespace':id_namespace, \
                             'local_id':str(file).replace(' ','%20'), \
                             'project_id_namespace':id_namespace, \
                             'project_local_id':project_id, \
@@ -270,33 +261,23 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
                             'mime_type':__get_mime_type(file), \
                             'bundle_collection_id_namespace':'', \
                             'bundle_collection_local_id':'', \
-                            'dbgap_study_id':__get_dbgap_study_id(file,dbgap_study_id),
-                            'hubmap_uuid':None, \
-                            'relative_local_id': __get_relative_local_id(file,dataset_uuid), \
-                            'dataset_hmid':dataset_hmid, \
-                            'dataset_uuid':dataset_uuid}, ignore_index=True)
-							counter = counter + 1
+                            'dbgap_study_id':__get_dbgap_study_id(file,dbgap_study_id)}, ignore_index=True)
 
-					if counter % 10000 == 0:
-						 with open( temp_file, 'wb' ) as file:
-							pickle.dump( df, file )
-						
         print('Saving df to disk in file ' + temp_file)
         with open( temp_file, 'wb' ) as file:
             pickle.dump( df, file )
 
     return df
 
-def create_manifest( project_id, assay_type, directory, output_directory, dbgap_study_id, token, dataset_hmid, dataset_uuid ):
-	filename = os.path.join( output_directory, 'file.tsv' )
-	temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
-	if not Path(directory).exists() and not Path(temp_file).exists():
-		print('Data directory ' + directory + ' does not exist. Temp file was not found either.')
-		return False
-	else:
-		if Path(temp_file).exists():
-			print('Temp file ' + temp_file + ' found. Continuing computation.')
-		df = _build_dataframe( project_id, assay_type, directory, dbgap_study_id, dataset_hmid, dataset_uuid )
-		df.to_csv( filename, sep="\t", index=False)
+def compute( project_id, assay_type, directory, output_directory, dbgap_study_id, token, dataset_hmid, dataset_uuid ):
+    filename = os.path.join( output_directory, 'file.tsv' )
+    temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
+    if not Path(directory).exists() and not Path(temp_file).exists():
+        print('Data directory ' + directory + ' does not exist. Temp file was not found either.')
+        return False
+    else:
+        if Path(temp_file).exists():
+            print('Temp file ' + temp_file + ' found. Continuing computation.')
+        df = _compute( project_id, assay_type, directory, dbgap_study_id, dataset_hmid, dataset_uuid )
 
-		return True
+        return True

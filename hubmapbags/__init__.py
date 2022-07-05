@@ -6,6 +6,7 @@ __version__ = '2022.2' # year 2022 2nd quarter
 __author__ = 'Ivan Cao-Berg'
 __credits__ = 'HuBMAP IEC Team'
 
+from .checksums import *
 from .apis import *
 from .uuids import *
 from .utilities import *

@@ -52,4 +52,5 @@ def create_manifest( hubmap_id, directory, output_directory ):
             print('Temp file ' + temp_file + ' found. Continuing computation.')
         df = _build_dataframe( hubmap_id, directory )
         df.to_csv( filename, sep="\t", index=False)
+        
         return True

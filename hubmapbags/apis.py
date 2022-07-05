@@ -9,6 +9,7 @@ from tabulate import tabulate
 import warnings
 from . import utilities
 import glob
+from hubmap_sdk import EntitySdk
 
 def __compute_number_of_files( directory = None ):
 	'''
@@ -52,7 +53,7 @@ def __query_ancestors_info( hubmap_id, token=None, debug=False ):
 	:type hubmap_id: string
 	:param token: a valid token
 	:type token: None or string
-	:param debug: debug flag 
+	:param debug: debug flag
 	:type debug: boolean
 	:rtype: request response
 	'''
@@ -160,12 +161,14 @@ def get_dataset_info( hubmap_id, instance='test', token=None, overwrite=True, de
 
 	directory = '.datasets'
 	file = os.path.join( directory, hubmap_id + '.json' )
+
 	if os.path.exists( file ) and not overwrite:
 		print('Loading existing JSON file')
 		j = json.load( open( file, 'r' ) );
 	else:
 		print('Get dataset information via the entity-api')
 		r = __query_dataset_info( hubmap_id, instance=instance, token=token, debug=debug )
+
 		if r is None:
         	        warnings.warn('JSON object is empty.')
                		return r
@@ -285,12 +288,52 @@ def __is_valid( file ):
 	file1 = open( file, "r")
 	readfile = file1.read()
 
-	answer = 'INVALID' 
-	if string1 in readfile: 
+	answer = 'INVALID'
+	if string1 in readfile:
 		answer='VALID'
-  
-	file1.close() 
-	return answer 
+
+	file1.close()
+	return answer
+
+def __query_donor_info( hubmap_id, instance='dev', token=None, debug=False ):
+	'''
+	Helper method that returns the donor info given a dataset HuBMAP ID.
+
+	:param hubmap_id: valid HuBMAP ID
+	:type hubmap_id: string
+	:param token: a valid token
+	:type token: None or string
+	:param debug: debug flag
+	:type debug: boolean
+	:rtype: request response
+	'''
+
+	token =	utilities.__get_token( token )
+	if token is None:
+		warnings.warn('Token not set.')
+		return None
+
+	if __get_instance( instance ) == '':
+		URL='https://entity.api.hubmapconsortium.org/'
+	else:
+		URL='https://entity-api.' + __get_instance( instance ) + '.hubmapconsortium.org/'
+
+	entity_instance = EntitySdk(token, URL)
+
+	provenance = entity_instance.get_prov_info_by_id(hubmap_id)
+	donor_id = provenance['donor_hubmap_id'][0]
+	donor =  entity_instance.get_entity_by_id(donor_id)
+
+	return donor
+
+def get_donor_info( hubmap_id, instance='dev', token=None, debug=True ):
+	'''
+	Helper method that returns the donor info given a dataset HuBMAP ID.
+	'''
+
+	donor = __query_donor_info( hubmap_id, instance=instance, token=token, debug=debug )
+
+	return donor
 
 def pretty_print_info_about_new_datasets( assay_name, debug=False ):
 	'''
