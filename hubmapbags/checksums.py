@@ -278,3 +278,16 @@ def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hm
 		pickle.dump( df, file )
 
 	return df
+
+def compute( project_id, assay_type, directory, output_directory, dbgap_study_id, token, dataset_hmid, dataset_uuid ):
+    filename = os.path.join( output_directory, 'file.tsv' )
+    temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
+    if not Path(directory).exists() and not Path(temp_file).exists():
+        print('Data directory ' + directory + ' does not exist. Temp file was not found either.')
+        return False
+    else:
+        if Path(temp_file).exists():
+            print('Temp file ' + temp_file + ' found. Continuing computation.')
+        df = _compute( project_id, assay_type, directory, dbgap_study_id, dataset_hmid, dataset_uuid )
+
+        return True
