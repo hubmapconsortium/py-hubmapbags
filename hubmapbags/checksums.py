@@ -234,14 +234,17 @@ def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hm
 	temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
 	if Path(temp_file).exists():
 		df = pd.read_pickle(temp_file)
+		print('Number of precomputed entries is ' + str(len(df)) + '.')
 	else:
 		df = pd.DataFrame(columns=headers)
 
 	print( 'Finding all files in directory' )
 	p = list(_get_list_of_files( directory ))
-	
-	counter = 0
-	for file in p:
+
+	counter = len(df)
+	for index in range(counter,len(p)):
+		file = p[index]
+
 		if file.is_file():
 				print('Processing ' + str(file) + ':' + str(counter).zfill(7) )
 				if not __is_file_in_dataframe( df, str(file) ):
