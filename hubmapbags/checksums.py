@@ -246,7 +246,7 @@ def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hm
 		file = p[index]
 
 		if file.is_file():
-				print('Processing ' + str(file) + ':' + str(counter).zfill(7) )
+				print('Processing ' + str(file) + ':' + str(index).zfill(7) )
 				if not __is_file_in_dataframe( df, str(file) ):
 					df = df.append({'id_namespace':id_namespace, \
 						'local_id':str(file).replace(' ','%20'), \
