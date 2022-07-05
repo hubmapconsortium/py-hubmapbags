@@ -140,6 +140,7 @@ def do_it( input, dbgap_study_id=None, \
 
 	print( 'Number of datasets found is ' + str(datasets.shape[0]) )
 	for dataset in datasets.iterrows():
+		#extract import parameters from list
 		dataset = dataset[1]
 		status = dataset['ds.status'].lower()
 		data_type = dataset['ds.data_types'].replace('[','').replace(']','').replace('\'','').lower()
@@ -148,13 +149,15 @@ def do_it( input, dbgap_study_id=None, \
 		hubmap_uuid = dataset['dataset_uuid']
 		biosample_id = dataset['first_sample_id']
 		data_directory = dataset['full_path']
+		organ_shortcode = dataset['organ_type']
+		organ_id = dataset['organ_id']
+		donor_id = dataset['donor_id']
+
+		#preparing checkpoints and other files
 		print('Preparing bag for dataset ' + data_directory )
 		computing = data_directory.replace('/','_').replace(' ','_') + '.computing'
 		done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
 		broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
-		organ_shortcode = dataset['organ_type']
-		organ_id = dataset['organ_id']
-		donor_id = dataset['donor_id']
 
 		if overwrite:
 			print('Erasing old checkpoint. Re-computing checksums.')
@@ -171,8 +174,9 @@ def do_it( input, dbgap_study_id=None, \
 
 			print('Creating checkpoint ' + computing)
 
-			if status == 'new':
-				print('Dataset is not published. Aborting computation.')
+			#these should only be computed published datasets
+			if status not 'published':
+				warnings.warn('Dataset is not published. Aborting computation.')
 				return
 
 			print('Checking if output directory exists.')

@@ -141,6 +141,7 @@ def get_provenance_info( hubmap_id, instance='test', token=None, overwrite=False
 		return j
 
 def __query_dataset_info( hubmap_id, instance='test', token=None, debug=False ):
+	# gets the token to be able to access private data
 	token = utilities.__get_token( token )
 	if token is None:
 		warnings.warn('Token not set.')

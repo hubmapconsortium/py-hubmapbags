@@ -242,14 +242,19 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
            df = pickle.load(file)
     else:
         df = pd.DataFrame(columns=headers)
-        p = _get_list_of_files( directory )
+		#returns a list of files
+        p = _get_list_of_files( directory ) #problem is CODEX is over 500K
+
         print( 'Finding all files in directory' )
 
+		#iterate through list
+		counter = 0
         for file in p:
+			#only compute statistics on file
             if file.is_file():
-                   if str(file).find('drv') < 0 or str(file).find('processed') < 0:
-                       print('Processing ' + str(file) )
-                       df = df.append({'id_namespace':id_namespace, \
+                	if str(file).find('drv') < 0 or str(file).find('processed') < 0:
+                    	print('Processing ' + str(file) )
+                    	df = df.append({'id_namespace':id_namespace, \
                             'local_id':str(file).replace(' ','%20'), \
                             'project_id_namespace':id_namespace, \
                             'project_local_id':project_id, \
@@ -269,7 +274,12 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
                             'relative_local_id': __get_relative_local_id(file,dataset_uuid), \
                             'dataset_hmid':dataset_hmid, \
                             'dataset_uuid':dataset_uuid}, ignore_index=True)
+							counter = counter + 1
 
+					if counter % 10000 == 0:
+						 with open( temp_file, 'wb' ) as file:
+							pickle.dump( df, file )
+						
         print('Saving df to disk in file ' + temp_file)
         with open( temp_file, 'wb' ) as file:
             pickle.dump( df, file )
