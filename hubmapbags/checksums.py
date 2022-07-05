@@ -277,4 +277,4 @@ def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hm
 	with open( temp_file, 'wb' ) as file:
 		pickle.dump( df, file )
 
-    return df
+	return df
