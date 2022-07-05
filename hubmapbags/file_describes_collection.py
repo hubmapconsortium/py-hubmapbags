@@ -29,7 +29,7 @@ def _build_dataframe( hubmap_id, directory ):
 			df = pickle.load(file)
 
 		#remove unnecesary columns
- 		df = df.drop(columns=['project_id_namespace', 'project_local_id', \
+		df = df.drop(columns=['project_id_namespace', 'project_local_id', \
 			'persistent_id', 'creation_time', 'size_in_bytes', 'dbgap_study_id', \
 			'uncompressed_size_in_bytes', 'sha256', 'md5', 'filename', \
 			'file_format', 'data_type', 'assay_type', 'mime_type', 'sha256', \
