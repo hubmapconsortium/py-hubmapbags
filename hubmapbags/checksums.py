@@ -204,9 +204,6 @@ def __get_assay_type_from_obi(assay_type):
     return assay[assay_type]
 
 def _get_list_of_files( directory ):
-    #p1 = Path(directory).glob('**//[!_drv]*')
-    #p2 = Path(directory).glob('**//[!processed]*')
-    #return chain(p1,p2)
     return Path(directory).glob('**/*')
 
 def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hmid=None, dataset_uuid=None ):
@@ -240,10 +237,9 @@ def _compute( project_id, assay_type, directory, dbgap_study_id=None, dataset_hm
 	else:
 		df = pd.DataFrame(columns=headers)
 
-	#ground truth
-	p = _get_list_of_files( directory )
 	print( 'Finding all files in directory' )
-
+	p = list(_get_list_of_files( directory ))
+	
 	counter = 0
 	for file in p:
 		if file.is_file():
