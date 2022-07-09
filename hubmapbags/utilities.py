@@ -13,7 +13,7 @@ def __get_token( token=None ):
 
 	return token
 
-def add_empty_duuid_column( file ):
+def add_duuid_column( file ):
 	'''
 	Helper method that adds the UUID column of a backup pickle file.
 
@@ -22,16 +22,31 @@ def add_empty_duuid_column( file ):
 	:rtype: boolean
 	'''
 
-	try:
-		duuid=file.split('_')[-1].split('.')[0]
-		print(file)
+	if file.find('.pkl') > 0:
+		try:
+			duuid=file.split('_')[-1].split('.')[0]
+			print(file)
 
-		df = pd.read_pickle( file )
-		df['duuid']=duuid
-		df.to_pickle( file )
-		return True
-	except:
-		return False
+			df = pd.read_pickle( file )
+			df['duuid']=duuid
+			df.to_pickle( file )
+			return True
+		except:
+			return False
+
+	if file.find('.tsv') > 0:
+		try:
+			duuid=file.split('_')[-1].split('.')[0]
+			print(file)
+
+			df = pd.read_csv( file, sep='\t' )
+			df['duuid']=duuid
+			df.to_csv( file, sep='\t', index=False )
+			return True
+		except:
+			return False
+
+	return False
 
 def reset_hubmap_uuid_column( file ):
 	'''

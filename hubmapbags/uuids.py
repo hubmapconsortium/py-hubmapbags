@@ -1,3 +1,4 @@
+from logging import warning
 import sys
 import pandas as pd
 import os
@@ -12,7 +13,9 @@ from . import magic
 def populate_local_file_with_remote_uuids( hubmap_id, instance='test', token=None, overwrite=False, debug=False ):
 
 	utilities.pprint('Processing dataset with HuBMAP ID ' + hubmap_id)
-	dataset = magic.__extract_dataset_info_from_db( hubmap_id, token=token, instance=instance )
+
+	#get dataset metadata
+	dataset = magic.__extract_dataset_info_from_db( hubmap_id, token=token, instance='prod' )
 
 	if dataset is None:
 		warnings.warn('No datasets found. Exiting.')
@@ -23,7 +26,7 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='test', token=Non
 	computing = data_directory.replace('/','_').replace(' ','_') + '.computing'
 	done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
 	broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
-	temp_file = data_directory.replace('/','_').replace(' ','_') + '.pkl'
+	temp_file = data_directory.replace('/','_').replace(' ','_') + '.tsv'
 	
 	if exists( computing ):
 		warnings.warn('Computing file ' + computing + ' exists. Another process is computing checksums. Not populating local file.')
@@ -91,41 +94,22 @@ def get_uuids( hubmap_id, instance='test', token=None, debug=False ):
 
 	return j
 
-def should_i_generate_uuids( hubmap_id, filename, instance='test', token=None, debug=False ):
+def should_i_generate_uuids( df, instance='test', token=None, debug=False ):
 	'''
 	Helper function that compares the number of files on disk versus the number of
 	entries in the UUID-API database.
 	'''
 
-	df = pd.read_pickle( filename )
-	number_of_entries_in_local_file = len(pd.read_pickle( filename )) - df['hubmap_uuid'].isnull().sum()
-	number_of_entries_in_db = get_number_of_uuids( hubmap_id, instance=instance, token=token, debug=debug )
+	#number_of_entries_in_local_file = len(df) - df['fuuid'].isnull().sum()
+	number_of_entries_in_local_file = len(df)
+	number_of_entries_in_db = get_number_of_uuids( df.loc[0]['did'], instance=instance, token=token, debug=debug )
 
-	if number_of_entries_in_local_file != 0 and number_of_entries_in_local_file > number_of_entries_in_db:
+	if number_of_entries_in_local_file > 0 and  number_of_entries_in_db > 0 and number_of_entries_in_local_file > number_of_entries_in_db:
 		warnings.warn('There are more entries in local file than in database. Either a job is running computing checksums or a job failed.')
 		return False
 	elif number_of_entries_in_local_file != 0 and number_of_entries_in_local_file < number_of_entries_in_db:
-		warnings.warn('There are more entries in database than files in local db. More than likely UUIDs were generate more than once. Contact a system administrator.')
-	elif number_of_entries_in_local_file == number_of_entries_in_db:
+		warnings.warn('There are more entries in database than files in local db. More than likely UUIDs were generated more than once. Contact a system administrator.')
 		return False
-	else:
-		return True
-
-def should_i_generate_uuids2( hubmap_id, filename, instance='test', token=None, debug=False ):
-	'''
-	Helper function that compares the number of files on disk versus the number of
-	entries in the UUID-API database.
-	'''
-
-	df = pd.read_pickle( filename )
-	number_of_entries_in_local_file = len(pd.read_pickle( filename )) - df['hubmap_uuid'].isnull().sum()
-	number_of_entries_in_db = get_number_of_uuids( hubmap_id, instance=instance, token=token, debug=debug )
-
-	if number_of_entries_in_local_file > number_of_entries_in_db:
-		warnings.warn('There are more entries in local file than in database. Either a job is running computing checksums or a job failed.')
-		return False
-	elif number_of_entries_in_local_file < number_of_entries_in_db:
-		warnings.warn('There are more entries in database than files in local db. More than likely UUIDs were generate more than once. Contact a system administrator.')
 	elif number_of_entries_in_local_file == number_of_entries_in_db:
 		return False
 	else:
@@ -141,7 +125,7 @@ def get_number_of_uuids( hubmap_id, instance='test', token=None, debug=False ):
 	except:
 		return 0
 
-def generate( file, instance='dev', debug=True ):
+def generate( file, instance='test', debug=True ):
 	'''
 	Main function that generates UUIDs using the uuid-api.
 	'''
@@ -161,104 +145,126 @@ def generate( file, instance='dev', debug=True ):
 	try:
 		if debug:
 			print('Loading temp file ' + file + '.')
-		df = pd.read_pickle( file )
+
+		if file.find('.pkl') > 0:
+			df = pd.read_pickle( file )
+		elif file.find('.tsv') > 0:
+			df = pd.read_csv( file, sep='\t' )
+		else:
+			warnings.warn('Unknown file extension. Exiting script.')
+			return False
 	except:
 		if debug:
-			print('Unable to load pickle file ' + file + '. Exiting script.' )
+			print('Unable to load file ' + file + '. Exiting script.' )
 		return False
 
-	URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/hmuuid/'
-	URL='https://uuid-api.test.hubmapconsortium.org/hmuuid/'
-	headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0','Authorization':'Bearer '+token, 'Content-Type':'application/json'}
+	if should_i_generate_uuids( df, instance=instance, token=token, debug=debug ):
+		URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/hmuuid/'
+		URL='https://uuid-api.test.hubmapconsortium.org/hmuuid/'
+		headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0','Authorization':'Bearer '+token, 'Content-Type':'application/json'}
 
-	if len(df) <= 1000:
-		if df['hubmap_uuid'].isnull().all():
-			file_info = []
-			for datum in df.iterrows():
-				datum = datum[1]
-				filename = datum['local_id'][datum['local_id'].find(duuid)+len(duuid)+1:]
-				file_info.append({'path':filename, \
-					'size':datum['size_in_bytes'], \
-					'checksum':datum['sha256'], \
-				'base_dir':'DATA_UPLOAD'})
+		if len(df) <= 1000:
+			if df['fuuid'].isnull().all():
+				file_info = []
+				for datum in df.iterrows():
+					datum = datum[1]
+					filename = datum['local_id'][datum['local_id'].find(duuid)+len(duuid)+1:]
+					file_info.append({'path':filename, \
+						'size':datum['size_in_bytes'], \
+						'checksum':datum['sha256'], \
+					'base_dir':'DATA_UPLOAD'})
 
-			payload = {}
-			payload['parent_ids']=[duuid]
-			payload['entity_type']='FILE'
-			payload['file_info']=file_info
-			params = {'entity_count':len(file_info)}
+				payload = {}
+				payload['parent_ids']=[duuid]
+				payload['entity_type']='FILE'
+				payload['file_info']=file_info
+				params = {'entity_count':len(file_info)}
 
-			if debug:
-				print('Generating UUIDs')
-			r = requests.post(URL, params=params, headers=headers, data=json.dumps(payload), allow_redirects=True, timeout=120)
-			j = json.loads(r.text)
-
-			if 'message' in j:
 				if debug:
-					print('Request response. Not populating data frame and exiting script.')
-				print(j['message'])
-				return False
-			else:
-				for datum in j:
-					df.loc[df['local_id'].str.contains(datum['file_path']),'hubmap_uuid']=datum['uuid']
-  
-				if debug:
-					print('Updating pickle file ' + file + ' with the request response.')
-
-				df.to_pickle(file)
-				with open(file.replace('pkl','json'),'w') as outfile:
-					json.dump(j, outfile, indent=4)
-		else:
-			if debug:
-				print('HuBMAP uuid column is populated. Skipping generation.')
-	else:
-		if debug:
-			print('Data frame has ' + str(len(df)) + ' items. Partitioning into smaller chunks.')
-
-		n = 1000  #chunk row size
-		dfs = [df[i:i+n] for i in range(0,df.shape[0],n)]
-	
-		counter = 0
-		for frame in dfs:
-			counter=counter+1
-			if debug:
-				print('Computing uuids on partition ' + str(counter) + ' of ' + str(len(dfs)) + '.')
-
-			file_info = []
-			for datum in frame.iterrows():
-				datum = datum[1]
-				filename = datum['local_id'][datum['local_id'].find(duuid)+len(duuid)+1:]
-				file_info.append({'path':filename, \
-					'size':datum['size_in_bytes'], \
-					'checksum':datum['sha256'], \
-				'base_dir':'DATA_UPLOAD'})
-
-			payload = {}
-			payload['parent_ids']=[duuid]
-			payload['entity_type']='FILE'
-			payload['file_info']=file_info
-			params = {'entity_count':len(file_info)}
-
-			if frame['hubmap_uuid'].isnull().all():
-				if debug:
-					print('Generating uuids')
-
+					print('Generating UUIDs')
 				r = requests.post(URL, params=params, headers=headers, data=json.dumps(payload), allow_redirects=True, timeout=120)
 				j = json.loads(r.text)
-				time.sleep(5)
 
 				if 'message' in j:
 					if debug:
-						print('Request response. Not populating data frame.')
+						print('Request response. Not populating data frame and exiting script.')
 					print(j['message'])
 					return False
 				else:
 					for datum in j:
-						df.loc[df['local_id'].str.contains(datum['file_path']),'hubmap_uuid']=datum['uuid']
-
+						df.loc[df['local_id'].str.contains(datum['file_path']),'fuuid']=datum['uuid']
+	
 					if debug:
-						print('Updating pickle file ' + file + ' with the results of this chunk.')
-					df.to_pickle(file)
+						print('Updating file ' + file + ' with the request response.')
+
+					if file.find('pkl') > 0:
+						df.to_pickle(file)
+						with open(file.replace('pkl','json'),'w') as outfile:
+							json.dump(j, outfile, indent=4)
+					else:
+						df.to_csv(file, sep='\t', index=False)
+						with open(file.replace('tsv','json'),'w') as outfile:
+							json.dump(j, outfile, indent=4)
 			else:
 				if debug:
-					print('HuBMAP uuid chunk is populated. Skipping recomputation.')
+					print('HuBMAP uuid column is populated. Skipping generation.')
+		else:
+			if debug:
+				print('Data frame has ' + str(len(df)) + ' items. Partitioning into smaller chunks.')
+
+			n = 1000  #chunk row size
+			dfs = [df[i:i+n] for i in range(0,df.shape[0],n)]
+		
+			counter = 0
+			for frame in dfs:
+				counter=counter+1
+				if debug:
+					print('Computing uuids on partition ' + str(counter) + ' of ' + str(len(dfs)) + '.')
+
+				file_info = []
+				for datum in frame.iterrows():
+					datum = datum[1]
+					filename = datum['local_id'][datum['local_id'].find(duuid)+len(duuid)+1:]
+					file_info.append({'path':filename, \
+						'size':datum['size_in_bytes'], \
+						'checksum':datum['sha256'], \
+					'base_dir':'DATA_UPLOAD'})
+
+				payload = {}
+				payload['parent_ids']=[duuid]
+				payload['entity_type']='FILE'
+				payload['file_info']=file_info
+				params = {'entity_count':len(file_info)}
+
+				if frame['fuuid'].isnull().all():
+					if debug:
+						print('Generating file UUIDs')
+
+					r = requests.post(URL, params=params, headers=headers, data=json.dumps(payload), allow_redirects=True, timeout=120)
+					j = json.loads(r.text)
+					time.sleep(5)
+
+					if 'message' in j:
+						if debug:
+							print('Request response. Not populating data frame.')
+						print(j['message'])
+						return False
+					else:
+						for datum in j:
+							df.loc[df['local_id'].str.contains(datum['file_path']),'fuuid']=datum['uuid']
+
+						if debug:
+							print('Updating file ' + file + ' with the results of this chunk.')
+						if file.find('pkl') > 0:
+							df.to_pickle(file)
+							with open(file.replace('pkl','json'),'w') as outfile:
+								json.dump(j, outfile, indent=4)
+						else:
+							df.to_csv(file, sep='\t', index=False)
+							with open(file.replace('tsv','json'),'w') as outfile:
+								json.dump(j, outfile, indent=4)
+				else:
+					if debug:
+						print('HuBMAP uuid chunk is populated. Skipping recomputation.')
+	else:
+		print('The number of records in local file match the number of records in remote database. Skipping computation.')
