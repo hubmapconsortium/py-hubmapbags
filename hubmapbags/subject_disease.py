@@ -7,8 +7,9 @@ def _build_dataframe():
     '''
 
     headers = ['subject_id_namespace', \
-               'subject_local_id', \
-               'disease']
+        'subject_local_id', \
+        'association_type', \
+        'disease']
 
     df = pd.DataFrame( columns = headers )
 

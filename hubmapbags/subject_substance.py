@@ -7,16 +7,16 @@ def _build_dataframe():
     '''
 
     headers = ['substance_id_namespace', \
-               'substance_local_id', \
-               'disease']
+        'substance_local_id', \
+        'substance']
 
     df = pd.DataFrame( columns = headers )
 
     return df
 
 def create_manifest( output_directory ):
-    filename = os.path.join( output_directory, 'substance_disease.tsv' )
+    filename = os.path.join( output_directory, 'subject_substance.tsv' )
     df = _build_dataframe()
     df.to_csv( filename, sep="\t", index=False)
-    
+
     return True

@@ -69,17 +69,17 @@ def __get_instance( instance ):
 		return '.test' 
 
 def __query_uuids( hubmap_id, instance='test', token=None, debug=False ):
-        token = utilities.__get_token( token )
-        if token is None:
-                warnings.warn('Token not set.')
-                return None
+	token = utilities.__get_token( token )
+	if token is None:
+		warnings.warn('Token not set.')
+		return None
 
-        #URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/'+hubmap_id+'/files
-        URL='https://uuid-api.test.hubmapconsortium.org/'+hubmap_id+'/files'
-        headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
-
-        r = requests.get(URL, headers=headers)
-        return r
+	#URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/'+hubmap_id+'/files
+	URL='https://uuid-api.test.hubmapconsortium.org/'+hubmap_id+'/files'
+	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
+	
+	r = requests.get(URL, headers=headers)
+	return r
 
 def get_uuids( hubmap_id, instance='test', token=None, debug=False ):
 	'''

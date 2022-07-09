@@ -7,10 +7,15 @@ def _build_dataframe():
     '''
 
     id_namespace = 'tag:hubmapconsortium.org,2022:'
-    headers = ['id','clade','name','description']
+    headers = ['id', \
+        'clade', \
+        'name', \
+        'description', \
+        'synonyms']
+    
     df = pd.DataFrame(columns=headers)
     df = df.append({'id':'NCBI:txid9606', \
-       'clade':'', \
+       'clade':'species', \
        'name':'Homo sapiens Linnaeus, 1758', \
        'description':'Homo sapiens Linnaeus, 1758'}, ignore_index=True)
 

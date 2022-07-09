@@ -5,10 +5,10 @@ def _build_dataframe():
     '''
     Build a dataframe with minimal information for this entity.
     '''
-
+    
     headers = ['subject_id_namespace', \
-               'subject_local_id', \
-               'race']
+        'subject_local_id', \
+        'race']
 
     df = pd.DataFrame( columns = headers )
 

@@ -6,7 +6,16 @@ def _build_dataframe():
     Build a dataframe with minimal information for this entity.
     '''
 
-    headers = ['id','contact_email', 'contact_name', 'project_id_namespace', 'project_local_id', 'dcc_abbreviation', 'dcc_name', 'dcc_description', 'dcc_url'] 
+    headers = ['id', \
+        'contact_email', \
+        'contact_name', \
+        'project_id_namespace', \
+        'project_local_id', \
+        'dcc_abbreviation', \
+        'dcc_name', \
+        'dcc_description', \
+        'dcc_url']
+
     df = pd.DataFrame(columns=headers)
     df = df.append({ 'id':'cfde_registry_dcc:HuBMAP', \
         'project_id_namespace':'tag:hubmapconsortium.org,2022:', \
