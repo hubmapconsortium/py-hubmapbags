@@ -92,3 +92,28 @@ def pprint( message ):
 	table = [[message]]
 	output = tabulate(table, tablefmt='grid')
 	print(output)
+
+def generate_uuid_report( directory, debug=False ):
+	p = Path(directory).glob('_hive*.tsv')
+
+	headers = ['did','duuid','filename']
+	df = pd.DataFrame(columns = headers)
+
+	for file in p:
+		file = str(file)
+
+		if debug:
+			print(file)
+
+		instance = 'prod'
+
+		temp = pd.read_csv( file, sep='\t' )
+		row = pd.DataFrame([{ \
+			'did':temp.loc[0]['did'], \
+			'duuid':temp.loc[0]['duuid'], \
+			'filename':file, \
+			'number_of_records':int(len(temp)), \
+			'number_of_remote_uuids':hubmapbags.uuids.get_number_of_uuids( temp.loc[0]['did'], instance=instance, debug=False ), \
+			'uuid-api-instance':instance}])
+		df = pd.concat([df,row], axis=0, ignore_index=True)
+

@@ -5,6 +5,7 @@ import os
 from os.path import exists
 import json
 import time
+from datetime import datetime
 import requests
 import warnings
 from . import utilities
@@ -77,8 +78,14 @@ def __query_uuids( hubmap_id, instance='test', token=None, debug=False ):
 		warnings.warn('Token not set.')
 		return None
 
-	#URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/'+hubmap_id+'/files
-	URL='https://uuid-api.test.hubmapconsortium.org/'+hubmap_id+'/files'
+	URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/'+hubmap_id+'/files'
+
+	if URL.find('uuid-api.hubmap'):
+		URL = URL.replace('uuid-api.hubmap','uuid.api.hubmap')
+
+	if debug:
+		print('Using endpoint ' + URL)
+
 	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
 	
 	r = requests.get(URL, headers=headers)
@@ -125,7 +132,7 @@ def get_number_of_uuids( hubmap_id, instance='test', token=None, debug=False ):
 	except:
 		return 0
 
-def generate( file, instance='test', debug=True ):
+def generate( file, instance='test', debug=False ):
 	'''
 	Main function that generates UUIDs using the uuid-api.
 	'''
@@ -160,7 +167,12 @@ def generate( file, instance='test', debug=True ):
 
 	if should_i_generate_uuids( df, instance=instance, token=token, debug=debug ):
 		URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/hmuuid/'
-		URL='https://uuid-api.test.hubmapconsortium.org/hmuuid/'
+		if URL.find('uuid-api.hubmap'):
+			URL = URL.replace('uuid-api.hubmap','uuid.api.hubmap')
+		
+		if debug:
+			print('Posting using endpoint ' + URL)
+
 		headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0','Authorization':'Bearer '+token, 'Content-Type':'application/json'}
 
 		if len(df) <= 1000:
@@ -188,7 +200,6 @@ def generate( file, instance='test', debug=True ):
 				if 'message' in j:
 					if debug:
 						print('Request response. Not populating data frame and exiting script.')
-					print(j['message'])
 					return False
 				else:
 					for datum in j:
@@ -239,15 +250,13 @@ def generate( file, instance='test', debug=True ):
 				if frame['fuuid'].isnull().all():
 					if debug:
 						print('Generating file UUIDs')
-
+						print('Using UUID-API endpoint ' + URL)
 					r = requests.post(URL, params=params, headers=headers, data=json.dumps(payload), allow_redirects=True, timeout=120)
 					j = json.loads(r.text)
-					time.sleep(5)
 
 					if 'message' in j:
 						if debug:
 							print('Request response. Not populating data frame.')
-						print(j['message'])
 						return False
 					else:
 						for datum in j:
@@ -268,3 +277,17 @@ def generate( file, instance='test', debug=True ):
 						print('HuBMAP uuid chunk is populated. Skipping recomputation.')
 	else:
 		print('The number of records in local file match the number of records in remote database. Skipping computation.')
+
+def generate_on_broken_datasets( file, instance='test', debug=False ):
+	'''
+	Helper function that generates UUIDs using the uuid-api for the case when the number of local and remote entries are greater than zero and number of remote entries < number of local entries.
+
+	This generate means that
+
+	* another process is posting the UUID-API db (not an issue),
+	* a process failed.
+
+	We want to use this method to avoid computing new UUIDs.
+	'''
+
+	return None

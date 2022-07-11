@@ -10,6 +10,7 @@ import warnings
 from . import utilities
 import glob
 from hubmap_sdk import EntitySdk
+from datetime import datetime
 
 def __compute_number_of_files( directory = None ):
 	'''
