@@ -122,15 +122,27 @@ def should_i_generate_uuids( df, instance='test', token=None, debug=False ):
 	else:
 		return True
 
-def get_number_of_uuids( hubmap_id, instance='test', token=None, debug=False ):
+def get_number_of_uuids( hubmap_id, instance='test', base_dir='DATA_UPLOAD', token=None, debug=False ):
 	'''
 	Get number of UUIDs associated with this HuBMAP id using the UUID API.
 	'''
 
+	uuids = get_uuids( hubmap_id, instance=instance, token=token, debug=debug )
+
 	try:
-		return len(get_uuids( hubmap_id, instance=instance, token=token, debug=debug ))
+		if len(uuids) == 0:
+			return 0
+		else:
+			if base_dir == 'DATA_UPLOAD':
+				counter = 0
+				for uuid in uuids:
+					if uuid['base_dir'] == 'DATA_UPLOAD':
+						counter = counter + 1
+				return counter
+			else:
+				return len(uuids)
 	except:
-		return 0
+		return None
 
 def generate( file, instance='test', debug=False ):
 	'''
