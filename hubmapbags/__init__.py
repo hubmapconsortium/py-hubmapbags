@@ -43,3 +43,5 @@ from .collection_substance import *
 from .collection_taxonomy import *
 from .collection_in_collection import *
 from .file_format import *
+from .globus import *
+from .assets import *
