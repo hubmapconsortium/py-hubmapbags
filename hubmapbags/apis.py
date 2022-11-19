@@ -188,7 +188,7 @@ def __query_assay_types( instance='test', token=None, debug=False ):
 		warnings.warn('Token not set.')
 		return None
 
-	URL='https://search.api' + __get_instance( instance ) + '.hubmapconsortium.org/assaytype?primary=true&simple=true'
+	URL='https://search.api' + __get_instance( instance ) + '.hubmapconsortium.org/v3/assaytype?primary=true&simple=true'
 	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
 
 	r = requests.get(URL, headers=headers)
@@ -220,7 +220,7 @@ def __query_assay_types( debug=False ):
 	Search dataset by a given assaytype name.
 	'''
 
-	url = 'https://search.api.hubmapconsortium.org/assaytype'
+	url = 'https://search.api.hubmapconsortium.org/v3/assaytype'
 
 	headers = {'Accept': 'application/json'}
 	params = {'primary':'true', 'simple':'true'}
@@ -257,7 +257,7 @@ def __query_hubmap_ids( assayname, token=None, debug=False ):
 	Search dataset by a given assaytype name.
 	'''
 
-	url = 'https://search.api.hubmapconsortium.org/search'
+	url = 'https://search.api.hubmapconsortium.org/v3/search'
 
 	if token is None:
 		headers = {'Accept': 'application/json'}
@@ -266,7 +266,7 @@ def __query_hubmap_ids( assayname, token=None, debug=False ):
 
 	body = {
 		"size": 500,
-		"_source": {        
+		"_source": {
 			"include": ["hubmap_id","uuid","group_name","status","data_types"]},
 		"query": {
 			"bool": {
