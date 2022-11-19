@@ -1,3 +1,4 @@
+from logging import warning
 import sys
 import pandas as pd
 import os
@@ -6,7 +7,7 @@ from pathlib import Path
 import time
 import requests
 from tabulate import tabulate
-import warnings
+from warnings import warn as warning
 from . import utilities
 import glob
 
@@ -41,7 +42,7 @@ def __get_instance( instance ):
 	elif instance.lower() == 'test':
 		return '.test'
 	else:
-		warnings.warn('Unknown option ' + str(instance) + '. Setting default value to test.')
+		warning('Unknown option ' + str(instance) + '. Setting default value to test.')
 		return '.test'
 
 def __query_ancestors_info( hubmap_id, token=None, debug=False ):
@@ -59,7 +60,7 @@ def __query_ancestors_info( hubmap_id, token=None, debug=False ):
 
 	token =	utilities.__get_token( token )
 	if token is None:
-		warnings.warn('Token not set.')
+		warning('Token not set.')
 		return None
 
 	URL='https://entity.api' + __get_instance( instance ) + '.hubmapconsortium.org/ancestors/'+hubmap_id
@@ -84,7 +85,7 @@ def get_ancestors_info( hubmap_id, instance='test', token=None, overwrite=True, 
 		j = json.loads(r.itext)
 
 	if j is None:
-		warnings.warn('JSON object is empty.')
+		warning('JSON object is empty.')
 		return j
 	elif 'message' in j:
 		if debug:
@@ -101,7 +102,7 @@ def get_ancestors_info( hubmap_id, instance='test', token=None, overwrite=True, 
 def __query_provenance_info( hubmap_id, instance='test', token=None, debug=False ):
 	token =	utilities.__get_token( token )
 	if token is None:
-		warnings.warn('Token not set.')
+		warning('Token not set.')
 		return None
 
 	URL='https://entity.api' + __get_instance( instance ) + '.hubmapconsortium.org/datasets/'+hubmap_id+'/prov-info?format=json'
@@ -126,7 +127,7 @@ def get_provenance_info( hubmap_id, instance='test', token=None, overwrite=False
 		j = json.loads(r.text)
 
 	if j is None:
-                warnings.warn('JSON object is empty.')
+                warning('JSON object is empty.')
                 return j
 	elif 'message' in j:
 		if debug:
@@ -140,10 +141,10 @@ def get_provenance_info( hubmap_id, instance='test', token=None, overwrite=False
 			json.dump(j, outfile, indent=4)
 		return j
 
-def __query_dataset_info( hubmap_id, instance='test', token=None, debug=False ):
+def __query_dataset_info( hubmap_id, instance='prod', token=None, debug=False ):
 	token = utilities.__get_token( token )
 	if token is None:
-		warnings.warn('Token not set.')
+		warning('Token not set.')
 		return None
 
 	URL='https://entity.api' + __get_instance( instance ) + '.hubmapconsortium.org/entities/' + hubmap_id
@@ -160,14 +161,12 @@ def get_dataset_info( hubmap_id, instance='test', token=None, overwrite=True, de
 	directory = '.datasets'
 	file = os.path.join( directory, hubmap_id + '.json' )
 	if os.path.exists( file ) and not overwrite:
-		print('Loading existing JSON file')
 		j = json.load( open( file, 'r' ) );
 	else:
-		print('Get dataset information via the entity-api')
 		r = __query_dataset_info( hubmap_id, instance=instance, token=token, debug=debug )
 		if r is None:
-        	        warnings.warn('JSON object is empty.')
-               		return r
+			warning('JSON object is empty.')
+			return r
 		j = json.loads(r.text)
 
 	if 'message' in j:
@@ -185,7 +184,7 @@ def get_dataset_info( hubmap_id, instance='test', token=None, overwrite=True, de
 def __query_assay_types( instance='test', token=None, debug=False ):
 	token = utilities.__get_token( token )
 	if token is None:
-		warnings.warn('Token not set.')
+		warning('Token not set.')
 		return None
 
 	URL='https://search.api' + __get_instance( instance ) + '.hubmapconsortium.org/v3/assaytype?primary=true&simple=true'
@@ -203,13 +202,13 @@ def get_assay_types( debug=False ):
 		print('Get dataset information via the entity-api')
 	r = __query_assay_types( debug=debug )
 	if r is None:
-		warnings.warn('JSON object is empty.')
+		warning('JSON object is empty.')
 		return r
 	j = json.loads(r.text)
 
 	if 'message' in j:
 		if debug:
-			warnings.warn('Request response empty.')
+			warning('Request response empty.')
 		print(j['message'])
 		return None
 	else:
@@ -235,10 +234,15 @@ def get_hubmap_ids( assay_name, token=None, debug=False ):
 
 	token = utilities.__get_token( token )
 	if token is None:
-		warnings.warn('Token not set.')
+		warning('Token not set.')
 		return None
 
 	answer =  __query_hubmap_ids( assay_name, token=token, debug=debug )
+
+	if 'error' in answer.keys():
+		warning(answer['error'])
+		return None
+	
 	data = answer['hits']['hits']
 
 	results = []
@@ -290,6 +294,18 @@ def __is_valid( file ):
   
 	file1.close() 
 	return answer 
+
+def is_protected( hubmap_id, instance='prod', token=None ):
+	token = utilities.__get_token( token )
+	if token is None:
+		warning('Token not set.')
+
+	metadata = get_dataset_info( hubmap_id, instance=instance, token=token )
+	
+	if 'contains_human_genetic_sequences' in metadata.keys():
+		return metadata['contains_human_genetic_sequences']
+	else:
+		return None
 
 def pretty_print_info_about_new_datasets( assay_name, debug=False ):
 	'''
