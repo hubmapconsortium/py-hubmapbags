@@ -251,6 +251,7 @@ def get_hubmap_ids( assay_name, token=None, debug=False ):
 			'uuid':datum['_source']['uuid'], \
 			'hubmap_id':datum['_source']['hubmap_id'], \
 			'status':datum['_source']['status'], \
+			'is_protected':is_protected( datum['_source']['hubmap_id'], instance='prod', token=token ), \
 			'data_type':datum['_source']['data_types'][0], \
 			'group_name':datum['_source']['group_name'] })
 

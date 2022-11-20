@@ -68,14 +68,25 @@ def __get_instance( instance ):
 			warnings.warn('Unknown option ' + str(instance) + '. Setting default value to test.')
 		return '.test' 
 
-def __query_uuids( hubmap_id, instance='test', token=None, debug=False ):
+def __query_existence( uuid, instance='prod', token=None, debug=False ):
         token = utilities.__get_token( token )
         if token is None:
                 warnings.warn('Token not set.')
                 return None
 
-        #URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/'+hubmap_id+'/files
-        URL='https://uuid-api.test.hubmapconsortium.org/'+hubmap_id+'/files'
+        URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/'+uuid+'/exists'
+        headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
+
+        r = requests.get(URL, headers=headers)
+        return r
+
+def __query_uuids( hubmap_id, instance='prod', token=None, debug=False ):
+        token = utilities.__get_token( token )
+        if token is None:
+                warnings.warn('Token not set.')
+                return None
+
+        URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/'+hubmap_id+'/files'
         headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
 
         r = requests.get(URL, headers=headers)
@@ -140,6 +151,12 @@ def get_number_of_uuids( hubmap_id, instance='test', token=None, debug=False ):
 		return len(get_uuids( hubmap_id, instance=instance, token=token, debug=debug ))
 	except:
 		return 0
+
+def has_uuids( hubmap_id, instance='prod', token=None ):
+	if get_number_of_uuids( hubmap_id, instance='prod', token=token ) == 0:
+		return False
+	else:
+		return True
 
 def generate( file, instance='dev', debug=True ):
 	'''
