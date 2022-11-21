@@ -142,7 +142,7 @@ def should_i_generate_uuids2( hubmap_id, filename, instance='test', token=None, 
 	else:
 		return True
 
-def get_number_of_uuids( hubmap_id, instance='test', token=None, debug=False ):
+def get_number_of_uuids( hubmap_id, instance='prod', token=None, debug=False ):
 	'''
 	Get number of UUIDs associated with this HuBMAP id using the UUID API.
 	'''
