@@ -53,7 +53,7 @@ def __query_ancestors_info( hubmap_id, token=None, debug=False ):
 	:type hubmap_id: string
 	:param token: a valid token
 	:type token: None or string
-	:param debug: debug flag 
+	:param debug: debug flag
 	:type debug: boolean
 	:rtype: request response
 	'''
@@ -242,7 +242,7 @@ def get_hubmap_ids( assay_name, token=None, debug=False ):
 	if 'error' in answer.keys():
 		warning(answer['error'])
 		return None
-	
+
 	data = answer['hits']['hits']
 
 	results = []
@@ -289,12 +289,12 @@ def __is_valid( file ):
 	file1 = open( file, "r")
 	readfile = file1.read()
 
-	answer = 'INVALID' 
-	if string1 in readfile: 
+	answer = 'INVALID'
+	if string1 in readfile:
 		answer='VALID'
-  
-	file1.close() 
-	return answer 
+
+	file1.close()
+	return answer
 
 def is_protected( hubmap_id, instance='prod', token=None ):
 	token = utilities.__get_token( token )
@@ -302,7 +302,7 @@ def is_protected( hubmap_id, instance='prod', token=None ):
 		warning('Token not set.')
 
 	metadata = get_dataset_info( hubmap_id, instance=instance, token=token )
-	
+
 	if 'contains_human_genetic_sequences' in metadata.keys():
 		return metadata['contains_human_genetic_sequences']
 	else:
@@ -347,7 +347,7 @@ def pretty_print_info_about_new_datasets( assay_name, debug=False ):
 				if not report:
 					report = '-'
 				else:
-					report = __is_valid( directory + 'validation_report.txt' )						
+					report = __is_valid( directory + 'validation_report.txt' )
 			else:
 				directory = 'NOT AVAILABLE'
 				number_of_files = '-'
@@ -369,7 +369,7 @@ def pretty_print_info_about_all_new_datasets( filename=None, debug=False ):
 	if debug:
 		utilities.pprint('Retrieving list of assay types')
 	assay_types = get_assay_types()
-	
+
 	answer = []
 	for assay_type in assay_types:
 		if debug:
@@ -410,7 +410,7 @@ def pretty_print_info_about_all_new_datasets( filename=None, debug=False ):
 				else:
 					report = __is_valid( directory + 'validation_report.txt' )
 
-				is_empty = __check_if_folder_is_empty( directory )						
+				is_empty = __check_if_folder_is_empty( directory )
 			else:
 				directory = 'NOT AVAILABLE'
 				is_empty = ''
@@ -444,3 +444,41 @@ def pretty_print_hubmap_ids( assay_name, debug=False ):
 
 	table = tabulate(data,headers='firstrow',tablefmt='grid')
 	print(table)
+
+def get_directory( hubmap_id, instance='prod', token=None ):
+	'''
+	Returns the local directory given a valid HuBMAP dataset ID.
+	'''
+
+	metadata = get_dataset_info( hubmap_id, instance=instance, token=token )
+
+	if 'contains_human_genetic_sequences' in metadata and metadata['contains_human_genetic_sequences']:
+		directory = '/hive/hubmap/data/protected/' + metadata['group_name'] + metadata['uuid']
+	else:
+		directory = '/hive/hubmap/data/public/' + metadata['uuid']
+
+	return directory
+
+def get_files( did, instance='prod', token=None ):
+	'''
+	Returns the list of files in the file system corresponding to the HuBMAP ID.
+	'''
+
+	directory = get_directory( did, instance=instance, token=token )
+
+	if Path(directory).exists():
+		files = list(Path(directory).glob('**/*'))
+		files = [x for x in files if x.is_file() ]
+		return files
+	else:
+		return None
+
+def get_number_of_files( did, instance='prod', token=None ):
+	directory = get_directory( did, instance=instance, token=token )
+
+	if Path(directory).exists():
+		files = list(Path(directory).glob('**/*'))
+		files = [x for x in files if x.is_file() ]
+		return len(files)
+	else:
+		return None
