@@ -453,32 +453,37 @@ def get_directory( hubmap_id, instance='prod', token=None ):
 	metadata = get_dataset_info( hubmap_id, instance=instance, token=token )
 
 	if 'contains_human_genetic_sequences' in metadata and metadata['contains_human_genetic_sequences']:
-		directory = '/hive/hubmap/data/protected/' + metadata['group_name'] + metadata['uuid']
+		directory = '/hive/hubmap/data/protected/' + metadata['group_name'] + '/' + metadata['uuid']
 	else:
 		directory = '/hive/hubmap/data/public/' + metadata['uuid']
 
 	return directory
 
-def get_files( did, instance='prod', token=None ):
+def get_files( hubmap_id, instance='prod', token=None ):
 	'''
 	Returns the list of files in the file system corresponding to the HuBMAP ID.
 	'''
 
-	directory = get_directory( did, instance=instance, token=token )
+	directory = get_directory( hubmap_id, instance=instance, token=token )
 
-	if Path(directory).exists():
-		files = list(Path(directory).glob('**/*'))
-		files = [x for x in files if x.is_file() ]
-		return files
-	else:
+	try:
+		if Path(directory).exists():
+			files = list(Path(directory).glob('**/*'))
+			files = [x for x in files if x.is_file() ]
+			return files
+		else:
+			return None
+	except:
+		warning('Unable to access files in directory. More than likely a permission file.')
 		return None
 
-def get_number_of_files( did, instance='prod', token=None ):
-	directory = get_directory( did, instance=instance, token=token )
+def get_number_of_files( hubmap_id, instance='prod', token=None ):
+	'''
+	'''
 
-	if Path(directory).exists():
-		files = list(Path(directory).glob('**/*'))
-		files = [x for x in files if x.is_file() ]
-		return len(files)
-	else:
+	answer = get_files( hubmap_id, instance=instance, token=token )
+
+	if answer is None:
 		return None
+	else:
+		return len(answer)
