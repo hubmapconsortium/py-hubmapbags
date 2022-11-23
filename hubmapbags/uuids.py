@@ -8,6 +8,7 @@ import requests
 import warnings
 from . import utilities
 from . import magic
+from . import apis
 
 def populate_local_file_with_remote_uuids( hubmap_id, instance='test', token=None, overwrite=False, debug=False ):
 
@@ -110,22 +111,21 @@ def get_uuids( hubmap_id, instance='prod', token=None, debug=False ):
 
 	return j
 
-def should_i_generate_uuids( hubmap_id, filename, instance='prod', token=None, debug=False ):
+def should_i_generate_uuids( hubmap_id, instance='prod', token=None, debug=False ):
 	'''
 	Helper function that compares the number of files on disk versus the number of
 	entries in the UUID-API database.
 	'''
 
-	df = pd.read_pickle( filename )
-	number_of_entries_in_local_file = len(pd.read_pickle( filename )) - df['hubmap_uuid'].isnull().sum()
-	number_of_entries_in_db = get_number_of_uuids( hubmap_id, instance=instance, token=token, debug=debug )
+	number_of_files = apis.get_number_of_files( hubmap_id, instance=instance, token=token )
+	number_of_entries_in_db = get_number_of_uuids( hubmap_id, instance=instance, token=token )
 
-	if number_of_entries_in_local_file != 0 and number_of_entries_in_local_file > number_of_entries_in_db:
+	if number_of_files != 0 and number_of_files > number_of_entries_in_db:
 		warnings.warn('There are more entries in local file than in database. Either a job is running computing checksums or a job failed.')
 		return False
-	elif number_of_entries_in_local_file != 0 and number_of_entries_in_local_file < number_of_entries_in_db:
+	elif number_of_files != 0 and number_of_files < number_of_entries_in_db:
 		warnings.warn('There are more entries in database than files in local db. More than likely UUIDs were generate more than once. Contact a system administrator.')
-	elif number_of_entries_in_local_file == number_of_entries_in_db:
+	elif number_of_files == number_of_entries_in_db:
 		return False
 	else:
 		return True
