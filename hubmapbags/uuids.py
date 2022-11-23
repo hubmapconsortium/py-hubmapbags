@@ -24,7 +24,7 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='test', token=Non
 	done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
 	broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
 	temp_file = data_directory.replace('/','_').replace(' ','_') + '.pkl'
-	
+
 	if exists( computing ):
 		warnings.warn('Computing file ' + computing + ' exists. Another process is computing checksums. Not populating local file.')
 		return False
@@ -38,11 +38,11 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='test', token=Non
 				df = pd.read_pickle( temp_file )
 				uuids = get_uuids( hubmap_id, instance=instance, token=token, debug=debug )
 
-				for i in range(len(df)): 
-					for uuid in uuids: 
-						if df.loc[i,'relative_local_id'] == uuid['path']: 
+				for i in range(len(df)):
+					for uuid in uuids:
+						if df.loc[i,'relative_local_id'] == uuid['path']:
 							df.loc[i,'hubmap_uuid'] = \
-								uuid['file_uuid'] 
+								uuid['file_uuid']
 
 				print('Saving temp file ' + temp_file + ' to disk.')
 				df.to_pickle( temp_file )
@@ -58,7 +58,7 @@ def __get_instance( instance ):
 	if instance.lower() == 'dev':
 		return '.dev'
 	elif instance.lower() == 'prod':
-		return ''
+		return 'prod'
 	elif instance.lower() == 'test':
 		return '.test'
 	else:
@@ -66,33 +66,41 @@ def __get_instance( instance ):
 			warnings.warn('Instance not set. Setting default value to "test".')
 		else:
 			warnings.warn('Unknown option ' + str(instance) + '. Setting default value to test.')
-		return '.test' 
+		return '.test'
 
 def __query_existence( uuid, instance='prod', token=None, debug=False ):
-        token = utilities.__get_token( token )
-        if token is None:
-                warnings.warn('Token not set.')
-                return None
+	token = utilities.__get_token( token )
+	if token is None:
+		warnings.warn('Token not set.')
+		return None
 
-        URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/'+uuid+'/exists'
-        headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
+	if __get_instance( instance ) == 'prod':
+        	URL='https://uuid.api.hubmapconsortium.org/'+uuid+'/exists'
+	else:
+        	URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/'+uuid+'/exists'
 
-        r = requests.get(URL, headers=headers)
-        return r
+	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
+
+	r = requests.get(URL, headers=headers)
+	return r
 
 def __query_uuids( hubmap_id, instance='prod', token=None, debug=False ):
-        token = utilities.__get_token( token )
-        if token is None:
-                warnings.warn('Token not set.')
-                return None
+	token = utilities.__get_token( token )
+	if token is None:
+		warnings.warn('Token not set.')
+		return None
 
-        URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/'+hubmap_id+'/files'
-        headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
+	if __get_instance( instance ) == 'prod':
+		URL = 'https://uuid.api.hubmapconsortium.org/'+hubmap_id+'/files'
+	else:
+	        URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/'+hubmap_id+'/files'
 
-        r = requests.get(URL, headers=headers)
-        return r
+	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
 
-def get_uuids( hubmap_id, instance='test', token=None, debug=False ):
+	r = requests.get(URL, headers=headers)
+	return r
+
+def get_uuids( hubmap_id, instance='prod', token=None, debug=False ):
 	'''
 	Get UUIDs, if any, given a HuBMAP id.
 	'''
@@ -102,7 +110,7 @@ def get_uuids( hubmap_id, instance='test', token=None, debug=False ):
 
 	return j
 
-def should_i_generate_uuids( hubmap_id, filename, instance='test', token=None, debug=False ):
+def should_i_generate_uuids( hubmap_id, filename, instance='prod', token=None, debug=False ):
 	'''
 	Helper function that compares the number of files on disk versus the number of
 	entries in the UUID-API database.
@@ -158,7 +166,7 @@ def has_uuids( hubmap_id, instance='prod', token=None ):
 	else:
 		return True
 
-def generate( file, instance='dev', debug=True ):
+def generate( file, instance='prod', debug=True ):
 	'''
 	Main function that generates UUIDs using the uuid-api.
 	'''
@@ -184,8 +192,11 @@ def generate( file, instance='dev', debug=True ):
 			print('Unable to load pickle file ' + file + '. Exiting script.' )
 		return False
 
-	URL='https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/hmuuid/'
-	URL='https://uuid-api.test.hubmapconsortium.org/hmuuid/'
+	if __get_instance( instance ) == 'prod':
+		URL = 'https://uuid.api.hubmapconsortium.org/hmuuid/'
+	else:
+		URL = 'https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/hmuuid/'
+
 	headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0','Authorization':'Bearer '+token, 'Content-Type':'application/json'}
 
 	if len(df) <= 1000:
