@@ -451,6 +451,9 @@ def get_directory( hubmap_id, instance='prod', token=None ):
 	'''
 
 	metadata = get_dataset_info( hubmap_id, instance=instance, token=token )
+	if 'error' in metadata:
+		warning(metadata['error'])
+		return None
 
 	if 'contains_human_genetic_sequences' in metadata and metadata['contains_human_genetic_sequences']:
 		directory = '/hive/hubmap/data/protected/' + metadata['group_name'] + '/' + metadata['uuid']
