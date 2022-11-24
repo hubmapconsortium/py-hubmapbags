@@ -1,6 +1,7 @@
 import pandas as pd
 import yaml
 from urllib.request import urlopen
+from warnings import warn as warning
 import os
 
 def __get_organ_from_uberon( organ ):
@@ -10,6 +11,9 @@ def __get_organ_from_uberon( organ ):
     '''
 
     url = 'https://raw.githubusercontent.com/hubmapconsortium/search-api/master/src/search-schema/data/definitions/enums/organ_types.yaml'
+
+    warning('Temporarily using the file https://raw.githubusercontent.com/hubmapconsortium/search-api/icaoberg-patch-1/src/search-schema/data/definitions/enums/organ_types.yaml')
+    url = 'https://raw.githubusercontent.com/hubmapconsortium/search-api/icaoberg-patch-1/src/search-schema/data/definitions/enums/organ_types.yaml'
     with urlopen(url) as f:
         tbl = yaml.safe_load(f)
 
@@ -17,16 +21,16 @@ def __get_organ_from_uberon( organ ):
     for key in tbl:
         if 'iri' in tbl[key]:
             s = tbl[key]['iri']
-            oberon_entry = s[s.rfind('/')+1:]
-            organs[key] = oberon_entry
+            uberon_entry = s[s.rfind('/')+1:]
+            organs[key] = uberon_entry
             if 'description' in tbl[key]:
                 desc = tbl[key]['description']
-                organs[desc] = oberon_entry
-                organs[desc.lower()] = oberon_entry
+                organs[desc] = uberon_entry
+                organs[desc.lower()] = uberon_entry
             if key == 'LK':
-                organs['left kidney'] = oberon_entry
+                organs['left kidney'] = uberon_entry
             elif key == 'RK':
-                organs['right kidney'] = oberon_entry
+                organs['right kidney'] = uberon_entry
     for i in range(1, 12):
         organs["LY%02d"%i] = organs["LY"]
 

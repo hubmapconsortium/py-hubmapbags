@@ -175,7 +175,6 @@ def __get_assay_type_from_obi(assay_type):
     assay['atacseq-bulk'] = 'OBI:0003089' #Bulk ATAC-seq
     assay['bulk-rna'] = 'OBI:0001271' #Bulk RNA-seq
     assay['scrna-seq-10x'] = 'OBI:0002631' #scRNA-seq
-    assay[''] = 'OBI:0002764' #scATACseq
     assay['snatacseq'] = 'OBI:0002762' #snATAC-seq
     assay['wgs'] = 'OBI:0002117' #WGS
     assay['codex'] = 'OBI:0003093' #CODEX
