@@ -195,6 +195,7 @@ def __get_assay_type_from_obi(assay_type):
     assay['snareseq']='OBI:0003108'
     assay['sciatacseq']='OBI:0003104'
     assay['scrnaseq-10xgenomics-v3']='OBI_0002631'
+    assay['snrnaseq-10xgenomics-v3']='OBI:0003109'
     return assay[assay_type]
 
 def _get_list_of_files( directory ):
