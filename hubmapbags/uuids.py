@@ -199,7 +199,7 @@ def generate( file, instance='prod', debug=True ):
 					json.dump(j, outfile, indent=4)
 		else:
 			if debug:
-				print('HuBMAP uuid column is populated. Skipping generation.')
+				print('HuBMAP UUID column is populated. Skipping generation.')
 	else:
 		if debug:
 			print('Data frame has ' + str(len(df)) + ' items. Partitioning into smaller chunks.')
