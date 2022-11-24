@@ -206,7 +206,7 @@ def generate( file, instance='prod', debug=True ):
 
 		n = 1000  #chunk row size
 		dfs = [df[i:i+n] for i in range(0,df.shape[0],n)]
-	
+
 		counter = 0
 		for frame in dfs:
 			counter=counter+1
@@ -274,3 +274,9 @@ def should_i_generate_uuids( hubmap_id, instance='prod', token=None, debug=False
 	if number_of_files != 0 and number_of_files < number_of_entries_in_db:
 		warning('There are more entries in database than files in local db. More than likely UUIDs were generate more than once. Contact a system administrator.')
 		return None
+
+def is_complete( hubmap_id, instance='prod', token=None, debug=False ):
+	number_of_files = apis.get_number_of_files( hubmap_id, instance=instance, token=token )
+	number_of_entries_in_db = get_number_of_uuids( hubmap_id, instance=instance, token=token )
+
+	return number_of_files == number_of_entries_in_db
