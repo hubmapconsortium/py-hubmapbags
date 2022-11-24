@@ -111,45 +111,6 @@ def get_uuids( hubmap_id, instance='prod', token=None, debug=False ):
 
 	return j
 
-def should_i_generate_uuids( hubmap_id, instance='prod', token=None, debug=False ):
-	'''
-	Helper function that compares the number of files on disk versus the number of
-	entries in the UUID-API database.
-	'''
-
-	number_of_files = apis.get_number_of_files( hubmap_id, instance=instance, token=token )
-	number_of_entries_in_db = get_number_of_uuids( hubmap_id, instance=instance, token=token )
-
-	if number_of_files != 0 and number_of_files > number_of_entries_in_db:
-		warnings.warn('There are more entries in local file than in database. Either a job is running computing checksums or a job failed.')
-		return False
-	elif number_of_files != 0 and number_of_files < number_of_entries_in_db:
-		warnings.warn('There are more entries in database than files in local db. More than likely UUIDs were generate more than once. Contact a system administrator.')
-	elif number_of_files == number_of_entries_in_db:
-		return False
-	else:
-		return True
-
-def should_i_generate_uuids2( hubmap_id, filename, instance='test', token=None, debug=False ):
-	'''
-	Helper function that compares the number of files on disk versus the number of
-	entries in the UUID-API database.
-	'''
-
-	df = pd.read_pickle( filename )
-	number_of_entries_in_local_file = len(pd.read_pickle( filename )) - df['hubmap_uuid'].isnull().sum()
-	number_of_entries_in_db = get_number_of_uuids( hubmap_id, instance=instance, token=token, debug=debug )
-
-	if number_of_entries_in_local_file > number_of_entries_in_db:
-		warnings.warn('There are more entries in local file than in database. Either a job is running computing checksums or a job failed.')
-		return False
-	elif number_of_entries_in_local_file < number_of_entries_in_db:
-		warnings.warn('There are more entries in database than files in local db. More than likely UUIDs were generate more than once. Contact a system administrator.')
-	elif number_of_entries_in_local_file == number_of_entries_in_db:
-		return False
-	else:
-		return True
-
 def get_number_of_uuids( hubmap_id, instance='prod', token=None, debug=False ):
 	'''
 	Get number of UUIDs associated with this HuBMAP id using the UUID API.
@@ -290,3 +251,26 @@ def generate( file, instance='prod', debug=True ):
 			else:
 				if debug:
 					print('HuBMAP uuid chunk is populated. Skipping recomputation.')
+
+def should_i_generate_uuids( hubmap_id, instance='prod', token=None, debug=False ):
+	'''
+	Helper function that compares the number of files on disk versus the number of
+	entries in the UUID-API database.
+	'''
+
+	number_of_files = hubmapbags.apis.get_number_of_files( hubmap_id, instance=instance, token=token )
+	number_of_entries_in_db = hubmapbags.uuids.get_number_of_uuids( hubmap_id, instance=instance, token=token )
+
+	if number_of_entries_in_db == 0:
+		return True
+
+	if number_of_entries_in_db == number_of_files:
+		return False
+
+	if number_of_files != 0 and number_of_files > number_of_entries_in_db:
+		warning('There are more entries in local file than in database. Either a job is running computing checksums or a job failed.')
+		return None
+
+	if number_of_files != 0 and number_of_files < number_of_entries_in_db:
+		warning('There are more entries in database than files in local db. More than likely UUIDs were generate more than once. Contact a system administrator.')
+		return None
