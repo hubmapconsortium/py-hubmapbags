@@ -119,7 +119,7 @@ def do_it( input, dbgap_study_id=None, \
 	:type token: string or None
 	:param instance: Either 'dev', 'test' or 'prod'
 	:type instance: string
-	:param compute_uuids: If set to TRUE, then 
+	:param compute_uuids: If set to TRUE, then
 	:type compute_uuids: boolean
 	:param debug: debug flag
 	:type debug: boolean
@@ -130,7 +130,7 @@ def do_it( input, dbgap_study_id=None, \
 		utilities.pprint('Extracting datasets from ' + input)
 		metadata_file = input
 		datasets = pd.read_csv( metadata_file, sep='\t' )
-	else:	
+	else:
 		utilities.pprint('Processing dataset with HuBMAP ID ' + input)
 		datasets = __extract_dataset_info_from_db( input, token=token, instance=instance )
 

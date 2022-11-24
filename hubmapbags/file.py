@@ -14,7 +14,7 @@ def __get_filename( file ):
 	'''
 	Helper method that returns a CFDE compatible version of a filename
 	'''
-	
+
 	return file.name.replace(' ', '%20')
 
 def __get_file_extension( file ):
@@ -90,7 +90,7 @@ def __get_data_type( file ):
 
 	try:
 		formats = {}
-		formats['.tsv'] = 'data:2526' #tsv 
+		formats['.tsv'] = 'data:2526' #tsv
 		formats['.tif'] = 'data:2968' #tiff
 		formats['.tiff'] = 'data:2968' #tiff
 		formats['.png'] = 'data:2968' #png
@@ -121,19 +121,19 @@ def __get_mime_type( file ):
 	'''
 	Helper function that return a file MIME type.
 	'''
-	
+
 	return mimetypes.MimeTypes().guess_type(str(file))[0]
 
 def __get_file_format( file ):
 	'''
-	Helper method that maps a file extension to an EDAM file format term.	
+	Helper method that maps a file extension to an EDAM file format term.
 	'''
 
 	extension = __get_file_extension( file )
 
 	try:
 		formats = {}
-		formats['.tsv'] = 'format:2330' #tsv 
+		formats['.tsv'] = 'format:2330' #tsv
 		formats['.tif'] = 'format:3547' #tiff
 		formats['.tiff'] = 'format:3547' #tiff
 		formats['.png'] = 'format:3547' #png
@@ -178,7 +178,7 @@ def __get_assay_type_from_obi(assay_type):
     assay[''] = 'OBI:0002764' #scATACseq
     assay['snatacseq'] = 'OBI:0002762' #snATAC-seq
     assay['wgs'] = 'OBI:0002117' #WGS
-    assay['codex'] = 'OBI:0003093' #CODEX    
+    assay['codex'] = 'OBI:0003093' #CODEX
     assay['lightsheet'] = 'OBI:0003098' #Lightsheet
     assay['imc'] = 'OBI:0001977' #IMC
     assay['imc3d'] = 'OBI:0001977' #IMC
@@ -195,7 +195,7 @@ def __get_assay_type_from_obi(assay_type):
     assay['snare-rnaseq2']='OBI:0003108'
     assay['snareseq']='OBI:0003108'
     assay['sciatacseq']='OBI:0003104'
-
+    assay['scrnaseq-10xgenomics-v3']='OBI_0002631'
     return assay[assay_type]
 
 def _get_list_of_files( directory ):
