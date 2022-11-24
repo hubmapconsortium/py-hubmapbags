@@ -258,8 +258,8 @@ def should_i_generate_uuids( hubmap_id, instance='prod', token=None, debug=False
 	entries in the UUID-API database.
 	'''
 
-	number_of_files = hubmapbags.apis.get_number_of_files( hubmap_id, instance=instance, token=token )
-	number_of_entries_in_db = hubmapbags.uuids.get_number_of_uuids( hubmap_id, instance=instance, token=token )
+	number_of_files = apis.get_number_of_files( hubmap_id, instance=instance, token=token )
+	number_of_entries_in_db = get_number_of_uuids( hubmap_id, instance=instance, token=token )
 
 	if number_of_entries_in_db == 0:
 		return True
