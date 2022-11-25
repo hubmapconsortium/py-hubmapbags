@@ -127,7 +127,7 @@ def has_uuids( hubmap_id, instance='prod', token=None ):
 	else:
 		return True
 
-def generate( file, instance='prod', debug=True ):
+def generate( file, instance='prod', token=None, debug=True ):
 	'''
 	Main function that generates UUIDs using the uuid-api.
 	'''

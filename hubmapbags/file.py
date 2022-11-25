@@ -19,7 +19,7 @@ def __get_filename( file ):
 
 def __get_file_extension( file ):
 	'''
-	Helper method that returns the file extension. 
+	Helper method that returns the file extension.
 	'''
 	return file.suffix
 
@@ -199,9 +199,6 @@ def __get_assay_type_from_obi(assay_type):
     return assay[assay_type]
 
 def _get_list_of_files( directory ):
-    #p1 = Path(directory).glob('**//[!_drv]*')
-    #p2 = Path(directory).glob('**//[!processed]*')
-    #return chain(p1,p2)
     return Path(directory).glob('**/*')
 
 def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, dataset_hmid=None, dataset_uuid=None ):
@@ -237,7 +234,7 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
     temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
 
     if Path( temp_file ).exists():
-        print( 'Temporary file ' + temp_file + ' found. Loading df into memory.' ) 
+        print( 'Temporary file ' + temp_file + ' found. Loading df into memory.' )
         with open( temp_file, 'rb' ) as file:
            df = pickle.load(file)
     else:
@@ -245,6 +242,7 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
         p = _get_list_of_files( directory )
         print( 'Finding all files in directory' )
 
+		counter = 0
         for file in p:
             if file.is_file():
                    if str(file).find('drv') < 0 or str(file).find('processed') < 0:
@@ -255,6 +253,7 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
                             'project_local_id':project_id, \
                             'creation_time':__get_file_creation_date(file), \
                             'size_in_bytes':__get_file_size(file), \
+                            'md5':__get_md5( file ), \
                             'sha256':__get_sha256(file), \
                             'filename':__get_filename(file), \
                             'file_format':__get_file_format(file), \
@@ -269,6 +268,12 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
                             'relative_local_id': __get_relative_local_id(file,dataset_uuid), \
                             'dataset_hmid':dataset_hmid, \
                             'dataset_uuid':dataset_uuid}, ignore_index=True)
+
+			counter = counter + 1
+			if counter % 100 == 0:
+				        print('Saving df to disk in file ' + temp_file)
+						with open( temp_file, 'wb' ) as file:
+							pickle.dump( df, file )
 
         print('Saving df to disk in file ' + temp_file)
         with open( temp_file, 'wb' ) as file:
