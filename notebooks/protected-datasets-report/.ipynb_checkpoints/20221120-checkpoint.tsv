@@ -1,0 +1,399 @@
+uuid	hubmap_id	status	is_protected	data_type	group_name	number_of_uuids
+620e742ae8401461013804e8abf1a56a	HBM975.DJNJ.667	Published	True	ATACseq-bulk	Stanford TMC	0.0
+c2778cdd0a18e6f1ca755cbf65511aed	HBM733.SLXV.683	Published	True	ATACseq-bulk	Stanford TMC	0.0
+34d3a6eeb06ddc1681c788113e66d52d	HBM473.HNPK.434	Published	True	ATACseq-bulk	Stanford TMC	0.0
+4a69340c702774210d5452a6ae80f3c7	HBM782.XQRG.998	Published	True	ATACseq-bulk	Stanford TMC	0.0
+db0dc651c8b2a430a81b5c30d6fb6f7b	HBM726.DDNW.235	Published	True	ATACseq-bulk	Stanford TMC	0.0
+e7f28c44029ada6b1431354afeac61ff	HBM379.MLVH.522	Published	True	ATACseq-bulk	Stanford TMC	0.0
+4e1da648c2a1451edba33d991dc163ab	HBM563.PTWZ.467	Published	True	ATACseq-bulk	Stanford TMC	0.0
+bca3d31804ecc8be096d0b7691419335	HBM688.DRXP.369	Published	True	ATACseq-bulk	Stanford TMC	0.0
+2b953ab8e97583a74944238af28b55cc	HBM875.LBGV.674	Published	True	ATACseq-bulk	Stanford TMC	0.0
+805f8a7aa537be9024685d065136e619	HBM638.SQBD.338	Published	True	ATACseq-bulk	Stanford TMC	0.0
+3ce5e603c9f6187b2c8f16340924355d	HBM366.TWHT.638	Published	True	ATACseq-bulk	Stanford TMC	0.0
+2cab54a6f67dcab243e86053f83b3690	HBM283.XXQN.824	Published	True	ATACseq-bulk	Stanford TMC	0.0
+ac1a2b21f3b25950bf340280a59b6ad4	HBM666.QBKB.629	Published	True	ATACseq-bulk	Stanford TMC	0.0
+dd353ca9ffc1ea3a6252c474363c7486	HBM323.JGNJ.947	Published	True	ATACseq-bulk	Stanford TMC	0.0
+56cd9eb9f27564c34bfe4eb843d9b969	HBM723.SFNS.898	Published	True	ATACseq-bulk	Stanford TMC	0.0
+392ef2593e8cfcc9b1431a2614de3dbf	HBM422.GKTR.735	Published	True	ATACseq-bulk	Stanford TMC	0.0
+2c77b1cdf33dbed3dbfb74e4b578300e	HBM756.GJDX.884	Published	True	bulk-RNA	Stanford TMC	0.0
+f84c8edc36a65f248c2649ebbe52ad35	HBM454.ZWSD.895	Published	True	bulk-RNA	Stanford TMC	0.0
+311837bf483627cc967e40092a251096	HBM656.ZCCL.743	Published	True	bulk-RNA	Stanford TMC	0.0
+2c2179ea741d3bbb47772172a316a2bf	HBM855.VBLX.337	Published	True	bulk-RNA	Stanford TMC	0.0
+69e5acda3ceefb02ef4363be64958c53	HBM634.HGLT.739	Published	True	bulk-RNA	Stanford TMC	0.0
+1b44f652bd13a713c9d1eb99b359a4fd	HBM946.HHKL.578	Published	True	bulk-RNA	Stanford TMC	0.0
+829949a05892c319595ed28887039134	HBM954.PCBD.364	Published	True	bulk-RNA	Stanford TMC	0.0
+6e9e4f61998006ee78c32af1596fa25a	HBM672.XGNL.299	Published	True	bulk-RNA	Stanford TMC	0.0
+812eb84d7f482e1c855f6cc37f554874	HBM834.WSBV.784	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+dac492687743a1c374ebb4fdc9a0a55a	HBM265.TSQB.698	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+fc5807ae31c05679bc1048c79aaf92c5	HBM484.QDDS.752	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+68751a1150c6b24cec78c031390487bc	HBM255.FTZT.838	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+64b61aac0df17ddb916b88d2faa2ce7d	HBM664.MCDD.259	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+6e501b057f0d19451012c03aa5442af2	HBM297.XHVP.489	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+bae81c76d9baf591fc7455f570e3c41d	HBM782.VBFQ.945	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+b4dc29f1b0bdc10ce57734655feb4428	HBM832.FZXR.449	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+d5e4547a1e72812284f7762e94a0f754	HBM745.JXHV.774	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+14e791d78e93de385869c09b101e9ce3	HBM655.RKJR.493	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+16782d78da92510a67880e719af368f7	HBM762.VLJF.655	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+af8c7a2263bf77785bf75788143eef4e	HBM638.GFNR.793	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+059d18392b5a8805337a0c8ef5d19b46	HBM455.ZPNN.623	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+74c08831f6c89b35d6df46bf88c3fbf0	HBM784.RVTS.872	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+cad274bf30cdf90e246dfe56afcdf2c2	HBM492.SVCZ.539	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+6aa7ff3bf38a6b1a242b6d7d3198f44a	HBM624.BLKG.259	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+53f81503913a841f57f07835ce94a5b9	HBM929.ZQRZ.278	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+e81e134b69e297f7442c6e4050ffb464	HBM657.MJHP.546	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+225280788b0c66d095d05c4e36a89b81	HBM792.MWCJ.783	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+9d5f581f5a1081fda3c748402b13b09b	HBM996.XRBP.649	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+724256834b9b5c19073559d422e59667	HBM646.BHHT.443	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+a99a132d06f46dc563cb47006b874ab1	HBM977.JFFT.795	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+3d2d23e79d05583bd3b1a7f009b203ef	HBM768.GGMW.763	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+3802f8843c090764d056b2e326a494ca	HBM678.CNWW.847	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+534418043eb8b1e8e6690123688bed09	HBM976.FZMR.433	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+16e9ba451dcad479781b272fb8a6ea05	HBM796.LFJP.942	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+ba76a0aee94e03e866287d77866ead58	HBM874.LNRK.792	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+9d607bbd57fd250c7444158f4f55598f	HBM668.RKPW.923	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+42f8aaeab5888c1789d630ca085d6688	HBM688.SMXJ.943	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+16cf9755338257986a867a86d63c2b9b	HBM654.KGFR.248	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+81326ba2085657141f9932f135154e39	HBM674.JNMW.857	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+75ccc2ff3ce28137d2f5f6f34873747d	HBM592.FGDR.959	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+e562cbe920567069d39b38b8f672bf5d	HBM729.QZDC.322	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+28481bdc81b2fac9c645ec95fc0e1824	HBM742.PLXW.786	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+1e4f36238979459b6cb35f3a36bb299d	HBM742.SLJJ.558	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+3cd30e8d3cfac233dc86be47c3508fdc	HBM226.BZMV.852	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+12ec5b881a24bd3da166fd64e52fcb93	HBM373.QRLQ.338	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+227f4450f80d5c058f2f223adc806fb0	HBM226.JFZZ.568	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+4125c67860a0f659ffbbf101b278c62a	HBM852.FNJG.394	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+fe404f09cf1786cfd9ec45a3af62dc6f	HBM674.JTXW.676	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+0958dabdd6ea147193514524f8dc7cdd	HBM496.PDBS.429	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+b713efaada56322c7f53aba18ddb904e	HBM399.KBQD.395	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+0e9c6c75a7cdb5c2d4fdd242b4b0637f	HBM744.BFSJ.565	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+30af16460b3f499e5bc803b794b61df0	HBM276.VNKN.267	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+0e71beaf2b67bae4c609df811a34d7ca	HBM595.PKGV.622	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+50c0c77c036397f98ad4c058fc9cd35a	HBM487.ZVSC.235	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+2a305a30f98deb4a3a6717f24edcbef9	HBM569.VGBL.558	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+04e5fe708a31a40726cb204908cd5479	HBM524.DVNF.223	Published	True	SNARE-ATACseq2	University of California San Diego TMC	0.0
+585c27740dd6f680c0dcaba323562939	HBM935.KGJC.468	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+03e1ae44e4c4a92ded0c1960336b83af	HBM535.XQDS.238	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+015ee234392256bfdb315299622ccb87	HBM769.NLGR.528	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+0a89c78b2de4c454c6df0a6e17ff17b6	HBM422.MKWK.448	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+96c782b502cdb23122b2e7fb376d949d	HBM822.JFNB.664	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+8464b72f60b42590266834f9049055f4	HBM846.GQRK.362	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+ab3df69d522e29ca793bae7495e1b301	HBM359.CQKZ.649	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+e9e74364d8d9eeaba7a7f094d33c0a66	HBM746.WTMD.298	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+1ebb8c979c90d0c214f3ebc7aaaa2207	HBM266.ZBKL.396	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+1e002a7b641312095138750498a541de	HBM837.RZPL.332	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+434243c3ccff2face69c37fe86d53b4f	HBM549.VSNH.445	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d990c4d6e981affd9ea3411f436ff09c	HBM788.XWPV.347	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+c820345b025ff959e531db797030a399	HBM874.DVHQ.638	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+bbab5449e7476eb6b52cbb632980aa2b	HBM983.QHFB.659	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+ee14de43eba29d0c55481a998bc3e4e1	HBM846.NMQR.693	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+f41e71ec9619dbb065634b4714d1818e	HBM973.ZVNB.886	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d91f01da45d9011b702cbff221c0ddeb	HBM864.XMFH.374	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+275c81f5f8b4f53f925f9742cb440efa	HBM296.PCFN.989	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+9b64312cac3c359e0fef53555057c996	HBM777.SVZT.454	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d7bd2925c466eedc009c1cd272011529	HBM349.XPRZ.258	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+048723fd5863d45d8a8e867f21e8af9f	HBM955.DXVQ.765	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+c7038c10b1766e639ce263d5a177e5fd	HBM775.HGSK.536	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+fa18feb84ec1c2fd66286ac47da24b9c	HBM673.WGZS.593	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+f4333f83c8aadb7ea132844e7d0097fb	HBM479.RDNW.482	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+1e56c595c3f0e1cf126a80e00fd31c54	HBM444.BXPJ.728	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+e30d1d413f45c48edbfdf0ecf9d58dcc	HBM245.VSKK.846	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+026ab5fb8cf7681220b423d453a583aa	HBM393.NWNB.684	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+f852d653926edb68292e39b95a3469cf	HBM259.BPTK.843	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+154ec6344a58e4acb15ad01977b84baf	HBM255.HLNC.938	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+9f08125dfdae4906881b62479471d65a	HBM775.RVQX.376	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+7b85597b6a56b4119792423b23f2a40d	HBM882.KDTH.685	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+b2edd3796b6ee0e0d3af9c12646e1120	HBM548.WNVT.322	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+053eeb782b81f78b5e41802dfe859cdb	HBM742.GTJJ.334	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+eb7483e17dc656d065ed2c1595663998	HBM523.FKWF.269	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+324e4aa3c65fd6644234bbfd61b358de	HBM434.NVPJ.787	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+9c059f193bb4db45250e3b5eb303eaf4	HBM836.SCTK.396	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+af3e387f2441f172cbe7de29ea5c3c16	HBM375.KNVL.645	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d3c675e9f3507412928d3bb725c2c8d2	HBM953.HGVS.696	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d90737b6f1563e164f8a30b4315205a0	HBM466.RBPX.375	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+a2bf1303a535bba11900932213b0f987	HBM935.CNXT.255	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+a8959b401a2a5fd70a85651404068b73	HBM872.JGDD.956	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+2192b4d95d164631d8c984dcde3ea635	HBM894.MNHL.259	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+737617c116e94ded77b9de7611c469e9	HBM396.QSCB.763	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+19274e67c639a003ffe17953fd6b55db	HBM788.QGNW.253	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+644e9e8c2e6dfb07223188b86eb17ed4	HBM386.CVHG.956	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+4d3eb2a87cda705bde38495bb564c8dc	HBM433.XXZF.683	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+670135e38ac4107e0d07dae1bdcf4936	HBM644.GBKD.967	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+5fba3cd9628ce41299533961b00763a4	HBM922.KSKR.637	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+42a767c2036382d7f015989cad1ce138	HBM238.MHWZ.654	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+1b2dede6f4a92c4114ae0e581b5466ce	HBM984.LZDJ.635	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+397b6f876ec7976923650135481d08e5	HBM239.XXRN.647	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+76584f2fe8e8ec215d78b83296461bbf	HBM495.KSXC.638	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+83886790424cd10f6b50159ef50555ed	HBM532.DJRB.464	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+11c92e3b876f5f79cd46a93eb90e074b	HBM924.DSPX.449	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+88a335560ab0bc16c7d63c01d6480f3d	HBM693.ZRQJ.667	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+838a481d4970d865de933429868a06bc	HBM757.DZKS.993	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+eea962dabda0cec78f8f909494e0e775	HBM435.WLKV.658	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+7e452891b83ca984a2f210312d90495d	HBM979.DJZW.835	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+21cfe966008f784c47d0638e80b55ee0	HBM697.XSHN.426	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+676d7aa78c6ff2b18aca7c7d020d0928	HBM672.TRVG.967	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+c391f9351952a3eb3ce4b68b39f12970	HBM735.LWRH.779	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+1e766956a9c48e8e61ffb1ab28e8e4e4	HBM335.XXBG.857	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+0dad96d381eab1a598b76038385e593f	HBM488.CHLD.467	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+9e8d22618bc17f270c58b7bb2581ece4	HBM257.DBNG.933	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+4038c7a3510b38f0cd036aa4955246eb	HBM265.NXDR.935	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+8fcb96b98c87178e2666435a3b3a5350	HBM398.CFZH.458	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+1c9310ad74bdebc6983fb1bda3dcaa6e	HBM677.TRKR.869	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+e4cb7061eafcb4605b138b56dd8b10c0	HBM368.FDDS.927	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+5a1449ecf5a58494e11ed7a78a7d104a	HBM363.NSBV.432	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+142dde4b515934bdd9384c2aea081ebb	HBM276.BCVG.232	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d68eb55a484036b3575043bdecd64a52	HBM853.XQFP.642	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+5db7806bf62bf80bdd9a17199d6d2b08	HBM442.HSFZ.838	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+bf8faee3a82026ccf2a65965fd158a1f	HBM384.BWTV.862	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+59da4436e52d9cacc743c1a9bbdd566f	HBM277.KCLM.554	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+df7b5c077c2fc442f56d8667fe8ea37c	HBM766.PSCS.545	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+dd7adfb071228435eb2bb1699148a1de	HBM446.FXTJ.757	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+07975e1e99bcd25fef9e6c72c46a8922	HBM756.GZSH.268	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+973b5f2ce28a818e31d6148147feb6fc	HBM442.ZDMV.523	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+f5e37d024e028f1beae9d384630b8107	HBM534.ZLFK.677	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+da37b64d6f5823747274c719cd590890	HBM298.KXFW.694	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d31aa4d63ee3f71965fc7bccb3ef3d02	HBM425.ZCSZ.825	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+6f87add44880de684e6a9a5625344bbb	HBM445.NPKW.958	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+869ff5b556a0e0f24a48aa673d0bc343	HBM879.NCTL.468	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+ae97b76308cc66379e3cab55ca3c86ad	HBM459.BBRT.432	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+efe5894cd09b0a411ecfe46749e6db73	HBM852.VSBC.572	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+63c9ad59d1db51551989d7dabd36dea9	HBM462.BPNZ.799	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+4e54c868cca02be3a0538b03c1909c3d	HBM694.QMLR.738	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+e8efba8d06360eeba199f195da80f01d	HBM867.XBWD.535	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+4ea28b66fb08185a484df0fa0b9543dc	HBM388.JGKV.766	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+f716e995918d7780d46ad4df44d41678	HBM426.CDKT.979	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+56ebc2ebc5446a039cb0a86ace68bd32	HBM927.HHFD.265	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+e0d7eaffb0da948ed150d1cfc94db74b	HBM368.QPXJ.543	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+a7612d7bb369391b04eeca67f46df883	HBM724.WBBC.362	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+1f03636598bfb7d3bb0bfccf0a252e36	HBM557.KNTT.394	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+a8b5f09ae183be8731349bbb72a55a4f	HBM769.BDBL.437	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+6ae8dd70fa2de19016fcb9c81afc11c7	HBM539.MKQD.956	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+b8f2f968030b16280a77795a6babaf16	HBM687.DTXP.559	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+6acf389e79b08bdd4c7f94019348868e	HBM428.GPCD.698	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+01160f557b3544a163184137530ededf	HBM553.MNTQ.265	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+500af39b83bfa9eb27f78746734f3db9	HBM692.WWJD.963	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d615cc96a8606bb6819bed2a8d7f24ac	HBM389.FGMD.644	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+46f707a38043ac6d2cd6a3700979c8f8	HBM366.RVSS.338	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+42221548e4c709628522b64d48ba0a75	HBM794.ZFKH.622	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+ffc1e88d31396f5bd8a0b66729584e1d	HBM759.ZKDS.894	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+33874bc3c95b6b41cbc387d2826d88eb	HBM683.DSMM.562	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+db3eca4495be28a22d9d02d465c1f702	HBM959.XNWL.627	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+9efdc2b203c54baad4e7c5cd99b77160	HBM695.CKJX.997	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+b4a975cb708bf442ceeb4ad2377024f4	HBM475.NWHG.922	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+c858b21d7bbfbe4e73d9f72c2c719c62	HBM853.GWTP.895	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+21fe1cf97052ee3d986b5ccb4e8efe86	HBM562.WZFC.994	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d34706323794467348995af37072b5ee	HBM252.BMWF.224	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+19be408fb97c09f603c906921d7b0945	HBM695.XTNF.836	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+b7227f0ddb99ee5aaa3aec9d48d10a83	HBM522.LXLF.753	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+fa3f5482e3502d7d5d86c61157ee6a7a	HBM725.BRBB.566	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d2514a9f220952cf2dd75796206eeb11	HBM545.VTQM.594	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d34eb3a317ac17d6f01b958cb2276793	HBM684.LRVL.722	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d7204812ade29562397bb60c99216794	HBM759.FHWP.826	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+155da15afc9978b62d64bf0801d025dc	HBM699.NGDQ.539	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+c5e4adcf2ef956864a087d1691e8e8cd	HBM288.RCTV.965	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+b2d42d1143a168014996df6d07d5bdf8	HBM723.QMLJ.829	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+be7059191ba49651655db7d333610ad2	HBM283.GHKJ.532	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+bbe9f1a95a61f32656ed4452fed9d424	HBM834.TDFD.294	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+26dc619ecea3f40441064f18e1a8b879	HBM379.ZGKM.223	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d97b9b0aa1c0c6929d0db414e1d67825	HBM587.JPLF.798	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+00d9d4bf8b010eaa6fca4361476cd2ad	HBM342.MWMW.936	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+3b9e41fa2326a845871cd20b35efb0c0	HBM687.SQJV.939	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+421007293469db7b528ce6478c00348d	HBM575.XFCT.276	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+4318b88da67256edae9fd876b5111e4a	HBM477.SGMX.842	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+de80a443ed15e1f783c68d5e0b2d7216	HBM744.MBPT.666	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+df71091620312eacc28a6accccfb2aa4	HBM939.CNSV.893	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+fa3c3facff89f8ee89f7ee315f057f5e	HBM882.NBFK.489	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+b187c76ccb333ec1c347cbc217c09ad5	HBM727.FSWS.736	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+614073f249f8881b2fe4a29db6bea266	HBM363.LDZL.423	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+2746ce8d450265ace2c6aee762c8dfda	HBM349.KWMK.599	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+43f83f08bedac2bc4d58767362dfebe2	HBM793.TLPP.486	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+055944e2ee7579974aa7a2a11dff5637	HBM729.KJWJ.742	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+52fab90faa97ba44dfde29e1fe740f48	HBM443.TQKQ.624	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+f21984fb4a908c1adfa921fbcaca8788	HBM584.ZTDX.845	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+a4477ee85ea420ae82b892ae936b43c4	HBM659.WFXT.729	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d74c1643f3f4c22a4758e5931029ed75	HBM398.ZSNW.578	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+ade674f0277942c9a1297494fcf3511d	HBM328.FTJW.669	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+34730c1fb6e55ece2567c4ffe53ca466	HBM938.FTBC.347	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+dcb845c82041eeb07020dec84e03ea97	HBM878.HZJK.366	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+fc1fe65af3d66d6e12b402647d16d9a0	HBM886.SLWK.262	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+80de47fcd4ddb11de36af71dfdfa7b90	HBM833.HFSG.364	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+2100db577dfa010580c35518472e0e7f	HBM656.KZXP.658	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+45aadbf99c097775e6004a978b5a731b	HBM678.FRJC.827	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+79e94dcf00267a0fe71e88c7d1e8d3c8	HBM848.DKKR.789	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+5f13e1e3140b58650018ec44ecad720c	HBM453.SZCH.656	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+055730a8c5486ec9bf66af90102e5626	HBM396.JHNS.692	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+1b015d3b973ac6510bbb40f4112f0486	HBM975.WHWM.552	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+1ee969676fc2b7081e6d4c6db6eccd74	HBM585.GLSD.853	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+d2f1ba23eddf1484f4a794444a6536ee	HBM572.QTTV.726	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+1bb63db033b3f7206a4d8c4ac4db1564	HBM659.MPZT.644	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+12adb09fef9ef119227ecbe87b41dcc2	HBM894.VJNM.258	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+1fb5bcc68099ff64c34809153de0c5cc	HBM257.JTGD.599	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+e9ea23ec5a0dbf788fc66ecea4441550	HBM725.NLKP.539	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+3a4b776346bfc561712eaf915dda6200	HBM882.XFHR.889	Published	True	SNARE-RNAseq2	University of California San Diego TMC	0.0
+7277b2460f9c548004496508684a90ef	HBM596.FQNZ.472	Published	True	scRNAseq-10xGenomics-v2	EXT - Human Cell Atlas	0.0
+43c43f3fd7fbe61b9d8fed131d956101	HBM482.PNPS.853	Published	True	scRNAseq-10xGenomics-v2	EXT - Human Cell Atlas	0.0
+37acb2625dbd65733a8d95069ec00f95	HBM493.GFHZ.686	Published	True	scRNAseq-10xGenomics-v2	EXT - Human Cell Atlas	0.0
+0eb5e457b4855ce28531bc97147196b6	HBM253.ZBQP.383	Published	True	scRNAseq-10xGenomics-v2	EXT - Human Cell Atlas	0.0
+e2cecf936604e667aa8df81dccec1bc7	HBM599.GLRZ.888	Published	True	scRNAseq-10xGenomics-v3	TMC - University of Connecticut	0.0
+11b3087c2796bc0694c0a8ff6bd189cd	HBM233.CCCX.767	Published	True	scRNAseq-10xGenomics-v3	TMC - University of Connecticut	0.0
+740ca3fb637ca2a80bafd05eb8d3e72a	HBM837.FPWJ.865	Published	True	scRNAseq-10xGenomics-v3	TMC - University of Connecticut	0.0
+f2fd5839eb68545df62be05f27df8ed7	HBM938.GJXR.224	Published	True	scRNAseq-10xGenomics-v3	TMC - University of Connecticut	0.0
+6dd798f989cff7b0bbefa30f83fa12f0	HBM756.PWKH.456	Published	True	scRNAseq-10xGenomics-v3	TMC - University of Connecticut	0.0
+035ba4d304de02aff6179dbc8adf8dc6	HBM743.FBJP.586	Published	True	scRNAseq-10xGenomics-v3	TMC - University of Connecticut	0.0
+b072f4cd569ee74ded545aae4fc04d84	HBM855.LCDD.636	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+a6a7f2b0b419aefb6f8ffb9bfa9ce7d5	HBM275.JHWK.637	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+7e4c58d746cdd5b36503a12c38974b0a	HBM952.DHTN.758	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+a0df02bda8befa491f86b0d41f2810ed	HBM594.TSSQ.952	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+ead5cc01250b4f9ea73dd91503c313a5	HBM448.BWHR.498	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+616a1aa904dfb1299f86910db2a20fbe	HBM762.TPPN.463	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+6f8b8f7671c0dca3062caca5ad70dca6	HBM839.JWZL.794	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+531b30993db47978336800ee1160cd52	HBM674.KVLK.564	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+f1b9f55b12e16d1e11a5ebbd863b5787	HBM853.ZMMR.455	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+297ffe72553e0c6746670f684ac9626c	HBM879.JXHX.392	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+bf6406f58d3bb6144b84ca16938315fa	HBM388.QBNK.395	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+48da185436f006156d7e5c1941bfb147	HBM583.SKGC.358	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+dd39ed081ffc887d85fc8225c71b37dc	HBM278.GBJP.459	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+eb4958e8b5dd073e8a4a80bd613b2d64	HBM984.NZMN.653	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+b2db3414cedf8805d20df3cf753842ca	HBM366.LRXP.529	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+bf88e07da70ee088e31c7f568e41b196	HBM698.VGTP.676	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+d926c41ac08f3c2ba5e61eec83e90b0c	HBM666.FFFW.363	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+02dcd834808bd241a4251c730b043194	HBM429.QLFN.492	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+84fee104ebfd4acb764b800395393512	HBM675.FQXK.692	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+8ea82dc9f26bb2c01f19ddd19b3812b6	HBM445.LSMH.886	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+fe43e2182221712260f058743edc901e	HBM389.NZZM.736	Published	True	sciATACseq	California Institute of Technology TMC	0.0
+7e39dcec932155b62e332ba7d3b18d35	HBM258.BWHR.287	Published	True	sciRNAseq	California Institute of Technology TMC	0.0
+d612208512d1c476a5efe00dde83f97e	HBM849.TWBF.722	Published	True	sciRNAseq	California Institute of Technology TMC	0.0
+394852db8fe78f70865b881d5ad40f45	HBM625.PTSS.252	Published	True	sciRNAseq	California Institute of Technology TMC	0.0
+4b0a0671bad77bc469ae000a66535f31	HBM725.RHWH.487	Published	True	sciRNAseq	California Institute of Technology TMC	0.0
+fdf26c991b398a26be1354543e54af23	HBM788.XLZL.369	Published	True	sciRNAseq	California Institute of Technology TMC	0.0
+e0148e8a78bd489d9d86c7906c184920	HBM737.WSXM.893	Published	True	sciRNAseq	California Institute of Technology TMC	0.0
+232aac63e35e0fd4a856bb2ebf7f8d50	HBM865.KZMC.828	Published	True	sciRNAseq	California Institute of Technology TMC	0.0
+a44a78bfbe0e702cdc172707b6061a16	HBM645.XLLN.924	Published	True	sciRNAseq	California Institute of Technology TMC	0.0
+756a0eed9508a9b96a0276b8a7a6d7e2	HBM388.ZSNN.945	Published	True	sciRNAseq	California Institute of Technology TMC	0.0
+e75d8b31cfdc5f412d3cdbc2441dc352	HBM667.ZCQC.777	Published	True	sciRNAseq	California Institute of Technology TMC	0.0
+42b73e4e346571372f4babe678688dfd	HBM972.VRNF.956	Published	True	sciRNAseq	California Institute of Technology TMC	0.0
+319579dab915552f4640ecf57ce13c21	HBM965.GWBH.574	Published	True	sciRNAseq	California Institute of Technology TMC	0.0
+ab1bc92be85ba60264dbee1e972c044c	HBM748.MMQM.339	Published	True	snATACseq	Stanford TMC	0.0
+6bc71af5ff714288652e6dd5fad03ddb	HBM232.XPHF.775	Published	True	snATACseq	Stanford TMC	0.0
+409fabf60db9765df35df0ab98f875ba	HBM535.KPZS.733	Published	True	snATACseq	Stanford TMC	0.0
+73923ed32b8bbbe6c2b665da5cd704fb	HBM993.LPCM.624	Published	True	snATACseq	Stanford TMC	0.0
+6a50c7252f9bbd2aaa6e51714870d2d7	HBM389.XRDV.828	Published	True	snATACseq	Stanford TMC	0.0
+7c89b7dce321a97232715b980c1f26f5	HBM667.ZWGS.745	Published	True	snATACseq	Stanford TMC	0.0
+484c62e89ff34fc41281c131ccc09ffb	HBM398.THRG.589	Published	True	snATACseq	Stanford TMC	0.0
+1956686d45a88c099ef8384ecf9f1329	HBM442.MWFQ.639	Published	True	snATACseq	Stanford TMC	0.0
+37681097fefaf6e81a90c730f1611cc3	HBM747.VBFK.754	Published	True	snATACseq	Stanford TMC	0.0
+25f6ffb3af74781c6285537cb032044b	HBM792.GHWK.356	Published	True	snATACseq	Stanford TMC	0.0
+71a7553b868d956063065b8c3ce139cd	HBM239.CKSF.677	Published	True	snATACseq	Stanford TMC	0.0
+2882f80c0984a4cfccd2334e3af6086f	HBM372.FSCF.979	Published	True	snATACseq	Stanford TMC	0.0
+6010ee082043a9adb055ec9b37b4fc99	HBM623.PHGT.682	Published	True	snATACseq	Stanford TMC	0.0
+9305dcd562b822550c012b4c874826d5	HBM227.XCNT.648	Published	True	snATACseq	Stanford TMC	0.0
+3aa2cc682518460d6b279a084d94cfc8	HBM582.DFHH.268	Published	True	snATACseq	Stanford TMC	0.0
+51c8c96154b5a5eaab69d6e7b565a853	HBM255.JXWV.538	Published	True	snATACseq	Stanford TMC	0.0
+9c3559f50056d46105184abe93b1808c	HBM722.HPXF.559	Published	True	snATACseq	Stanford TMC	0.0
+462d21ffa95f8ac13b929b9ae97fa84c	HBM264.QCGR.632	Published	True	snATACseq	Stanford TMC	0.0
+889cc388af2a79caa599432b0d6318c5	HBM397.SHGQ.476	Published	True	snATACseq	Stanford TMC	0.0
+8ea3066683025198c4bdeed332ab526b	HBM882.HDWL.396	Published	True	snATACseq	Stanford TMC	0.0
+358bd1827276b638cdf5499b725c46d9	HBM739.KSDT.896	Published	True	snATACseq	Stanford TMC	0.0
+77f80b6c8ed9f05884edcd55e6885246	HBM357.WRHQ.827	Published	True	snATACseq	Stanford TMC	0.0
+f37a04bbcd5d50c035f85c5802a6c80e	HBM632.PMDT.978	Published	True	snATACseq	Stanford TMC	0.0
+5b231e4b873358463d5ec4d450c45af4	HBM849.QFWQ.926	Published	True	snATACseq	Stanford TMC	0.0
+a4a5e2be07e539c6d279d15dff56024f	HBM452.SKFP.725	Published	True	snATACseq	Stanford TMC	0.0
+bd4f1b9b8d088bd183ac0b5eb509ddd3	HBM376.RMDH.899	Published	True	snATACseq	Stanford TMC	0.0
+b5542320c963e62c044bdf64200dffeb	HBM332.PGSG.277	Published	True	snATACseq	Stanford TMC	0.0
+6c8d52f0a25836e37c5e0e9701149c7c	HBM443.RQDW.442	Published	True	snATACseq	Stanford TMC	0.0
+9d0aae934f73d2adb584640a466048ea	HBM424.RQMH.756	Published	True	snATACseq	Stanford TMC	0.0
+f6ed30889867807d4e98ca90213bea26	HBM272.JZLF.372	Published	True	snATACseq	Stanford TMC	0.0
+f76546f9cc1384a0eeee8a68377083fb	HBM865.WSGK.682	Published	True	snATACseq	Stanford TMC	0.0
+8dd2aaa4ac8f04b5bd57b2b6a83d4a5a	HBM835.DHSZ.473	Published	True	snATACseq	Stanford TMC	0.0
+7416fb51082a52f8a44f0a2c1a26a760	HBM946.NKHN.264	Published	True	snATACseq	Stanford TMC	0.0
+e1bd7aba6bca3997c7e3a1fa864d5f1a	HBM658.RLQC.482	Published	True	snATACseq	Stanford TMC	0.0
+f49b28c527d0e2cd077a0f0508e3caa4	HBM522.LSNV.433	Published	True	snATACseq	Stanford TMC	0.0
+10012437067c8d88d8b797f44d14cc20	HBM655.MFTK.764	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+555eaeb0e58682538a5bbdc2af2f9bd0	HBM659.GSQR.225	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+c30a75c9f3188b8ee551f0382e213eeb	HBM558.BHPZ.328	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+63325f48a2b8ab0564617a9cf9590abb	HBM233.XQZM.395	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+b34aa1ec24b8447eee710534e26d4639	HBM453.GWNF.247	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+d4ed311cea19bf0390f51a57730569bf	HBM987.BFBR.496	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+d611a7de3a07bd5b88e669ece6a8c9b0	HBM367.ZMBH.758	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+42b9ac26846bfaa27a425ad2bec1cd94	HBM557.VZPM.253	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+025e083e54722e695cdecdae4fb103e7	HBM949.PNXL.623	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+16fef963a9127d53bcda032160ff1402	HBM367.NSZK.788	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+63879f03276f1d5f4cfa81fb841f60d4	HBM889.DMLC.292	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+0523eb73b97a09a4ec7397fc1906988f	HBM433.SPRB.778	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+a14a50984e915e1d6f076c0c8a3b8712	HBM243.MXBM.589	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+1f9e84f5306c1cc75db6018ef7c4dd9e	HBM925.FQDP.328	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+64e3949e4a4cc433e64745204f20fe27	HBM684.SLGB.599	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+3b3f5daa672e3cd0106b368a43ff3354	HBM657.XWQQ.636	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+01a34636e8eeb3a842d912c80a6d0902	HBM373.FZMG.625	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+27b0957d7c43322c272882937c0b94ea	HBM379.PCLL.836	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+f7ca614f1282fa4e461f855dced982b8	HBM373.VTNH.683	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+3f62a59458e0e45bfbac3af284d6a2bd	HBM879.DFQN.248	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+8c4027a8eb765d6c27f2f08e718e830a	HBM638.CDHV.585	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+e79b021fd60b54850cbb5bf45da1b7f5	HBM477.KVFD.827	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+c7792716bfc42c5eae0fb4e63392523d	HBM545.QLKW.543	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+ceffeb49ca259e17abfc828aff56390c	HBM247.JTNN.859	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+d0da20a749142b837cb88e665721211d	HBM599.CXNC.464	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+2e6c312200bea94f832c966850c97e18	HBM322.TNGF.859	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+d0d78e336b44bdd16c16bddb646de88e	HBM745.GCNN.553	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+4f20058fbdca73ddbf8a0fe4e7553fca	HBM439.LWSZ.467	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+73f3863fe703f4d303809907d474ec90	HBM346.LSFW.324	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+6fe00b07bb06a5bfbb5ed72932606ec3	HBM569.FMVR.429	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+a7c8b90ce69d5f4af3bb69d1c4d88141	HBM892.VLVC.242	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+02a6e7da940786a38256900fab831423	HBM399.GZRJ.726	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+0c36dd5c4e727cfd2efd806138268731	HBM487.WJST.938	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+d5dd96696e53ff1c1f8df8b421531d87	HBM354.FMKQ.822	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+986c769e5fe01c550b75e461a4fe8891	HBM958.VZLG.297	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+c229933621ef4017e2e6d5352e1f40f0	HBM324.MKDC.693	Published	True	snRNAseq-10xGenomics-v3	Stanford TMC	0.0
+568112d77af9a5a82cf4f4a4195fd3cc	HBM433.GBLD.944	Published	True	Slide-seq	Broad Institute RTI	0.0
+21cfe0f6c3368b06237716a6b48f5825	HBM554.DHLV.735	Published	True	Slide-seq	Broad Institute RTI	0.0
+1e9014699d8452a281588dc4d2515d1a	HBM337.GJHZ.665	Published	True	Slide-seq	Broad Institute RTI	0.0
+9666a870c6824d1c9493fbf78b607aa3	HBM497.FKCS.478	Published	True	Slide-seq	Broad Institute RTI	0.0
+490f1116f9f13ad4c26f07cad8011553	HBM272.KQDJ.873	Published	True	Slide-seq	Broad Institute RTI	0.0
+410d5aa19fb98abaef973a280894b31a	HBM684.XVPK.336	Published	True	Slide-seq	Broad Institute RTI	0.0
+9afff9845dc1be5b76850ae6a4d22027	HBM896.WHQZ.399	Published	True	Slide-seq	Broad Institute RTI	0.0
+d9b43585124c9872131c951a815d2ab1	HBM489.LPCX.978	Published	True	Slide-seq	Broad Institute RTI	0.0
+12cc2c41d0669ab1067a0c1f52c06144	HBM847.GZGD.668	Published	True	Slide-seq	Broad Institute RTI	0.0
+004f4b7e41ca0a6733e64792a3126513	HBM427.RVVD.276	Published	True	Slide-seq	Broad Institute RTI	0.0
+c50093802e7d31ff8c884440d95a5271	HBM336.GKJN.639	Published	True	Slide-seq	Broad Institute RTI	0.0
+b3d907a4b8a19e79fe095410bdee30ea	HBM488.GXLS.689	Published	True	Slide-seq	Broad Institute RTI	0.0
+5375b8c6a773017052517bfdc0e042cc	HBM832.WWZH.575	Published	True	Slide-seq	Broad Institute RTI	0.0
+357c2f00be8e423df10bb2f8c33acfc6	HBM754.SJMP.486	Published	True	Slide-seq	Broad Institute RTI	0.0
+4e5fa1b5fb6554e9e91d56750716d731	HBM586.QXWD.492	Published	True	Slide-seq	Broad Institute RTI	0.0
+78921a68236f92d654904844051dd4bb	HBM874.WGDB.764	Published	True	Slide-seq	Broad Institute RTI	0.0
+335b1b3960f1c82a357fa265fc427c64	HBM797.HSMJ.596	Published	True	Slide-seq	Broad Institute RTI	0.0
+8202c422e936074aae7c47f5549f7e39	HBM346.CSWK.388	Published	True	Slide-seq	Broad Institute RTI	0.0
+cf31f5390569737fc1a85a57752eff67	HBM956.NKKJ.646	Published	True	Slide-seq	Broad Institute RTI	0.0
+a92aab96145d181dafcd9039c5255737	HBM387.KXLD.867	Published	True	Slide-seq	Broad Institute RTI	0.0
+b5387a565365d5e943d444917f8c9661	HBM246.PZPG.573	Published	True	Slide-seq	Broad Institute RTI	0.0
+49da1b0446f9d2533f7c74b7b1ec6754	HBM499.GPFC.894	Published	True	Slide-seq	Broad Institute RTI	0.0
+e1e4148e3951bc35222790dc1352f01c	HBM699.CHMK.457	Published	True	Slide-seq	Broad Institute RTI	0.0
+77c4620cac87b7b943402744899270b8	HBM258.RBCM.393	Published	True	Slide-seq	Broad Institute RTI	0.0
+181acc92a66264127a0c2696c3f91875	HBM929.QBMH.668	Published	True	Slide-seq	Broad Institute RTI	0.0
+4588adc063de83b1d8e487ebc300f87c	HBM226.QHVG.797	Published	True	Slide-seq	Broad Institute RTI	0.0
+74c2dc4a46ea54e64287d80d04d15959	HBM973.XRLR.365	Published	True	Slide-seq	Broad Institute RTI	0.0
+a2ed51760e451afe1293754f62c00733	HBM364.JRNL.422	Published	True	Slide-seq	Broad Institute RTI	0.0
+f7fc9881f65e874c6d0683112bd27a74	HBM537.VLPL.734	Published	True	Slide-seq	Broad Institute RTI	0.0
+d3e8350bdcc7a5851deb22045c3af31a	HBM348.FXGT.728	Published	True	Slide-seq	Broad Institute RTI	0.0
+49c9f0e6a142a12553afaa3dd1ac6aa9	HBM237.KGFH.483	Published	True	Slide-seq	Broad Institute RTI	0.0
+81090ae60d3b903dfb5b3e6f461dc96c	HBM786.LZQZ.242	Published	True	Slide-seq	Broad Institute RTI	0.0
+5f7d905113c9a136104e55d7298b2eea	HBM464.KHSK.927	Published	True	Slide-seq	Broad Institute RTI	0.0
+2f760ca9404f7409746e74594d1807b5	HBM247.GGHT.658	Published	True	Slide-seq	Broad Institute RTI	0.0
+69b3d856a476114c1819287d0d688387	HBM969.VBPS.239	Published	True	Slide-seq	Broad Institute RTI	0.0
+7654bacb99511aaaa669bf4e623b5baf	HBM876.NMKV.392	Published	True	Slide-seq	Broad Institute RTI	0.0
+2fc79a0ddab0e95d5935b3234f5cf372	HBM543.DWSW.978	Published	True	Slide-seq	Broad Institute RTI	0.0
+517539cee7b8ea5909150998f5486a17	HBM653.SPBN.555	Published	True	WGS	Stanford TMC	0.0
+71256e28c1393f391385a21ab14f78f6	HBM233.GVDL.962	Published	True	WGS	Stanford TMC	0.0
+ae48077b3dad3d05960a7b9c0fd839e8	HBM522.WKQN.772	Published	True	WGS	Stanford TMC	0.0
+e7a783ee9f03856a9d214625e66bf06d	HBM368.BMZL.342	Published	True	WGS	Stanford TMC	0.0
+5c9b7babf1f5e461efa9499115c310a9	HBM725.ZXDG.482	Published	True	WGS	Stanford TMC	0.0
+d6a5239b41706a869f07d9e9cdd6ffa4	HBM596.PZBR.726	Published	True	WGS	Stanford TMC	0.0
+a26599854b9cd9b89366513db25c0b7c	HBM398.JXVV.636	Published	True	WGS	Stanford TMC	0.0
+3acdb3ed962b2087fbe325514b098101	HBM534.XNJK.939	Published	True	WGS	Stanford TMC	0.0
+82150e010787314cb260d19a271c6a1a	HBM669.FBKC.238	Published	True	WGS	Stanford TMC	0.0
+e98c4c802f823ffa1b49b6f8698320ef	HBM438.NJKG.575	Published	True	WGS	Stanford TMC	0.0
+63495a0c6f833359218e7c7f991746ab	HBM999.NRRQ.328	Published	True	WGS	Stanford TMC	0.0
+d9d4762c8639fe76553c81ce159b3e45	HBM254.SXCB.872	Published	True	WGS	Stanford TMC	0.0
+0186092a96f773bafb62721eb4399c6b	HBM577.NRCL.952	Published	True	WGS	Stanford TMC	0.0
+c3fa09a6a84e40730bb3948ea733b3e9	HBM393.DSCC.392	Published	True	WGS	Stanford TMC	0.0
+d859a8c563558b7db0b73c6170ad84fd	HBM893.LCWM.423	Published	True	WGS	Stanford TMC	0.0
+166ea9ac6dbfa53966c60176b92d35ca	HBM243.QRKL.558	Published	True	WGS	Stanford TMC	0.0
+0b10c4d5df6cb25fa12a67f7e72580ab	HBM848.VLZL.329	Published	True	WGS	Stanford TMC	0.0
