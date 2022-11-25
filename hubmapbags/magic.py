@@ -306,7 +306,6 @@ def do_it( input, dbgap_study_id=None, \
 			if compute_uuids:
 				print('Generating UUIDs via the uuid-api')
 				if uuids.should_i_generate_uuids( hubmap_id=id, \
-					filename=temp_file, \
 					instance=instance, \
 					token=token, \
 					debug=debug):
