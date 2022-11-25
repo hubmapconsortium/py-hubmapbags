@@ -231,7 +231,7 @@ def do_it( input, dbgap_study_id=None, \
 			file_describes_collection.create_manifest( hubmap_id, data_directory, output_directory )
 
 			print('Making dcc.tsv')
-			primary_dcc_contact.create_manifest( output_directory )        
+			primary_dcc_contact.create_manifest( output_directory )
 
 			print('Making id_namespace.tsv')
 			id_namespace.create_manifest( output_directory )
@@ -305,7 +305,7 @@ def do_it( input, dbgap_study_id=None, \
 
 			if compute_uuids:
 				print('Generating UUIDs via the uuid-api')
-				if uuids.should_i_generate_uuids( hubmap_id=id, \
+				if uuids.should_i_generate_uuids( hubmap_id=hubmap_id, \
 					instance=instance, \
 					token=token, \
 					debug=debug):
