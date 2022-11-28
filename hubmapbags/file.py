@@ -268,18 +268,18 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
 						'relative_local_id': __get_relative_local_id(file,dataset_uuid), \
 						'dataset_hmid':dataset_hmid, \
 						'dataset_uuid':dataset_uuid}, ignore_index=True)
-			else:
-				print('File ' + str(file) + ' found in dictionary. Avoiding recomputation.')
+				else:
+					print('File ' + str(file) + ' found in dictionary. Avoiding recomputation.')
 
-			counter = counter + 1
-			if counter % 100 == 0:
-			        print('Saving df with ' + str(counter) + ' entries to disk in file ' + temp_file)
-				with open( temp_file, 'wb' ) as file:
-					pickle.dump( df, file )
+				counter = counter + 1
+				if counter % 100 == 0:
+			        	print('Saving df with ' + str(counter) + ' entries to disk in file ' + temp_file)
+					with open( temp_file, 'wb' ) as file:
+						pickle.dump( df, file )
 
-	print('Saving df to disk in file ' + temp_file)
-	with open( temp_file, 'wb' ) as file:
-		pickle.dump( df, file )
+		print('Saving df to disk in file ' + temp_file)
+		with open( temp_file, 'wb' ) as file:
+			pickle.dump( df, file )
 
 	return df
 
