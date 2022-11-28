@@ -170,34 +170,35 @@ def __get_dbgap_study_id( file, dbgap_study_id ):
            return ''
 
 def __get_assay_type_from_obi(assay_type):
-    assay = {}
-    assay['af'] = 'OBI:0003087' #AF
-    assay['atacseq-bulk'] = 'OBI:0003089' #Bulk ATAC-seq
-    assay['bulk-rna'] = 'OBI:0001271' #Bulk RNA-seq
-    assay['scrna-seq-10x'] = 'OBI:0002631' #scRNA-seq
-    assay['snatacseq'] = 'OBI:0002762' #snATAC-seq
-    assay['wgs'] = 'OBI:0002117' #WGS
-    assay['codex'] = 'OBI:0003093' #CODEX
-    assay['lightsheet'] = 'OBI:0003098' #Lightsheet
-    assay['imc'] = 'OBI:0001977' #IMC
-    assay['imc3d'] = 'OBI:0001977' #IMC
-    assay['maldi-ims-neg'] = 'OBI:0003099'
-    assay['maldi-ims-pos'] = 'OBI:0003099'
-    assay['pas'] = 'OBI:0003103'
-    assay['slide-seq'] = 'OBI:0003107'
-    assay['seqfish'] = 'OBI:0003094'
-    assay['lc-ms-untargeted'] = 'OBI:0003097'
+	assay = {}
+	assay['af'] = 'OBI:0003087' #AF
+	assay['atacseq-bulk'] = 'OBI:0003089' #Bulk ATAC-seq
+	assay['bulk-rna'] = 'OBI:0001271' #Bulk RNA-seq
+	assay['scrna-seq-10x'] = 'OBI:0002631' #scRNA-seq
+	assay['snatacseq'] = 'OBI:0002762' #snATAC-seq
+	assay['wgs'] = 'OBI:0002117' #WGS
+	assay['codex'] = 'OBI:0003093' #CODEX
+	assay['lightsheet'] = 'OBI:0003098' #Lightsheet
+	assay['imc'] = 'OBI:0001977' #IMC
+	assay['imc3d'] = 'OBI:0001977' #IMC
+	assay['maldi-ims-neg'] = 'OBI:0003099'
+	assay['maldi-ims-pos'] = 'OBI:0003099'
+	assay['pas'] = 'OBI:0003103'
+	assay['slide-seq'] = 'OBI:0003107'
+	assay['seqfish'] = 'OBI:0003094'
+	assay['lc-ms-untargeted'] = 'OBI:0003097'
 	assay['LC-MS_top_down'] = 'OBI:0003097' # ask alex
-    assay['tmt-lc-ms'] = 'OBI:0003097'
-    assay['targeted-shotgun-lc-ms'] = 'OBI:0003097'
-    assay['snrnaseq']='OBI:0003109'
-    assay['snare-atacseq2']='OBI:0003108'
-    assay['snare-rnaseq2']='OBI:0003108'
-    assay['snareseq']='OBI:0003108'
-    assay['sciatacseq']='OBI:0003104'
-    assay['scrnaseq-10xgenomics-v3']='OBI_0002631'
-    assay['snrnaseq-10xgenomics-v3']='OBI:0003109'
-    return assay[assay_type]
+	assay['tmt-lc-ms'] = 'OBI:0003097'
+	assay['targeted-shotgun-lc-ms'] = 'OBI:0003097'
+	assay['snrnaseq']='OBI:0003109'
+	assay['snare-atacseq2']='OBI:0003108'
+	assay['snare-rnaseq2']='OBI:0003108'
+	assay['snareseq']='OBI:0003108'
+	assay['sciatacseq']='OBI:0003104'
+	assay['scrnaseq-10xgenomics-v3']='OBI_0002631'
+	assay['snrnaseq-10xgenomics-v3']='OBI:0003109'
+	
+	return assay[assay_type]
 
 def _get_list_of_files( directory ):
     return Path(directory).glob('**/*')
