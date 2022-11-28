@@ -242,7 +242,7 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
         p = _get_list_of_files( directory )
         print( 'Finding all files in directory' )
 
-		counter = 0
+	counter = 0
         for file in p:
 		if file.is_file():
 			if df[df['local_id'] == str(file).replace(' ','%20')].empty():
