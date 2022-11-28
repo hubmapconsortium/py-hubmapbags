@@ -1,4 +1,4 @@
-import pandas as pd
+)import pandas as pd
 from itertools import chain
 from pathlib import Path
 from shutil import rmtree
@@ -202,72 +202,72 @@ def _get_list_of_files( directory ):
     return Path(directory).glob('**/*')
 
 def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, dataset_hmid=None, dataset_uuid=None ):
-    '''
-    Build a dataframe with minimal information for this entity.
-    '''
+	'''
+	Build a dataframe with minimal information for this entity.
+	'''
 
-    id_namespace = 'tag:hubmapconsortium.org,2022:'
-    headers = ['id_namespace', \
-               'local_id', \
-               'project_id_namespace', \
-               'project_local_id', \
-               'persistent_id', \
-               'creation_time', \
-               'size_in_bytes', \
-               'uncompressed_size_in_bytes', \
-               'sha256', \
-               'md5', \
-               'compression_format', \
-               'filename', \
-               'file_format', \
-               'data_type', \
-               'assay_type', \
-               'mime_type', \
-               'bundle_collection_id_namespace', \
-               'bundle_collection_local_id', \
-               'dbgap_study_id', \
-               'hubmap_uuid', \
-               'dataset_hmid', \
-               'dataset_uuid', \
-               'relative_local_id']
+	id_namespace = 'tag:hubmapconsortium.org,2022:'
+	headers = ['id_namespace', \
+		'local_id', \
+		'project_id_namespace', \
+		'project_local_id', \
+		'persistent_id', \
+		'creation_time', \
+		'size_in_bytes', \
+		'uncompressed_size_in_bytes', \
+		'sha256', \
+		'md5', \
+		'compression_format', \
+		'filename', \
+		'file_format', \
+		'data_type', \
+		'assay_type', \
+		'mime_type', \
+		'bundle_collection_id_namespace', \
+		'bundle_collection_local_id', \
+		'dbgap_study_id', \
+		'hubmap_uuid', \
+		'dataset_hmid', \
+		'dataset_uuid', \
+		'relative_local_id']
 
-    temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
+	temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
 
-    if Path( temp_file ).exists():
-        print( 'Temporary file ' + temp_file + ' found. Loading df into memory.' )
-        with open( temp_file, 'rb' ) as file:
-        	df = pickle.load(file)
-    else:
-        df = pd.DataFrame(columns=headers)
-        p = _get_list_of_files( directory )
-        print( 'Finding all files in directory' )
+	if Path( temp_file ).exists():
+		print( 'Temporary file ' + temp_file + ' found. Loading df into memory.' )
+		with open( temp_file, 'rb' ) as file:
+			df = pickle.load(file)
+	else:
+		df = pd.DataFrame(columns=headers)
+		p = _get_list_of_files( directory )
+		print( 'Finding all files in directory' )
 
-	counter = 0
-        for file in p:
-		if file.is_file():
-			if df[df['local_id'] == str(file).replace(' ','%20')].empty():
-				print('Processing ' + str(file) )
-				df = df.append({'id_namespace':id_namespace, \
-					'local_id':str(file).replace(' ','%20'), \
-					'project_id_namespace':id_namespace, \
-					'project_local_id':project_id, \
-					'creation_time':__get_file_creation_date(file), \
-					'size_in_bytes':__get_file_size(file), \
-					'md5':__get_md5( file ), \
-					'sha256':__get_sha256(file), \
-					'filename':__get_filename(file), \
-					'file_format':__get_file_format(file), \
-					'compression_format':'', \
-					'data_type':__get_data_type(file), \
-					'assay_type':__get_assay_type_from_obi(assay_type), \
-					'mime_type':__get_mime_type(file), \
-					'bundle_collection_id_namespace':'', \
-					'bundle_collection_local_id':'', \
-					'dbgap_study_id':__get_dbgap_study_id(file,dbgap_study_id),
-					'hubmap_uuid':None, \
-					'relative_local_id': __get_relative_local_id(file,dataset_uuid), \
-					'dataset_hmid':dataset_hmid, \
-					'dataset_uuid':dataset_uuid}, ignore_index=True)
+		counter = 0
+		for file in p:
+			if file.is_file():
+				if df[df['local_id'] == str(file).replace(' ','%20')].empty():
+					print('Processing ' + str(file) )
+					df = df.append({'id_namespace':id_namespace, \
+						'local_id':str(file).replace(' ','%20'), \
+						'project_id_namespace':id_namespace, \
+						'project_local_id':project_id, \
+						'creation_time':__get_file_creation_date(file), \
+						'size_in_bytes':__get_file_size(file), \
+						'md5':__get_md5( file ), \
+						'sha256':__get_sha256(file), \
+						'filename':__get_filename(file), \
+						'file_format':__get_file_format(file), \
+						'compression_format':'', \
+						'data_type':__get_data_type(file), \
+						'assay_type':__get_assay_type_from_obi(assay_type), \
+						'mime_type':__get_mime_type(file), \
+						'bundle_collection_id_namespace':'', \
+						'bundle_collection_local_id':'', \
+						'dbgap_study_id':__get_dbgap_study_id(file,dbgap_study_id),
+						'hubmap_uuid':None, \
+						'relative_local_id': __get_relative_local_id(file,dataset_uuid), \
+						'dataset_hmid':dataset_hmid, \
+						'dataset_uuid':dataset_uuid}, ignore_index=True)
 			else:
 				print('File ' + str(file) + ' found in dictionary. Avoiding recomputation.')
 
@@ -277,11 +277,11 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
 						with open( temp_file, 'wb' ) as file:
 							pickle.dump( df, file )
 
-        print('Saving df to disk in file ' + temp_file)
-        with open( temp_file, 'wb' ) as file:
-            pickle.dump( df, file )
+	print('Saving df to disk in file ' + temp_file)
+	with open( temp_file, 'wb' ) as file:
+		pickle.dump( df, file )
 
-    return df
+	return df
 
 def create_manifest( project_id, assay_type, directory, output_directory, dbgap_study_id, token, dataset_hmid, dataset_uuid ):
     filename = os.path.join( output_directory, 'file.tsv' )
