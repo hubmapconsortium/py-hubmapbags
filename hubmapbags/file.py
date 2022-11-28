@@ -161,7 +161,7 @@ def __get_file_format( file ):
 		return ''
 
 def __get_dbgap_study_id( file, dbgap_study_id ):
-    if dbgap_study_id == '':
+    if dbgap_study_id == '' or dbgap_study_id is None:
         return ''
     else:
         if str(file).find('tar.gz') > 0:
