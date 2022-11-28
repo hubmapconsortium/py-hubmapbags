@@ -10,13 +10,16 @@ from . import utilities
 from . import magic
 from . import apis
 
-def populate_local_file_with_remote_uuids( hubmap_id, instance='test', token=None, overwrite=False, debug=False ):
+def populate_local_file_with_remote_uuids( hubmap_id, instance='prod', token=None, overwrite=False, debug=False ):
+	'''
+	Helper function that populates (but does not generate) a local pickle file with remote UUIDs.
+	'''
 
 	utilities.pprint('Processing dataset with HuBMAP ID ' + hubmap_id)
 	dataset = magic.__extract_dataset_info_from_db( hubmap_id, token=token, instance=instance )
 
 	if dataset is None:
-		warnings.warn('No datasets found. Exiting.')
+		warning('No datasets found. Exiting.')
 		return False
 
 	dataset = dataset.squeeze()
@@ -27,14 +30,14 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='test', token=Non
 	temp_file = data_directory.replace('/','_').replace(' ','_') + '.pkl'
 
 	if exists( computing ):
-		warnings.warn('Computing file ' + computing + ' exists. Another process is computing checksums. Not populating local file.')
+		warning('Computing file ' + computing + ' exists. Another process is computing checksums. Not populating local file.')
 		return False
 	elif not exists( computing ) and not exists( done ):
 		print('File ' + done + ' not found on disk. Not populating local file.' )
 		return False
 	elif exists( done ):
 		if exists( temp_file ):
-			if should_i_generate_uuids( hubmap_id, temp_file, instance=instance, token=token, debug=debug ):
+			if should_i_generate_uuids( hubmap_id, instance=instance, token=token, debug=debug ):
 				print('Attempting to populate local file')
 				df = pd.read_pickle( temp_file )
 				uuids = get_uuids( hubmap_id, instance=instance, token=token, debug=debug )
@@ -64,15 +67,15 @@ def __get_instance( instance ):
 		return '.test'
 	else:
 		if instance is None:
-			warnings.warn('Instance not set. Setting default value to "test".')
+			warning('Instance not set. Setting default value to "test".')
 		else:
-			warnings.warn('Unknown option ' + str(instance) + '. Setting default value to test.')
+			warning('Unknown option ' + str(instance) + '. Setting default value to test.')
 		return '.test'
 
 def __query_existence( uuid, instance='prod', token=None, debug=False ):
 	token = utilities.__get_token( token )
 	if token is None:
-		warnings.warn('Token not set.')
+		warning('Token not set.')
 		return None
 
 	if __get_instance( instance ) == 'prod':
@@ -88,7 +91,7 @@ def __query_existence( uuid, instance='prod', token=None, debug=False ):
 def __query_uuids( hubmap_id, instance='prod', token=None, debug=False ):
 	token = utilities.__get_token( token )
 	if token is None:
-		warnings.warn('Token not set.')
+		warning('Token not set.')
 		return None
 
 	if __get_instance( instance ) == 'prod':
@@ -127,30 +130,37 @@ def has_uuids( hubmap_id, instance='prod', token=None ):
 	else:
 		return True
 
-def generate( file, instance='prod', token=None, debug=True ):
+def generate( hubmap_id, instance='prod', token=None, debug=True ):
 	'''
-	Main function that generates UUIDs using the uuid-api.
+	Main function that generates UUIDs using the UUID-API.
 	'''
 
-	if debug:
-		print('Processing ' + file + '.')
+	utilities.pprint('Processing dataset with HuBMAP ID ' + hubmap_id)
+	dataset = magic.__extract_dataset_info_from_db( hubmap_id, token=token, instance=instance )
 
-	# icaoberg since neither the hubmap id nor the uuid are save in the dataframe
-	# extract it from the filename
-	duuid=file.split('_')[-1].split('.')[0]
+	if dataset is None:
+		warning('No datasets found. Exiting.')
+		return False
 
-	token = utilities.__get_token()
+	dataset = dataset.squeeze()
+	data_directory = dataset['full_path']
+	computing = data_directory.replace('/','_').replace(' ','_') + '.computing'
+	done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
+	broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
+	temp_file = data_directory.replace('/','_').replace(' ','_') + '.pkl'
+
+	token = utilities.__get_token( token )
 	if token is None:
-		warnings.warn('Token not set.')
+		warning('Token not set.')
 		return None
 
 	try:
 		if debug:
-			print('Loading temp file ' + file + '.')
-		df = pd.read_pickle( file )
+			print('Loading temp file ' + temp_file + '.')
+		df = pd.read_pickle( temp_file )
 	except:
 		if debug:
-			print('Unable to load pickle file ' + file + '. Exiting script.' )
+			print('Unable to load pickle file ' + temp_file + '. Exiting script.' )
 		return False
 
 	if __get_instance( instance ) == 'prod':
@@ -184,7 +194,7 @@ def generate( file, instance='prod', token=None, debug=True ):
 
 			if 'message' in j:
 				if debug:
-					print('Request response. Not populating data frame and exiting script.')
+					print('Request response is empty. Not populating data frame and exiting method.')
 				print(j['message'])
 				return False
 			else:
@@ -276,6 +286,10 @@ def should_i_generate_uuids( hubmap_id, instance='prod', token=None, debug=False
 		return None
 
 def is_complete( hubmap_id, instance='prod', token=None, debug=False ):
+	'''
+	A dataset is considered to be complete if the number of remote UUIDs matches the number of local number of files. False, otherwise.
+	'''
+	
 	number_of_files = apis.get_number_of_files( hubmap_id, instance=instance, token=token )
 	number_of_entries_in_db = get_number_of_uuids( hubmap_id, instance=instance, token=token )
 
