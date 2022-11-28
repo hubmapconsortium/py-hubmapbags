@@ -5,7 +5,7 @@ from os.path import exists
 import json
 import time
 import requests
-import warnings
+from warnings import warn as warning
 from . import utilities
 from . import magic
 from . import apis
