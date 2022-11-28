@@ -273,7 +273,7 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
 
 			counter = counter + 1
 			if counter % 100 == 0:
-				        print('Saving df with ' + str(counter) ' entries to disk in file ' + temp_file)
+				        print('Saving df with ' + str(counter) + ' entries to disk in file ' + temp_file)
 						with open( temp_file, 'wb' ) as file:
 							pickle.dump( df, file )
 
