@@ -187,6 +187,7 @@ def __get_assay_type_from_obi(assay_type):
     assay['slide-seq'] = 'OBI:0003107'
     assay['seqfish'] = 'OBI:0003094'
     assay['lc-ms-untargeted'] = 'OBI:0003097'
+	assay['LC-MS_top_down'] = 'OBI:0003097' # ask alex
     assay['tmt-lc-ms'] = 'OBI:0003097'
     assay['targeted-shotgun-lc-ms'] = 'OBI:0003097'
     assay['snrnaseq']='OBI:0003109'
