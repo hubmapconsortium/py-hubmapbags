@@ -246,7 +246,7 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
 	counter = 0
 	for file in p:
 		if file.is_file():
-			if df[df['local_id'] == str(file).replace(' ','%20')].empty():
+			if df[df['local_id'] == str(file).replace(' ','%20')].empty:
 				print('Processing ' + str(file) )
 				df = df.append({'id_namespace':id_namespace, \
 					'local_id':str(file).replace(' ','%20'), \
