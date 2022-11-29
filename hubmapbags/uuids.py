@@ -168,6 +168,7 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 	else:
 		URL = 'https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/hmuuid/'
 
+	URL = 'https://uuid-api.test.hubmapconsortium.org/hmuuid/'
 	headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0','Authorization':'Bearer '+token, 'Content-Type':'application/json'}
 
 	if len(df) <= 1000:
