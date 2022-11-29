@@ -137,7 +137,7 @@ def get_provenance_info( hubmap_id, instance='test', token=None, overwrite=False
                 warning('JSON object is empty.')
                 return j
 	elif 'message' in j:
-		if warning('Request response. Not populating data frame and exiting script.')
+		warning('Request response. Not populating data frame and exiting script.')
 		print(j['message'])
 		return None
 	else:
