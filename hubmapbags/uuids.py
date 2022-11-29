@@ -168,7 +168,6 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 	else:
 		URL = 'https://uuid-api' + __get_instance( instance ) + '.hubmapconsortium.org/hmuuid/'
 
-	URL = 'https://uuid-api.test.hubmapconsortium.org/hmuuid/'
 	headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0','Authorization':'Bearer '+token, 'Content-Type':'application/json'}
 
 	if len(df) <= 1000:
@@ -192,11 +191,14 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 			if debug:
 				print('Generating UUIDs')
 			r = requests.post(URL, params=params, headers=headers, data=json.dumps(payload), allow_redirects=True, timeout=120)
-			j = json.loads(r.text)
+
+			if r.status_code == 400:
+				warning(r.text)
+			else:
+				j = json.loads(r.text)
 
 			if 'message' in j:
-				if debug:
-					print('Request response is empty. Not populating data frame and exiting method.')
+				warning('Request response is empty. Not populating dataframe.')
 				print(j['message'])
 				return False
 			else:
