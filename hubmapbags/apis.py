@@ -102,26 +102,18 @@ def get_ancestors_info( hubmap_id, instance='test', token=None, overwrite=True, 
 			json.dump(j, outfile, indent=4)
 		return j
 
-def __query_provenance_info( hubmap_id, instance='test', token=None, debug=False ):
+def __query_provenance_info( hubmap_id, instance='prod', token=None, debug=False ):
 	token =	utilities.__get_token( token )
 	if token is None:
 		warning('Token not set.')
 		return None
 
 	if __get_instance( instance ) == 'prod':
-		URL='https://entity.api.hubmapconsortium.org/v3/datasets/'+hubmap_id+'/prov-info?format=json'
+		URL='https://entity.api.hubmapconsortium.org/datasets/'+hubmap_id+'/prov-info?format=json'
 	else:
-		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/v3/datasets/'+hubmap_id+'/prov-info?format=json'
+		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/datasets/'+hubmap_id+'/prov-info?format=json'
 
 	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
-
-	r = requests.get(URL, headers=headers)
-	return r
-
-def get_provenance_info( hubmap_id, instance='test', token=None, overwrite=False, debug=False ):
-	'''
-	Request provenance info given a HuBMAP id.
-	'''
 
 	directory = '.provenance'
 	file = os.path.join( directory, hubmap_id + '.json' )
@@ -154,16 +146,16 @@ def __query_dataset_info( hubmap_id, instance='prod', token=None, debug=False ):
 		return None
 
 	if __get_instance( instance ) == 'prod':
-		URL='https://entity.api.hubmapconsortium.org/entities' + hubmap_id
+		URL='https://entity.api.hubmapconsortium.org/entities/' + hubmap_id
 	else:
-		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/entities' + hubmap_id
+		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/entities/' + hubmap_id
 
 	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
 
 	r = requests.get(URL, headers=headers)
 	return r
 
-def get_dataset_info( hubmap_id, instance='test', token=None, overwrite=True, debug=True ):
+def get_dataset_info( hubmap_id, instance='prod', token=None, overwrite=True, debug=True ):
 	'''
 	Request dataset info given a HuBMAP id.
 	'''
@@ -180,7 +172,7 @@ def get_dataset_info( hubmap_id, instance='test', token=None, overwrite=True, de
 		j = json.loads(r.text)
 
 	if 'message' in j:
-		warning('Request response. Not populating data frame and exiting script.')
+		warning('Request response is empty. Not populating dataframe.')
 		print(j['message'])
 		return None
 	else:
@@ -190,7 +182,7 @@ def get_dataset_info( hubmap_id, instance='test', token=None, overwrite=True, de
 			json.dump(j, outfile, indent=4)
 		return j
 
-def __query_assay_types( instance='test', token=None, debug=False ):
+def __query_assay_types( instance='prod', token=None, debug=False ):
 	token = utilities.__get_token( token )
 	if token is None:
 		warning('Token not set.')
