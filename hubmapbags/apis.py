@@ -38,7 +38,7 @@ def __get_instance( instance ):
 	if instance.lower() == 'dev':
 		return '.dev'
 	elif instance.lower() == 'prod':
-		return ''
+		return 'prod'
 	elif instance.lower() == 'test':
 		return '.test'
 	else:
@@ -63,7 +63,11 @@ def __query_ancestors_info( hubmap_id, token=None, debug=False ):
 		warning('Token not set.')
 		return None
 
-	URL='https://entity.api' + __get_instance( instance ) + '.hubmapconsortium.org/ancestors/'+hubmap_id
+	if __get_instance( instance ) == 'prod':
+		URL='https://entity.api.hubmapconsortium.org/v3/ancestors/'+hubmap_id
+	else:
+		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/v3/ancestors/'+hubmap_id
+
 	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
 
 	r = requests.get(URL, headers=headers)
@@ -105,7 +109,11 @@ def __query_provenance_info( hubmap_id, instance='test', token=None, debug=False
 		warning('Token not set.')
 		return None
 
-	URL='https://entity.api' + __get_instance( instance ) + '.hubmapconsortium.org/datasets/'+hubmap_id+'/prov-info?format=json'
+	if __get_instance( instance ) == 'prod':
+		URL='https://entity.api.hubmapconsortium.org/v3/datasets/'+hubmap_id+'/prov-info?format=json'
+	else:
+		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/v3/datasets/'+hubmap_id+'/prov-info?format=json'
+
 	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
 
 	r = requests.get(URL, headers=headers)
@@ -147,7 +155,11 @@ def __query_dataset_info( hubmap_id, instance='prod', token=None, debug=False ):
 		warning('Token not set.')
 		return None
 
-	URL='https://entity.api' + __get_instance( instance ) + '.hubmapconsortium.org/entities/' + hubmap_id
+	if __get_instance( instance ) == 'prod':
+		URL='https://entity.api.hubmapconsortium.org/v3/entities' + hubmap_id
+	else:
+		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/v3/entities' + hubmap_id
+
 	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
 
 	r = requests.get(URL, headers=headers)
@@ -187,7 +199,11 @@ def __query_assay_types( instance='test', token=None, debug=False ):
 		warning('Token not set.')
 		return None
 
-	URL='https://search.api' + __get_instance( instance ) + '.hubmapconsortium.org/v3/assaytype?primary=true&simple=true'
+	if __get_instance( instance ) == 'prod':
+		URL='https://search.api.hubmapconsortium.org/v3/assaytype?primary=true&simple=true'
+	else:
+		URL='https://search-api' + __get_instance( instance ) + '.hubmapconsortium.org/v3/assaytype?primary=true&simple=true'
+
 	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
 
 	r = requests.get(URL, headers=headers)
