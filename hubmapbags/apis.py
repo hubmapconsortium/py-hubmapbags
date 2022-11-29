@@ -81,10 +81,10 @@ def get_ancestors_info( hubmap_id, instance='test', token=None, overwrite=True, 
 	directory = '.ancestors'
 	file = os.path.join( directory, hubmap_id + '.json' )
 	if os.path.exists( file ) and not overwrite:
-		print('Loading existing JSON file')
+		print('Loading existing JSON file.')
 		j = json.load( open( file, 'r' ) );
 	else:
-		print('Get information from ancestors via the entity-api ')
+		print('Get information from ancestors via the entity-api.')
 		r = __query_ancestors_info( hubmap_id, instance=instance, token=token, debug=debug )
 		j = json.loads(r.itext)
 
@@ -92,7 +92,7 @@ def get_ancestors_info( hubmap_id, instance='test', token=None, overwrite=True, 
 		warning('JSON object is empty.')
 		return j
 	elif 'message' in j:
-		warning('Request response. Not populating data frame and exiting script.')
+		warning('Request response is empty. Not populating dataframe.')
 		print(j['message'])
 		return None
 	else:
@@ -121,7 +121,7 @@ def __query_provenance_info( hubmap_id, instance='prod', token=None, debug=False
 		print('Loading existing JSON file')
 		j = json.load( open( file, 'r' ) );
 	else:
-		print('Get information provenance info via the entity-api')
+		print('Get information provenance info via the entity-api.')
 		r = __query_provenance_info( hubmap_id, instance=instance, token=token, debug=debug )
 		j = json.loads(r.text)
 
@@ -129,7 +129,7 @@ def __query_provenance_info( hubmap_id, instance='prod', token=None, debug=False
                 warning('JSON object is empty.')
                 return j
 	elif 'message' in j:
-		warning('Request response. Not populating data frame and exiting script.')
+		warning('Request response is empty. Not populating dataframe.')
 		print(j['message'])
 		return None
 	else:
@@ -204,7 +204,7 @@ def get_assay_types( debug=False ):
 	'''
 
 	if debug:
-		print('Get dataset information via the entity-api')
+		print('Get dataset information via the entity-api.')
 	r = __query_assay_types( debug=debug )
 	if r is None:
 		warning('JSON object is empty.')
@@ -212,8 +212,7 @@ def get_assay_types( debug=False ):
 	j = json.loads(r.text)
 
 	if 'message' in j:
-		if debug:
-			warning('Request response empty.')
+		warning('Request response empty.')
 		print(j['message'])
 		return None
 	else:
@@ -231,6 +230,35 @@ def __query_assay_types( debug=False ):
 
 	data = requests.get(url=url, headers=headers, params=params)
 	return data
+
+def get_provenance_info( hubmap_id, instance='prod', token=None, overwrite=False, debug=False ):
+	'''
+	Request provenance info given a HuBMAP id.
+	'''
+
+	directory = '.provenance'
+	file = os.path.join( directory, hubmap_id + '.json' )
+	if os.path.exists( file ) and not overwrite:
+		print('Loading existing JSON file')
+		j = json.load( open( file, 'r' ) );
+	else:
+		print('Get information provenance info via the entity-api.')
+		r = __query_provenance_info( hubmap_id, instance=instance, token=token, debug=debug )
+		j = json.loads(r.text)
+
+	if j is None:
+		warning('JSON object is empty.')
+		return j
+	elif 'message' in j:
+		warning('Request response is empty. Not populating dataframe.')
+		print(j['message'])
+		return None
+	else:
+		if not os.path.exists( directory ):
+			os.mkdir( directory )
+		with open( file,'w') as outfile:
+			json.dump(j, outfile, indent=4)
+		return j
 
 def get_hubmap_ids( assay_name, token=None, debug=False ):
 	'''
