@@ -92,8 +92,7 @@ def get_ancestors_info( hubmap_id, instance='test', token=None, overwrite=True, 
 		warning('JSON object is empty.')
 		return j
 	elif 'message' in j:
-		if debug:
-			print('Request response. Not populating data frame and exiting script.')
+		warning('Request response. Not populating data frame and exiting script.')
 		print(j['message'])
 		return None
 	else:
@@ -138,8 +137,7 @@ def get_provenance_info( hubmap_id, instance='test', token=None, overwrite=False
                 warning('JSON object is empty.')
                 return j
 	elif 'message' in j:
-		if debug:
-			print('Request response. Not populating data frame and exiting script.')
+		if warning('Request response. Not populating data frame and exiting script.')
 		print(j['message'])
 		return None
 	else:
@@ -182,8 +180,7 @@ def get_dataset_info( hubmap_id, instance='test', token=None, overwrite=True, de
 		j = json.loads(r.text)
 
 	if 'message' in j:
-		if debug:
-			print('Request response. Not populating data frame and exiting script.')
+		warning('Request response. Not populating data frame and exiting script.')
 		print(j['message'])
 		return None
 	else:
