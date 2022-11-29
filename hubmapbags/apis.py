@@ -154,9 +154,9 @@ def __query_dataset_info( hubmap_id, instance='prod', token=None, debug=False ):
 		return None
 
 	if __get_instance( instance ) == 'prod':
-		URL='https://entity.api.hubmapconsortium.org/v3/entities' + hubmap_id
+		URL='https://entity.api.hubmapconsortium.org/entities' + hubmap_id
 	else:
-		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/v3/entities' + hubmap_id
+		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/entities' + hubmap_id
 
 	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
 
