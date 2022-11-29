@@ -206,10 +206,10 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 					df.loc[df['local_id'].str.contains(datum['file_path']),'hubmap_uuid']=datum['uuid']
   
 				if debug:
-					print('Updating pickle file ' + file + ' with the request response.')
+					print('Updating pickle file ' + temp_file + ' with the request response.')
 
-				df.to_pickle(file)
-				with open(file.replace('pkl','json'),'w') as outfile:
+				df.to_pickle(temp_file)
+				with open(temp_file.replace('pkl','json'),'w') as outfile:
 					json.dump(j, outfile, indent=4)
 		else:
 			if debug:
