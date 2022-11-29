@@ -176,6 +176,7 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 			file_info = []
 			for datum in df.iterrows():
 				datum = datum[1]
+				duuid = datum['dataset_uuid'] 
 				filename = datum['local_id'][datum['local_id'].find(duuid)+len(duuid)+1:]
 				file_info.append({'path':filename, \
 					'size':datum['size_in_bytes'], \
