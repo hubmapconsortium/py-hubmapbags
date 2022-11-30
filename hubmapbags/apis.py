@@ -114,30 +114,8 @@ def __query_provenance_info( hubmap_id, instance='prod', token=None, debug=False
 		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/datasets/'+hubmap_id+'/prov-info?format=json'
 
 	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
-
-	directory = '.provenance'
-	file = os.path.join( directory, hubmap_id + '.json' )
-	if os.path.exists( file ) and not overwrite:
-		print('Loading existing JSON file')
-		j = json.load( open( file, 'r' ) );
-	else:
-		print('Get information provenance info via the entity-api.')
-		r = __query_provenance_info( hubmap_id, instance=instance, token=token, debug=debug )
-		j = json.loads(r.text)
-
-	if j is None:
-                warning('JSON object is empty.')
-                return j
-	elif 'message' in j:
-		warning('Request response is empty. Not populating dataframe.')
-		print(j['message'])
-		return None
-	else:
-		if not os.path.exists( directory ):
-			os.mkdir( directory )
-		with open( file,'w') as outfile:
-			json.dump(j, outfile, indent=4)
-		return j
+	r = requests.get(URL, headers=headers)
+	return r
 
 def __query_dataset_info( hubmap_id, instance='prod', token=None, debug=False ):
 	token = utilities.__get_token( token )
