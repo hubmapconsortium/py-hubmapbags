@@ -27,7 +27,11 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='prod', token=Non
 	computing = data_directory.replace('/','_').replace(' ','_') + '.computing'
 	done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
 	broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
-	temp_file = data_directory.replace('/','_').replace(' ','_') + '.pkl'
+
+	if not Path('.data').exists():
+		Path('.data').mkdir()
+
+	temp_file = '.data/' + data_directory.replace('/','_').replace(' ','_') + '.pkl'
 
 	if exists( computing ):
 		warning('Computing file ' + computing + ' exists. Another process is computing checksums. Not populating local file.')
@@ -147,7 +151,10 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 	computing = data_directory.replace('/','_').replace(' ','_') + '.computing'
 	done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
 	broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
-	temp_file = data_directory.replace('/','_').replace(' ','_') + '.pkl'
+
+	if not Path('.data').exists():
+		Path('.data').mkdir()
+	temp_file = '.data/' + data_directory.replace('/','_').replace(' ','_') + '.pkl'
 
 	token = utilities.__get_token( token )
 	if token is None:
@@ -225,7 +232,7 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 		for frame in dfs:
 			counter=counter+1
 			if debug:
-				print('Computing uuids on partition ' + str(counter) + ' of ' + str(len(dfs)) + '.')
+				print('Computing UUIDs on partition ' + str(counter) + ' of ' + str(len(dfs)) + '.')
 
 			file_info = []
 			for datum in frame.iterrows():
@@ -244,11 +251,10 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 
 			if frame['hubmap_uuid'].isnull().all():
 				if debug:
-					print('Generating uuids')
+					print('Generating UUIDs')
 
 				r = requests.post(URL, params=params, headers=headers, data=json.dumps(payload), allow_redirects=True, timeout=120)
 				j = json.loads(r.text)
-				time.sleep(5)
 
 				if 'message' in j:
 					if debug:
@@ -263,8 +269,7 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 						print('Updating pickle file ' + file + ' with the results of this chunk.')
 					df.to_pickle(file)
 			else:
-				if debug:
-					print('HuBMAP uuid chunk is populated. Skipping recomputation.')
+				print('HuBMAP UUID chunk is populated. Skipping recomputation.')
 
 def should_i_generate_uuids( hubmap_id, instance='prod', token=None, debug=False ):
 	'''

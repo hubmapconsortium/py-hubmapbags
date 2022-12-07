@@ -117,10 +117,13 @@ def _build_dataframe( hubmap_id, directory ):
                'collection_id_namespace', \
                'collection_local_id']
 
-    temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
+    if not Path('.data').exists():
+        Path('.data').mkdir()
+    
+    temp_file = '.data/' + directory.replace('/','_').replace(' ','_') + '.pkl'
     print(temp_file)
 
-    if Path( temp_file ).exists():
+    if Path(temp_file).exists():
         print('Temporary file ' + temp_file + ' found. Loading df into memory.')
         with open( temp_file, 'rb' ) as file:
             df = pickle.load(file)
@@ -153,7 +156,11 @@ def _build_dataframe( hubmap_id, directory ):
 
 def create_manifest( hubmap_id, directory, output_directory ):
     filename = os.path.join( output_directory, 'file_in_collection.tsv' )
-    temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
+
+    if not Path('.data').exists():
+        Path('.data').mkdir()
+    
+    temp_file = '.data/' + directory.replace('/','_').replace(' ','_') + '.pkl'
     if not Path(directory).exists() and not Path(temp_file).exists():
         print('Data directory ' + directory + ' does not exist. Temp file was not found either.')
         return False

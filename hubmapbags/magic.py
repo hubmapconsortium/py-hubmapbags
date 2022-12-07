@@ -188,7 +188,9 @@ def do_it( input, dbgap_study_id=None, \
 					os.mkdir(output_directory)
 
 			print('Making file.tsv')
-			temp_file = data_directory.replace('/','_').replace(' ','_') + '.pkl'
+			if not Path('.data').exists():
+				Path('.data').mkdir()
+			temp_file = '.data/' + data_directory.replace('/','_').replace(' ','_') + '.pkl'
 
 			if overwrite:
 				print('Removing precomputed checksums')

@@ -233,7 +233,10 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
 		'dataset_uuid', \
 		'relative_local_id']
 
-	temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
+	if not Path('.data').exists():
+		Path('.data').mkdir()
+
+	temp_file = '.data/' + directory.replace('/','_').replace(' ','_') + '.pkl'
 
 	if Path(temp_file).exists():
 		print( 'Temporary file ' + temp_file + ' found. Loading df into memory.' )
@@ -285,15 +288,18 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
 	return df
 
 def create_manifest( project_id, assay_type, directory, output_directory, dbgap_study_id, token, dataset_hmid, dataset_uuid ):
-    filename = os.path.join( output_directory, 'file.tsv' )
-    temp_file = directory.replace('/','_').replace(' ','_') + '.pkl'
-    if not Path(directory).exists() and not Path(temp_file).exists():
-        print('Data directory ' + directory + ' does not exist. Temp file was not found either.')
-        return False
-    else:
-        if Path(temp_file).exists():
-            print('Temp file ' + temp_file + ' found. Continuing computation.')
-        df = _build_dataframe( project_id, assay_type, directory, dbgap_study_id, dataset_hmid, dataset_uuid )
-        df.to_csv( filename, sep="\t", index=False)
+	filename = os.path.join( output_directory, 'file.tsv' )
 
-        return True
+	if not Path('.data').exists():
+		Path('.data').mkdir()
+
+	temp_file = '.data/' +  directory.replace('/','_').replace(' ','_') + '.pkl'
+	if not Path(directory).exists() and not Path(temp_file).exists():
+		print('Data directory ' + directory + ' does not exist. Temp file was not found either.')
+		return False
+	else:
+		if Path(temp_file).exists():
+			print('Temp file ' + temp_file + ' found. Continuing computation.')
+		df = _build_dataframe( project_id, assay_type, directory, dbgap_study_id, dataset_hmid, dataset_uuid )
+		df.to_csv( filename, sep="\t", index=False)
+		return True
