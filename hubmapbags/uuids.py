@@ -5,6 +5,7 @@ from os.path import exists
 import json
 import time
 import requests
+from pathlib import Path
 from warnings import warn as warning
 from . import utilities
 from . import magic
