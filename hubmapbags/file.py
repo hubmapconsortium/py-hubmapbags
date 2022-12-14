@@ -11,154 +11,154 @@ import hashlib
 import pickle
 
 def __get_filename( file ):
-	'''
-	Helper method that returns a CFDE compatible version of a filename
-	'''
+        '''
+        Helper method that returns a CFDE compatible version of a filename
+        '''
 
-	return file.name.replace(' ', '%20')
+        return file.name.replace(' ', '%20')
 
 def __get_file_extension( file ):
-	'''
-	Helper method that returns the file extension.
-	'''
-	return file.suffix
+        '''
+        Helper method that returns the file extension.
+        '''
+        return file.suffix
 
 def __get_file_size( file ):
-	'''
-	Helper method that computes and returns the file size in bytes.
-	'''
+        '''
+        Helper method that computes and returns the file size in bytes.
+        '''
 
-	return file.stat().st_size
+        return file.stat().st_size
 
 def __get_md5( file ):
-	'''
-	Helper method that computes and return a file md5 checksum.
-	'''
+        '''
+        Helper method that computes and return a file md5 checksum.
+        '''
 
-	blocksize=2**20
-	m = hashlib.md5()
+        blocksize=2**20
+        m = hashlib.md5()
 
-	with open( file, "rb" ) as f:
-		while True:
-			buf = f.read(blocksize)
-			if not buf:
-				break
-			m.update( buf )
+        with open( file, "rb" ) as f:
+                while True:
+                        buf = f.read(blocksize)
+                        if not buf:
+                                break
+                        m.update( buf )
 
-	return m.hexdigest()
+        return m.hexdigest()
 
 def __get_relative_local_id( file, hubmap_uuid ):
-	'''
-	Helper function the return the relative local id.
-	'''
+        '''
+        Helper function the return the relative local id.
+        '''
 
-	file = str(file)
-	relative_local_id = file[file.find(hubmap_uuid)+len(hubmap_uuid)+1:]
-	return relative_local_id
+        file = str(file)
+        relative_local_id = file[file.find(hubmap_uuid)+len(hubmap_uuid)+1:]
+        return relative_local_id
 
 def __get_sha256( file ):
-	'''
-	Helper method that computes and return a file sha256 checksum.
-	'''
+        '''
+        Helper method that computes and return a file sha256 checksum.
+        '''
 
-	blocksize=2**20
-	m = hashlib.md5()
+        blocksize=2**20
+        m = hashlib.md5()
 
-	with open( file, "rb" ) as f:
-		while True:
-			buf = f.read(blocksize)
-			if not buf:
-				break
-			m.update( buf )
+        with open( file, "rb" ) as f:
+                while True:
+                        buf = f.read(blocksize)
+                        if not buf:
+                                break
+                        m.update( buf )
 
-	return m.hexdigest()
+        return m.hexdigest()
 
 def __get_file_creation_date( file ):
-	'''
-	Helper method that return a file creation date.
-	'''
+        '''
+        Helper method that return a file creation date.
+        '''
 
-	t = os.path.getmtime(str(file))
-	return str(datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d'))
+        t = os.path.getmtime(str(file))
+        return str(datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d'))
 
 def __get_data_type( file ):
-	'''
-	Helper method that maps a file extension to an EDAM data format term.
-	'''
+        '''
+        Helper method that maps a file extension to an EDAM data format term.
+        '''
 
-	extension = __get_file_extension( file )
+        extension = __get_file_extension( file )
 
-	try:
-		formats = {}
-		formats['.tsv'] = 'data:2526' #tsv
-		formats['.tif'] = 'data:2968' #tiff
-		formats['.tiff'] = 'data:2968' #tiff
-		formats['.png'] = 'data:2968' #png
-		formats['.jpg'] = 'data:2968' #jpg
-		formats['.ome.tiff'] = 'data:2968' #ome.tiff
-		formats['.fastq'] = 'data:2044' #txt
-		formats['.txt'] = 'data:2526' #txt
-		formats['.xml'] = 'data:2526' #xml
-		formats['.czi'] = 'data:2968' #czi
-		formats['.gz'] = 'data:2044' #gz
-		formats['.json'] = 'data:2526' #json
-		formats['.xlsx'] = 'data:2526' #xlsx
-		formats['._truncated_'] = '' #?
-		formats['.tgz'] = '' #tgz
-		formats['.tar.gz'] = '' #tar.gz
-		formats['.csv'] = 'data:2526' #csv
-		formats['.html'] = 'data:2526' #html
-		formats['.htm'] = 'data:2526' #htm
-		formats['.h5'] = '' #h5
-		formats[''] = '' #other
+        try:
+                formats = {}
+                formats['.tsv'] = 'data:2526' #tsv
+                formats['.tif'] = 'data:2968' #tiff
+                formats['.tiff'] = 'data:2968' #tiff
+                formats['.png'] = 'data:2968' #png
+                formats['.jpg'] = 'data:2968' #jpg
+                formats['.ome.tiff'] = 'data:2968' #ome.tiff
+                formats['.fastq'] = 'data:2044' #txt
+                formats['.txt'] = 'data:2526' #txt
+                formats['.xml'] = 'data:2526' #xml
+                formats['.czi'] = 'data:2968' #czi
+                formats['.gz'] = 'data:2044' #gz
+                formats['.json'] = 'data:2526' #json
+                formats['.xlsx'] = 'data:2526' #xlsx
+                formats['._truncated_'] = '' #?
+                formats['.tgz'] = '' #tgz
+                formats['.tar.gz'] = '' #tar.gz
+                formats['.csv'] = 'data:2526' #csv
+                formats['.html'] = 'data:2526' #html
+                formats['.htm'] = 'data:2526' #htm
+                formats['.h5'] = '' #h5
+                formats[''] = '' #other
 
-		return formats[extension]
-	except:
-		print( 'Unable to find key for data type ' + extension )
-		return ''
+                return formats[extension]
+        except:
+                print( 'Unable to find key for data type ' + extension )
+                return ''
 
 def __get_mime_type( file ):
-	'''
-	Helper function that return a file MIME type.
-	'''
+        '''
+        Helper function that return a file MIME type.
+        '''
 
-	return mimetypes.MimeTypes().guess_type(str(file))[0]
+        return mimetypes.MimeTypes().guess_type(str(file))[0]
 
 def __get_file_format( file ):
-	'''
-	Helper method that maps a file extension to an EDAM file format term.
-	'''
+        '''
+        Helper method that maps a file extension to an EDAM file format term.
+        '''
 
-	extension = __get_file_extension( file )
+        extension = __get_file_extension( file )
 
-	try:
-		formats = {}
-		formats['.tsv'] = 'format:2330' #tsv
-		formats['.tif'] = 'format:3547' #tiff
-		formats['.tiff'] = 'format:3547' #tiff
-		formats['.png'] = 'format:3547' #png
-		formats['.jpg'] = 'format:3547' #jpg
-		formats['.ome.tiff'] = 'format:3547' #ome.tiff
-		formats['.fastq'] = 'format:2330' #txt
-		formats['.txt'] = 'format:2330' #txt
-		formats['.xml'] = 'format:2332' #xml
-		formats['.czi'] = 'format:3547' #czi
-		formats['.gz'] = 'format:3989' #gz
-		formats['.json'] = 'format:2330' #json
-		formats['.xlsx'] = 'format:3468' #xlsx
-		formats['._truncated_'] = 'format:2330' #?
-		formats['.tgz'] = 'format:3989' #tgz
-		formats['.csv'] = 'format:3752' #csv
-		formats['.html'] = 'format:2331' #html
-		formats['.htm'] = 'format:2331' #htm
-		formats['.tar.gz'] = 'format:3989' #tgz
-		formats['.h5'] = 'format:3590' #h5
-		formats[''] = ''
+        try:
+                formats = {}
+                formats['.tsv'] = 'format:2330' #tsv
+                formats['.tif'] = 'format:3547' #tiff
+                formats['.tiff'] = 'format:3547' #tiff
+                formats['.png'] = 'format:3547' #png
+                formats['.jpg'] = 'format:3547' #jpg
+                formats['.ome.tiff'] = 'format:3547' #ome.tiff
+                formats['.fastq'] = 'format:2330' #txt
+                formats['.txt'] = 'format:2330' #txt
+                formats['.xml'] = 'format:2332' #xml
+                formats['.czi'] = 'format:3547' #czi
+                formats['.gz'] = 'format:3989' #gz
+                formats['.json'] = 'format:2330' #json
+                formats['.xlsx'] = 'format:3468' #xlsx
+                formats['._truncated_'] = 'format:2330' #?
+                formats['.tgz'] = 'format:3989' #tgz
+                formats['.csv'] = 'format:3752' #csv
+                formats['.html'] = 'format:2331' #html
+                formats['.htm'] = 'format:2331' #htm
+                formats['.tar.gz'] = 'format:3989' #tgz
+                formats['.h5'] = 'format:3590' #h5
+                formats[''] = ''
 
-		return formats[extension]
-	except:
-		print('Unable to find key for file format ' + extension )
-		return ''
+                return formats[extension]
+        except:
+                print('Unable to find key for file format ' + extension )
+                return ''
 
 def __get_dbgap_study_id( file, dbgap_study_id ):
     if dbgap_study_id == '':
@@ -242,7 +242,7 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
         p = _get_list_of_files( directory )
         print( 'Finding all files in directory' )
 
-		counter = 0
+                counter = 0
         for file in p:
             if file.is_file():
                    if str(file).find('drv') < 0 or str(file).find('processed') < 0:
@@ -269,11 +269,11 @@ def _build_dataframe( project_id, assay_type, directory, dbgap_study_id=None, da
                             'dataset_hmid':dataset_hmid, \
                             'dataset_uuid':dataset_uuid}, ignore_index=True)
 
-			counter = counter + 1
-			if counter % 100 == 0:
-				        print('Saving df to disk in file ' + temp_file)
-						with open( temp_file, 'wb' ) as file:
-							pickle.dump( df, file )
+                       counter = counter + 1
+                       if counter % 100 == 0:
+                               print('Saving df to disk in file ' + temp_file)
+                               with open( temp_file, 'wb' ) as file:
+                                       pickle.dump( df, file )
 
         print('Saving df to disk in file ' + temp_file)
         with open( temp_file, 'wb' ) as file:
