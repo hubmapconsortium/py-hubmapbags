@@ -217,10 +217,12 @@ def get_provenance_info( hubmap_id, instance='prod', token=None, overwrite=False
 	directory = '.provenance'
 	file = os.path.join( directory, hubmap_id + '.json' )
 	if os.path.exists( file ) and not overwrite:
-		print('Loading existing JSON file')
+		if debug:
+			print('Loading existing JSON file')
 		j = json.load( open( file, 'r' ) );
 	else:
-		print('Get information provenance info via the entity-api.')
+		if debug:
+			print('Get information provenance info via the entity-api.')
 		r = __query_provenance_info( hubmap_id, instance=instance, token=token, debug=debug )
 		j = json.loads(r.text)
 

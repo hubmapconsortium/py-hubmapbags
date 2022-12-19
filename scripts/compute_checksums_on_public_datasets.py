@@ -15,7 +15,7 @@ output_directory = 'data'
 if not Path(output_directory).exists():
 	Path(output_directory).mkdir()
 
-report_output_directory = 'uuid-protected-data-report'
+report_output_directory = 'uuid-public-data-report'
 if not Path(report_output_directory).exists():
     Path(report_output_directory).mkdir()
 report_output_filename = report_output_directory + '/' + str(now.strftime('%Y%m%d')) + '.tsv'
@@ -35,7 +35,6 @@ if not Path(report_output_filename).exists():
 		#clean up
 		datasets = datasets[(datasets['data_type'] != 'image_pyramid')]
 		datasets = datasets[(datasets['status'] == 'Published')]
-		datasets = datasets[(datasets['is_protected'] == True)]
 
 		datasets['has_uuids'] = None
 		datasets['number_of_uuids'] = None
@@ -43,25 +42,22 @@ if not Path(report_output_filename).exists():
 		datasets['number_of_files'] = None
 
 		for index, datum in tqdm(datasets.iterrows()):
-			if hubmapbags.apis.is_protected( datum['hubmap_id'], token=token ):
-				datasets.loc[index, 'number_of_uuids'] = hubmapbags.uuids.get_number_of_uuids( datum['hubmap_id'], instance='prod', token=token )
+			datasets.loc[index, 'number_of_uuids'] = hubmapbags.uuids.get_number_of_uuids( datum['hubmap_id'], instance='prod', token=token )
 
-				if datasets.loc[index, 'number_of_uuids'] == 0:
-					datasets.loc[index, 'has_uuids'] = False
-				else:
-					datasets.loc[index, 'has_uuids'] = True
+			if datasets.loc[index, 'number_of_uuids'] == 0:
+				datasets.loc[index, 'has_uuids'] = False
+			else:
+				datasets.loc[index, 'has_uuids'] = True
 
-				datasets.loc[index, 'directory'] = hubmapbags.apis.get_directory( datum['hubmap_id'], instance='prod', token=token )
-				datasets.loc[index, 'number_of_files'] = hubmapbags.apis.get_number_of_files( datum['hubmap_id'], instance='prod', token=token )
+			datasets.loc[index, 'directory'] = hubmapbags.apis.get_directory( datum['hubmap_id'], instance='prod', token=token )
+			datasets.loc[index, 'number_of_files'] = hubmapbags.apis.get_number_of_files( datum['hubmap_id'], instance='prod', token=token )
 
 		if report.empty:
 			report = datasets
 		else:
 			report = pd.concat( [report, datasets] )
 
-		report = report[report['is_protected']==True] 
-		report = report[['uuid','hubmap_id','status','is_protected','data_type','directory','group_name','has_uuids','number_of_uuids','number_of_files']]
-
+		report = report[report['is_protected']==False] 
 		report.to_csv( report_output_filename, sep='\t', index=False )
 		report.to_pickle( report_output_filename.replace('tsv','pkl') )
 else:
@@ -76,7 +72,11 @@ def get_dbgap_study_id( datum ):
 		return 'phs002272'
 	else:
 		return None
-exit
+
+# where dataframe
+report = report[report['data_type'] != 'CODEX']
+report = report[report['is_protected'] == False]
+report = report[report['has_uuids'] == False]
 
 for index, datum in report.iterrows():
 	if hubmapbags.uuids.should_i_generate_uuids(datum['hubmap_id'], instance=instance, token=token):
@@ -97,4 +97,3 @@ for index, datum in report.iterrows():
         		debug=True )
 
 		hubmapbags.uuids.generate( hubmap_id, instance=instance, token=token )
-

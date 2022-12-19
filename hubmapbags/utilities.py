@@ -77,3 +77,7 @@ def pprint( message ):
 	table = [[message]]
 	output = tabulate(table, tablefmt='grid')
 	print(output)
+
+
+def __get_temp_filename( hubmap_id, instance='prod', token=None ):
+	

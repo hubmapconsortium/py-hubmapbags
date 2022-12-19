@@ -32,12 +32,12 @@ from . import collection_anatomy, collection_compound, \
               file_format, apis, \
               uuids, utilities
 
-def __extract_dataset_info_from_db( id, token=None, instance='test', debug=None ):
+def __extract_dataset_info_from_db( hubmap_id, token=None, instance='prod', debug=None ):
 	'''
 	Helper function that uses the HuBMAP APIs to get dataset info.
 	'''
 
-	j = apis.get_dataset_info( id, token=token, instance=instance )
+	j = apis.get_dataset_info( hubmap_id, token=token, instance=instance )
 	if j is None:
 		warnings.warn('Unable to extract data from database.')
 		return None
@@ -51,7 +51,7 @@ def __extract_dataset_info_from_db( id, token=None, instance='test', debug=None 
 	first_sample_id=j.get('direct_ancestors')[0].get('hubmap_id')
 	first_sample_uuid=j.get('direct_ancestors')[0].get('uuid')
 
-	j = apis.get_provenance_info( id, instance=instance, token=token )
+	j = apis.get_provenance_info( hubmap_id, instance=instance, token=token )
 	organ_type=j.get('organ_type')[0]
 	organ_hmid=j.get('organ_hubmap_id')[0]
 	organ_uuid=j.get('organ_uuid')[0]

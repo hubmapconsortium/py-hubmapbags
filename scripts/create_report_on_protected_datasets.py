@@ -76,25 +76,3 @@ def get_dbgap_study_id( datum ):
 		return 'phs002272'
 	else:
 		return None
-exit
-
-for index, datum in report.iterrows():
-	if hubmapbags.uuids.should_i_generate_uuids(datum['hubmap_id'], instance=instance, token=token):
-		hubmap_id = str(datum['hubmap_id'])
-		number_of_uuids = str(hubmapbags.uuids.get_number_of_uuids(datum['hubmap_id'], instance='prod', token=token))
-		number_of_files = str(hubmapbags.apis.get_number_of_files(datum['hubmap_id'], instance='prod', token=token))
-		dbgap_study_id = str(get_dbgap_study_id( datum ))
-		output_directory = './data'
-
-		print( hubmap_id + ':' + number_of_uuids + ':' + number_of_files  + ':' + dbgap_study_id )
-		hubmapbags.magic.do_it( hubmap_id, \
-        		overwrite=False, \
-			dbgap_study_id=dbgap_study_id, \
-			token=token, \
-        		compute_uuids=False, \
-        		copy_output_to = output_directory, \
-        		instance='prod', \
-        		debug=True )
-
-		hubmapbags.uuids.generate( hubmap_id, instance=instance, token=token )
-
