@@ -51,6 +51,11 @@ def __extract_dataset_info_from_db( hubmap_id, token=None, instance='prod', debu
 	first_sample_id=j.get('direct_ancestors')[0].get('hubmap_id')
 	first_sample_uuid=j.get('direct_ancestors')[0].get('uuid')
 
+	if j.get('contains_human_genetic_sequences') == False:
+		is_protected = False
+	else:
+		is_protected = True
+
 	j = apis.get_provenance_info( hubmap_id, instance=instance, token=token )
 	organ_type=j.get('organ_type')[0]
 	organ_hmid=j.get('organ_hubmap_id')[0]
@@ -58,9 +63,10 @@ def __extract_dataset_info_from_db( hubmap_id, token=None, instance='prod', debu
 	donor_hmid=j.get('donor_hubmap_id')[0]
 	donor_uuid=j.get('donor_uuid')[0]
 
-	full_path = os.path.join('/hive/hubmap/data/public',hmuuid)
-	if not os.path.isdir(full_path):
+	if is_protected:
 		full_path=os.path.join('/hive/hubmap/data/protected',group_name,hmuuid)
+	else:
+		full_path = os.path.join('/hive/hubmap/data/public',hmuuid)
 
 	headers = ['ds.group_name', 'ds.uuid', \
 		'ds.hubmap_id', 'dataset_uuid', \
@@ -68,10 +74,10 @@ def __extract_dataset_info_from_db( hubmap_id, token=None, instance='prod', debu
 		'first_sample_id', 'first_sample_uuid', \
 		'organ_type', 'organ_id', \
 		'donor_id', 'donor_uuid', \
-		'full_path']
+		'is_protected','full_path']
 
 	df = pd.DataFrame(columns=headers)
-	df = df.append({'ds.group_name':group_name, \
+	df = pd.concat([df, pd.DataFrame([{'ds.group_name':group_name, \
 		'ds.uuid':group_uuid, \
 		'ds.hubmap_id':hmid, \
 		'dataset_uuid':hmuuid, \
@@ -84,7 +90,8 @@ def __extract_dataset_info_from_db( hubmap_id, token=None, instance='prod', debu
 		'organ_id':organ_hmid, \
 		'donor_id':donor_hmid, \
 		'donor_uuid':donor_uuid, \
-		'full_path':full_path}, ignore_index=True)
+		'is_protected':is_protected, \
+		'full_path':full_path}])], ignore_index=True)
 
 	return df
 
@@ -97,7 +104,7 @@ def __get_number_of_files( output_directory ):
 	except:
 		return 0
 
-def __extract_datasets_from_input( input ):
+def __extract_datasets_from_input( input, instance='prod', token=None ):
 	'''
 	Helper function that returns a list of valid datasets (if any).
 	'''
@@ -342,3 +349,57 @@ def do_it( input, dbgap_study_id=None, \
 				df.to_csv(temp_file.replace('pkl','tsv'), sep="\t")
 
 	return True
+
+def get_dataset_info_from_local_file( hubmap_id, token=token, instance=instance ):
+
+	dataset = __extract_datasets_from_input( hubmap_id, token=token, instance=instance )
+	if dataset is None:
+		return False
+
+	data_directory = dataset['full_path']
+	print('Preparing bag for dataset ' + data_directory )
+
+	computing = data_directory.replace('/','_').replace(' ','_') + '.computing'
+	done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
+	broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
+	
+	organ_shortcode = dataset['organ_type']
+	organ_id = dataset['organ_id']
+	donor_id = dataset['donor_id']
+
+	if overwrite:
+		print('Erasing old checkpoint. Re-computing checksums.')
+		if Path(done).exists():
+			Path(done).unlink()
+
+	if Path(done).exists():
+		print('Checkpoint found. Avoiding computation. To re-compute erase file ' + done)
+	elif Path(computing).exists():
+		print('Computing checkpoint found. Avoiding computation since another process is building this bag.')
+	else:
+		with open(computing, 'w') as file:
+			pass
+
+		print('Creating checkpoint ' + computing)
+
+		if status == 'new':
+			print('Dataset is not published. Aborting computation.')
+			return
+
+		if build_bags:
+			print('Checking if output directory exists.')
+			output_directory = data_type + '-' + status + '-' + dataset['dataset_uuid']
+
+			print('Creating output directory ' + output_directory + '.' )
+			if Path(output_directory).exists() and Path(output_directory).is_dir():
+					print('Output directory found. Removing old copy.')
+					rmtree(output_directory)
+					os.mkdir(output_directory)
+			else:
+					print('Output directory does not exist. Creating directory.')
+					os.mkdir(output_directory)
+
+			print('Making file.tsv')
+			if not Path('.data').exists():
+				Path('.data').mkdir()
+			temp_file = '.data/' + data_directory.replace('/','_').replace(' ','_') + '.pkl'

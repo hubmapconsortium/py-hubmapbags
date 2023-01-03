@@ -1,7 +1,6 @@
 import sys
 import pandas as pd
 import os
-from os.path import exists
 import json
 import time
 import requests
@@ -16,32 +15,30 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='prod', token=Non
 	Helper function that populates (but does not generate) a local pickle file with remote UUIDs.
 	'''
 
-	utilities.pprint('Processing dataset with HuBMAP ID ' + hubmap_id)
-	dataset = magic.__extract_dataset_info_from_db( hubmap_id, token=token, instance=instance )
+	utilities.pprint('Populating dataset with HuBMAP ID ' + hubmap_id + ' with remote UUIDs')
+	dataset = magic.__extract_datasets_from_input( hubmap_id, instance=instance, token=token )
 
 	if dataset is None:
 		warning('No datasets found. Exiting.')
 		return False
 
-	dataset = dataset.squeeze()
-	data_directory = dataset['full_path']
+	data_directory = dataset['full_path'][0]
 	computing = data_directory.replace('/','_').replace(' ','_') + '.computing'
 	done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
 	broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
 
-	if not Path('.data').exists():
+	if not Path('.data').is_dir():
 		Path('.data').mkdir()
-
 	temp_file = '.data/' + data_directory.replace('/','_').replace(' ','_') + '.pkl'
 
-	if exists( computing ):
+	if Path(computing).is_file():
 		warning('Computing file ' + computing + ' exists. Another process is computing checksums. Not populating local file.')
 		return False
-	elif not exists( computing ) and not exists( done ):
+	elif not Path(computing).is_file() and not Path(done).is_file():
 		print('File ' + done + ' not found on disk. Not populating local file.' )
 		return False
-	elif exists( done ):
-		if exists( temp_file ):
+	elif Path(done).is_file():
+		if Path(temp_file).is_file():
 			if should_i_generate_uuids( hubmap_id, instance=instance, token=token, debug=debug ):
 				print('Attempting to populate local file')
 				df = pd.read_pickle( temp_file )
@@ -53,7 +50,7 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='prod', token=Non
 							df.loc[i,'hubmap_uuid'] = \
 								uuid['file_uuid']
 
-				print('Saving temp file ' + temp_file + ' to disk.')
+				print('Updating local file ' + temp_file + ' with UUIDs.')
 				df.to_pickle( temp_file )
 				return True
 			else:
@@ -144,7 +141,7 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 	dataset = magic.__extract_dataset_info_from_db( hubmap_id, token=token, instance=instance )
 
 	if dataset is None:
-		warning('No datasets found. Exiting.')
+		warning('No datasets found with given dataset ID. Exiting process.')
 		return False
 
 	dataset = dataset.squeeze()
@@ -153,7 +150,7 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 	done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
 	broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
 
-	if not Path('.data').exists():
+	if not Path('.data').is_file():
 		Path('.data').mkdir()
 	temp_file = '.data/' + data_directory.replace('/','_').replace(' ','_') + '.pkl'
 
@@ -162,14 +159,18 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 		warning('Token not set.')
 		return None
 
+	answer = hubmapbags.uuids.populate_local_file_with_remote_uuids( hubmap_id, instance=instance, token=token, debug=False )
+
 	try:
 		if debug:
 			print('Loading temp file ' + temp_file + '.')
 		df = pd.read_pickle( temp_file )
 	except:
 		if debug:
-			print('Unable to load pickle file ' + temp_file + '. Exiting script.' )
+			print('Unable to load pickle file ' + temp_file + '. Exiting process.' )
 		return False
+
+	return df
 
 	if __get_instance( instance ) == 'prod':
 		URL = 'https://uuid.api.hubmapconsortium.org/hmuuid/'
