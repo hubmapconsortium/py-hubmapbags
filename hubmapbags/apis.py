@@ -73,7 +73,7 @@ def __query_ancestors_info( hubmap_id, token=None, debug=False ):
 	r = requests.get(URL, headers=headers)
 	return r
 
-def get_ancestors_info( hubmap_id, instance='test', token=None, overwrite=True, debug=True ):
+def get_ancestors_info( hubmap_id, instance='prod', token=None, overwrite=True, debug=True ):
 	'''
 	Helper method that returns the ancestors info give a HuBMAP ID.
 	'''
@@ -503,3 +503,93 @@ def get_number_of_files( hubmap_id, instance='prod', token=None ):
 		return None
 	else:
 		return len(answer)
+
+def __query_donor_info( hubmap_id, instance='prod', token=None, debug=False ):
+	token = utilities.__get_token( token )
+	if token is None:
+		warning('Token not set.')
+		return None
+
+	if __get_instance( instance ) == 'prod':
+		URL='https://entity.api.hubmapconsortium.org/entities/' + hubmap_id
+	else:
+		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/entities/' + hubmap_id
+
+	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
+
+	r = requests.get(URL, headers=headers)
+	return r
+
+def get_donor_info( hubmap_id, instance='prod', token=None, overwrite=True, debug=True ):
+	'''
+	Request dataset info given a HuBMAP id.
+	'''
+
+	# get donor ID from dataset ID
+	metadata = get_provenance_info( hubmap_id, instance=instance, token=token, debug=debug )
+	hubmap_donor_id = metadata['donor_hubmap_id'][0]
+
+	directory = '.donor'
+	file = os.path.join( directory, hubmap_donor_id + '.json' )
+	if os.path.exists( file ) and not overwrite:
+		j = json.load( open( file, 'r' ) );
+	else:
+		r = __query_donor_info( hubmap_donor_id, instance=instance, token=token, debug=debug )
+		if r is None:
+			warning('JSON object is empty.')
+			return r
+		j = json.loads(r.text)
+
+	if 'message' in j:
+		warning('Request response is empty. Not populating dataframe.')
+		print(j['message'])
+		return None
+	else:
+		if not os.path.exists( directory ):
+			os.mkdir( directory )
+		with open( file,'w') as outfile:
+			json.dump(j, outfile, indent=4)
+		return j
+
+def __query_entity_info( hubmap_id, instance='prod', token=None, debug=False ):
+	token = utilities.__get_token( token )
+	if token is None:
+		warning('Token not set.')
+		return None
+
+	if __get_instance( instance ) == 'prod':
+		URL='https://entity.api.hubmapconsortium.org/entities/' + hubmap_id
+	else:
+		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/entities/' + hubmap_id
+
+	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
+
+	r = requests.get(URL, headers=headers)
+	return r
+
+def get_entity_info( hubmap_id, instance='prod', token=None, overwrite=True, debug=True ):
+	'''
+	Request dataset info given a HuBMAP id.
+	'''
+
+	directory = '.entity'
+	file = os.path.join( directory, hubmap_id + '.json' )
+	if os.path.exists( file ) and not overwrite:
+		j = json.load( open( file, 'r' ) );
+	else:
+		r = __query_entity_info( hubmap_id, instance=instance, token=token, debug=debug )
+		if r is None:
+			warning('JSON object is empty.')
+			return r
+		j = json.loads(r.text)
+
+	if 'message' in j:
+		warning('Request response is empty. Not populating dataframe.')
+		print(j['message'])
+		return None
+	else:
+		if not os.path.exists( directory ):
+			os.mkdir( directory )
+		with open( file,'w') as outfile:
+			json.dump(j, outfile, indent=4)
+		return j
