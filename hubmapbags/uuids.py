@@ -150,7 +150,7 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 	done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
 	broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
 
-	if not Path('.data').is_file():
+	if not Path('.data').is_dir():
 		Path('.data').mkdir()
 	temp_file = '.data/' + data_directory.replace('/','_').replace(' ','_') + '.pkl'
 
