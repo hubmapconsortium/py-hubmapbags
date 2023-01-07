@@ -159,7 +159,7 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 		warning('Token not set.')
 		return None
 
-	answer = hubmapbags.uuids.populate_local_file_with_remote_uuids( hubmap_id, instance=instance, token=token, debug=False )
+	answer = populate_local_file_with_remote_uuids( hubmap_id, instance=instance, token=token, debug=False )
 
 	try:
 		if debug:
