@@ -176,39 +176,6 @@ def __query_assay_types( instance='prod', token=None, debug=False ):
 	r = requests.get(URL, headers=headers)
 	return r
 
-def get_assay_types( debug=False ):
-	'''
-	Request list of assay types from primary datasets.
-	'''
-
-	if debug:
-		print('Get dataset information via the entity-api.')
-	r = __query_assay_types( debug=debug )
-	if r is None:
-		warning('JSON object is empty.')
-		return r
-	j = json.loads(r.text)
-
-	if 'message' in j:
-		warning('Request response empty.')
-		print(j['message'])
-		return None
-	else:
-		return j['result']
-
-def __query_assay_types( debug=False ):
-	'''
-	Search dataset by a given assaytype name.
-	'''
-
-	url = 'https://search.api.hubmapconsortium.org/v3/assaytype'
-
-	headers = {'Accept': 'application/json'}
-	params = {'primary':'true', 'simple':'true'}
-
-	data = requests.get(url=url, headers=headers, params=params)
-	return data
-
 def get_provenance_info( hubmap_id, instance='prod', token=None, overwrite=False, debug=False ):
 	'''
 	Request provenance info given a HuBMAP id.
@@ -593,3 +560,58 @@ def get_entity_info( hubmap_id, instance='prod', token=None, overwrite=True, deb
 		with open( file,'w') as outfile:
 			json.dump(j, outfile, indent=4)
 		return j
+
+def get_assay_types( token=None, debug=False ):
+	'''
+	Request list of assay types.
+	'''
+
+	if debug:
+		print('Get dataset information via the search-api.')
+	assays = __query_assay_types( token=token, debug=debug )
+	
+	return assays
+
+def __query_assay_types( token=token, debug=False ):
+	'''
+	Search dataset by a given assaytype name.
+	'''
+
+	token = utilities.__get_token( token )
+	if token is None:
+		warning('Token not set.')
+		return None
+
+	url = 'https://search.api.hubmapconsortium.org/v3/search'
+
+	headers = {'Authorization':'Bearer '+token, 'accept':'application/json'}
+	body = {
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match_phrase": {
+                        "entity_type": "dataset"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "fieldvals": {
+            "terms": {
+                "field": "data_types.keyword",
+                "size": 500
+            	}
+        	}
+    	}
+	}
+
+	data = requests.post(url=url, headers=headers, json=body)
+	data = data['aggregations']['fieldvals']['buckets']
+
+	assays = []
+	for datum in data:
+		assays.append(datum['key'])
+
+	return sorted(assays)
