@@ -569,10 +569,10 @@ def get_assay_types( token=None, debug=False ):
 	if debug:
 		print('Get dataset information via the search-api.')
 	assays = __query_assay_types( token=token, debug=debug )
-	
+
 	return assays
 
-def __query_assay_types( token=token, debug=False ):
+def __query_assay_types( token=None, debug=False ):
 	'''
 	Search dataset by a given assaytype name.
 	'''
