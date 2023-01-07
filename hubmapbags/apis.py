@@ -607,7 +607,7 @@ def __query_assay_types( token=None, debug=False ):
     	}
 	}
 
-	data = requests.post(url=url, headers=headers, json=body)
+	data = requests.post(url=url, headers=headers, json=body).json()
 	data = data['aggregations']['fieldvals']['buckets']
 
 	assays = []
