@@ -64,16 +64,16 @@ def __query_ancestors_info( hubmap_id, instance='prod', token=None, debug=False 
 		return None
 
 	if __get_instance( instance ) == 'prod':
-		URL='https://entity.api.hubmapconsortium.org/v3/ancestors/'+hubmap_id
+		URL='https://entity.api.hubmapconsortium.org/ancestors/'+hubmap_id
 	else:
-		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/v3/ancestors/'+hubmap_id
+		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/ancestors/'+hubmap_id
 
 	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
 
 	r = requests.get(URL, headers=headers)
 	return r
 
-def get_ancestors_info( hubmap_id, instance='prod', token=None, overwrite=True, debug=True ):
+def get_ancestors_info( hubmap_id, instance='prod', token=None, overwrite=True, debug=False ):
 	'''
 	Helper method that returns the ancestors info give a HuBMAP ID.
 	'''
@@ -81,12 +81,14 @@ def get_ancestors_info( hubmap_id, instance='prod', token=None, overwrite=True, 
 	directory = '.ancestors'
 	file = os.path.join( directory, hubmap_id + '.json' )
 	if os.path.exists( file ) and not overwrite:
-		print('Loading existing JSON file.')
+		if debug:
+			print('Loading existing JSON file.')
 		j = json.load( open( file, 'r' ) );
 	else:
-		print('Get information from ancestors via the entity-api.')
+		if debug:
+			print('Get information from ancestors via the entity-api.')
 		r = __query_ancestors_info( hubmap_id, instance=instance, token=token, debug=debug )
-		j = json.loads(r.itext)
+		j = json.loads(r.text)
 
 	if j is None:
 		warning('JSON object is empty.')

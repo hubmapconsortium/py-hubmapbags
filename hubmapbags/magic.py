@@ -171,8 +171,9 @@ def do_it( input, dbgap_study_id=None, \
 		hubmap_uuid = dataset['dataset_uuid']
 		biosample_id = dataset['first_sample_id']
 		data_directory = dataset['full_path']
-		print('Preparing bag for dataset ' + data_directory )
 
+		print('Preparing bag for dataset ' + data_directory )
+		
 		computing = data_directory.replace('/','_').replace(' ','_') + '.computing'
 		done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
 		broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
