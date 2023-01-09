@@ -163,6 +163,8 @@ def do_it( input, dbgap_study_id=None, \
 	if datasets is None:
 		return False
 
+	print('here')
+
 	for index, dataset in datasets.iterrows():
 		status = dataset['ds.status'].lower()
 		data_type = dataset['ds.data_types'].replace('[','').replace(']','').replace('\'','').lower()
@@ -173,7 +175,7 @@ def do_it( input, dbgap_study_id=None, \
 		data_directory = dataset['full_path']
 
 		print('Preparing bag for dataset ' + data_directory )
-		
+
 		computing = data_directory.replace('/','_').replace(' ','_') + '.computing'
 		done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
 		broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
