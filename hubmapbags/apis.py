@@ -45,7 +45,7 @@ def __get_instance( instance ):
 		warning('Unknown option ' + str(instance) + '. Setting default value to test.')
 		return '.test'
 
-def __query_ancestors_info( hubmap_id, token=None, debug=False ):
+def __query_ancestors_info( hubmap_id, instance='prod', token=None, debug=False ):
 	'''
 	Helper method that returns the ancestors info give a HuBMAP ID.
 
