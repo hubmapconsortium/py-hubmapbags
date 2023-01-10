@@ -113,7 +113,7 @@ def get_uuids( hubmap_id, instance='prod', token=None, debug=False ):
 
 	r = __query_uuids( hubmap_id, instance=instance, token=token, debug=debug )
 
-	if r.status._code == 300:
+	if r.status_code == 300:
 		link = r.content #Amazon S3 bucket link
 		file = '/tmp/file.json'
 
