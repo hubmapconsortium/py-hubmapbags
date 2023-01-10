@@ -112,7 +112,16 @@ def get_uuids( hubmap_id, instance='prod', token=None, debug=False ):
 	'''
 
 	r = __query_uuids( hubmap_id, instance=instance, token=token, debug=debug )
-	j = json.loads(r.text)
+
+	if r.status._code == 300:
+		link = r.content #Amazon S3 bucket link
+		file = '/tmp/file.json'
+
+		with open (file, "wb") as f:
+			f.write(requests.get(link).content)
+			j = json.load(open(file,'rb'))
+	else:
+		j = json.loads(r.text)
 
 	return j
 
