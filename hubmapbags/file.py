@@ -301,5 +301,8 @@ def create_manifest( project_id, assay_type, directory, output_directory, dbgap_
 		if Path(temp_file).exists():
 			print('Temp file ' + temp_file + ' found. Continuing computation.')
 		df = _build_dataframe( project_id, assay_type, directory, dbgap_study_id, dataset_hmid, dataset_uuid )
-		df.to_csv( filename, sep="\t", index=False)
+		
+		if Path(output_directory).exists():
+			df.to_csv( filename, sep="\t", index=False)
+
 		return True
