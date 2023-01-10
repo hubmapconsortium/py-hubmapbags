@@ -301,6 +301,7 @@ def do_it( input, dbgap_study_id=None, \
 				subject_substance.create_manifest( output_directory )
 				file_format.create_manifest( output_directory )
 			else:
+				output_directory = data_type + '-' + status + '-' + dataset['dataset_uuid']
 				answer = files.create_manifest( project_id=data_provider, \
 					assay_type=data_type, \
 					directory=data_directory, \
