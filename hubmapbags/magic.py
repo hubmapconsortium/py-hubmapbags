@@ -326,22 +326,24 @@ def do_it( input, dbgap_study_id=None, \
 			if copy_output_to is not None:
 				print('Checking if output directory destination exists')
 				if Path(copy_output_to).exists() and Path(copy_output_to).is_dir():
+					temp_file = '.data/' + data_directory.replace('/','_').replace(' ','_') + '.pkl'
 					print('Copying file ' + temp_file + ' to ' + copy_output_to + '.')
 					try:
 						copy( temp_file, copy_output_to )
 					except:
 						print('Unable to copy file to destination. Check permissions.')
 
-					print('Moving directory ' + output_directory + ' to ' + copy_output_to + '.')
-					try:
-						if Path(os.path.join(copy_output_to, output_directory)).exists():
-							rmtree(os.path.join(copy_output_to, output_directory))
-						move( output_directory, copy_output_to )
-					except Exception as e:
-						print('Unable to move folder to destination. Check permissions.')
-						print(e)
-				else:
-					warnings.warn('Output directory ' + copy_output_to + ' does not exist. Not copying results to destination.')
+					if build_bags:
+						print('Moving directory ' + output_directory + ' to ' + copy_output_to + '.')
+						try:
+							if Path(os.path.join(copy_output_to, output_directory)).exists():
+								rmtree(os.path.join(copy_output_to, output_directory))
+							move( output_directory, copy_output_to )
+						except Exception as e:
+							print('Unable to move folder to destination. Check permissions.')
+							print(e)
+					else:
+						warnings.warn('Output directory ' + copy_output_to + ' does not exist. Not copying results to destination.')
 
 			if compute_uuids:
 				print('Generating UUIDs via the UUID-API')
