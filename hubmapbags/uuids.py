@@ -15,7 +15,7 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='prod', token=Non
 	Helper function that populates (but does not generate) a local pickle file with remote UUIDs.
 	'''
 
-	utilities.pprint('Populating dataset with HuBMAP ID ' + hubmap_id + ' with remote UUIDs')
+	print('Populating dataset with HuBMAP ID ' + hubmap_id + ' with remote UUIDs')
 	dataset = magic.__extract_datasets_from_input( hubmap_id, instance=instance, token=token )
 
 	if dataset is None:
@@ -54,7 +54,8 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='prod', token=Non
 				df.to_pickle( temp_file )
 				return True
 			else:
-				return False
+				return False		
+		
 
 def __get_instance( instance ):
 	'''
@@ -146,7 +147,7 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 	Main function that generates UUIDs using the UUID-API.
 	'''
 
-	utilities.pprint('Processing dataset with HuBMAP ID ' + hubmap_id)
+	print('Generating UUIDs for dataset with HuBMAP ID ' + hubmap_id)
 	dataset = magic.__extract_dataset_info_from_db( hubmap_id, token=token, instance=instance )
 
 	if dataset is None:
