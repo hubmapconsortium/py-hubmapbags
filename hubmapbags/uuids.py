@@ -55,7 +55,6 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='prod', token=Non
 				return True
 			else:
 				return False		
-		
 
 def __get_instance( instance ):
 	'''
@@ -171,8 +170,6 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 
 	answer = populate_local_file_with_remote_uuids( hubmap_id, instance=instance, token=token, debug=False )
 
-	return df
-
 	try:
 		if debug:
 			print('Loading temp file ' + temp_file + '.')
@@ -181,6 +178,8 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 		if debug:
 			print('Unable to load pickle file ' + temp_file + '. Exiting process.' )
 		return False
+
+	return df
 
 	if __get_instance( instance ) == 'prod':
 		URL = 'https://uuid.api.hubmapconsortium.org/hmuuid/'
