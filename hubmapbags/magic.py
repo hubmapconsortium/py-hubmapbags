@@ -323,6 +323,9 @@ def do_it( input, dbgap_study_id=None, \
 					warnings.warn('Wrong number of output files. Labeling dataset as broken.')
 					with open(broken, 'w') as file:
 						pass
+			else:
+				with open(done, 'w') as file:
+					pass
 
 			if copy_output_to is not None:
 				print('Checking if output directory destination exists')
