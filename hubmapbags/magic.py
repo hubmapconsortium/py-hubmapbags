@@ -342,8 +342,6 @@ def do_it( input, dbgap_study_id=None, \
 						except Exception as e:
 							print('Unable to move folder to destination. Check permissions.')
 							print(e)
-					else:
-						warnings.warn('Output directory ' + copy_output_to + ' does not exist. Not copying results to destination.')
 
 			temp_file = '.data/' + data_directory.replace('/','_').replace(' ','_') + '.pkl'
 			if compute_uuids:
