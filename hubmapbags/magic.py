@@ -159,11 +159,9 @@ def do_it( input, dbgap_study_id=None, \
 	:rtype: boolean
 	'''
 
-	datasets = __extract_datasets_from_input( input )
+	datasets = __extract_datasets_from_input( input, token=token, instance=instance )
 	if datasets is None:
 		return False
-
-	print('here')
 
 	for index, dataset in datasets.iterrows():
 		status = dataset['ds.status'].lower()
