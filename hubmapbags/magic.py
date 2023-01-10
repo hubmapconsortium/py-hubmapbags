@@ -345,9 +345,11 @@ def do_it( input, dbgap_study_id=None, \
 					else:
 						warnings.warn('Output directory ' + copy_output_to + ' does not exist. Not copying results to destination.')
 
+			temp_file = '.data/' + data_directory.replace('/','_').replace(' ','_') + '.pkl'
 			if compute_uuids:
 				print('Generating UUIDs via the UUID-API')
 				uuids.generate( temp_file, debug=debug )
+
 			if debug:
 				df=pd.read_pickle( temp_file )
 				df.to_csv(temp_file.replace('pkl','tsv'), sep="\t")
