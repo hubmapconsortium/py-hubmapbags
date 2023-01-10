@@ -10,6 +10,26 @@ from . import utilities
 from . import magic
 from . import apis
 
+def load_local_file_with_remote_uuids( hubmap_id, instance='prod', token=None, overwrite=False, debug=False ):
+	print('Loading local file for HuBMAP ID ' + hubmap_id + ' with remote UUIDs')
+	dataset = magic.__extract_datasets_from_input( hubmap_id, instance=instance, token=token )
+
+	if dataset is None:
+		warning('No datasets found. Exiting.')
+		return False
+
+	data_directory = dataset['full_path'][0]
+
+	if not Path('.data').is_dir():
+		Path('.data').mkdir()
+	temp_file = '.data/' + data_directory.replace('/','_').replace(' ','_') + '.pkl'
+	if Path(temp_file).is_file():
+		df = pd.read_pickle( temp_file )
+		return df
+	else:
+		warning('Unable to find or load file ' + temp_file)
+		return pd.DataFrame()
+
 def populate_local_file_with_remote_uuids( hubmap_id, instance='prod', token=None, overwrite=False, debug=False ):
 	'''
 	Helper function that populates (but does not generate) a local pickle file with remote UUIDs.
@@ -55,7 +75,7 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='prod', token=Non
 				df.to_csv( temp_file.replace('pkl','tsv'), sep='\t', index=False )
 				return True
 			else:
-				return False		
+				return False
 
 def __get_instance( instance ):
 	'''
