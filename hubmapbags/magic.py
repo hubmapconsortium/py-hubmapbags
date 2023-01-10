@@ -91,7 +91,7 @@ def __extract_dataset_info_from_db( hubmap_id, token=None, instance='prod', debu
 		'donor_id':donor_hmid, \
 		'donor_uuid':donor_uuid, \
 		'is_protected':is_protected, \
-		'full_path':full_path}])], ignore_index=True)
+		'full_path':full_path}])], ignore_index=True, sort=True)
 
 	return df
 
