@@ -52,6 +52,7 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='prod', token=Non
 
 				print('Updating local file ' + temp_file + ' with UUIDs.')
 				df.to_pickle( temp_file )
+				df.to_csv( temp_file.replace('pkl','tsv'), sep='\t', index=False )
 				return True
 			else:
 				return False		
