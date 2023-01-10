@@ -11,6 +11,19 @@ from warnings import warn as warning
 from . import utilities
 import glob
 
+def is_primary( hubmap_id, instance='prod', token=None ):
+	'''
+	Returns true if the dataset is a primary dataset.
+	'''
+
+	metadata = hubmapbags.apis.get_ancestors_info( hubmap_id, instance=instance, token=token )
+	if 'entity_type' in metadata[0].keys() and  metadata[0]['entity_type'] == 'Sample':
+		return True
+	else:
+		if 'error' in metadata[0]:
+			warning(metadata[0]['error'])
+		return False
+
 def __compute_number_of_files( directory = None ):
 	'''
 	Helper function that returns the number of files in a loca directory.
@@ -234,6 +247,7 @@ def get_hubmap_ids( assay_name, token=None, debug=False ):
 			'hubmap_id':datum['_source']['hubmap_id'], \
 			'status':datum['_source']['status'], \
 			'is_protected':is_protected( datum['_source']['hubmap_id'], instance='prod', token=token ), \
+			'is_primary':
 			'data_type':datum['_source']['data_types'][0], \
 			'group_name':datum['_source']['group_name'] })
 
