@@ -315,13 +315,14 @@ def do_it( input, dbgap_study_id=None, \
 			Path(computing).unlink()
 
 			print('Creating final checkpoint ' + done )
-			if __get_number_of_files( output_directory ) == 36:
-				with open(done, 'w') as file:
-					pass
-			else:
-				warnings.warn('Wrong number of output files. Labeling dataset as broken.')
-				with open(broken, 'w') as file:
-					pass
+			if build_bags:
+				if __get_number_of_files( output_directory ) == 36:
+					with open(done, 'w') as file:
+						pass
+				else:
+					warnings.warn('Wrong number of output files. Labeling dataset as broken.')
+					with open(broken, 'w') as file:
+						pass
 
 			if copy_output_to is not None:
 				print('Checking if output directory destination exists')
