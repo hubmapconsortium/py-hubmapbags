@@ -11,6 +11,19 @@ from warnings import warn as warning
 from . import utilities
 import glob
 
+def is_primary( hubmap_id, instance='prod', token=None ):
+	'''
+	Returns true if the dataset is a primary dataset.
+	'''
+
+	metadata = get_ancestors_info( hubmap_id, instance=instance, token=token )
+	if 'entity_type' in metadata[0].keys() and  metadata[0]['entity_type'] == 'Sample':
+		return True
+	else:
+		if 'error' in metadata[0]:
+			warning(metadata[0]['error'])
+		return False
+
 def __compute_number_of_files( directory = None ):
 	'''
 	Helper function that returns the number of files in a loca directory.
@@ -45,7 +58,7 @@ def __get_instance( instance ):
 		warning('Unknown option ' + str(instance) + '. Setting default value to test.')
 		return '.test'
 
-def __query_ancestors_info( hubmap_id, token=None, debug=False ):
+def __query_ancestors_info( hubmap_id, instance='prod', token=None, debug=False ):
 	'''
 	Helper method that returns the ancestors info give a HuBMAP ID.
 
@@ -64,16 +77,16 @@ def __query_ancestors_info( hubmap_id, token=None, debug=False ):
 		return None
 
 	if __get_instance( instance ) == 'prod':
-		URL='https://entity.api.hubmapconsortium.org/v3/ancestors/'+hubmap_id
+		URL='https://entity.api.hubmapconsortium.org/ancestors/'+hubmap_id
 	else:
-		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/v3/ancestors/'+hubmap_id
+		URL='https://entity-api' + __get_instance( instance ) + '.hubmapconsortium.org/ancestors/'+hubmap_id
 
 	headers={'Authorization':'Bearer '+token, 'accept':'application/json'}
 
 	r = requests.get(URL, headers=headers)
 	return r
 
-def get_ancestors_info( hubmap_id, instance='prod', token=None, overwrite=True, debug=True ):
+def get_ancestors_info( hubmap_id, instance='prod', token=None, overwrite=True, debug=False ):
 	'''
 	Helper method that returns the ancestors info give a HuBMAP ID.
 	'''
@@ -81,12 +94,14 @@ def get_ancestors_info( hubmap_id, instance='prod', token=None, overwrite=True, 
 	directory = '.ancestors'
 	file = os.path.join( directory, hubmap_id + '.json' )
 	if os.path.exists( file ) and not overwrite:
-		print('Loading existing JSON file.')
+		if debug:
+			print('Loading existing JSON file.')
 		j = json.load( open( file, 'r' ) );
 	else:
-		print('Get information from ancestors via the entity-api.')
+		if debug:
+			print('Get information from ancestors via the entity-api.')
 		r = __query_ancestors_info( hubmap_id, instance=instance, token=token, debug=debug )
-		j = json.loads(r.itext)
+		j = json.loads(r.text)
 
 	if j is None:
 		warning('JSON object is empty.')
@@ -275,6 +290,7 @@ def get_hubmap_ids( assay_name, token=None, debug=False ):
 			'hubmap_id':datum['_source']['hubmap_id'], \
 			'status':datum['_source']['status'], \
 			'is_protected':is_protected( datum['_source']['hubmap_id'], instance='prod', token=token ), \
+			'is_primary':is_primary(datum['_source']['hubmap_id'], instance='prod', token=token), \
 			'data_type':datum['_source']['data_types'][0], \
 			'group_name':datum['_source']['group_name'] })
 
@@ -605,3 +621,58 @@ def get_entity_info( hubmap_id, instance='prod', token=None, overwrite=True, deb
 		with open( file,'w') as outfile:
 			json.dump(j, outfile, indent=4)
 		return j
+
+def get_assay_types( token=None, debug=False ):
+	'''
+	Request list of assay types.
+	'''
+
+	if debug:
+		print('Get dataset information via the search-api.')
+	assays = __query_assay_types( token=token, debug=debug )
+
+	return assays
+
+def __query_assay_types( token=None, debug=False ):
+	'''
+	Search dataset by a given assaytype name.
+	'''
+
+	token = utilities.__get_token( token )
+	if token is None:
+		warning('Token not set.')
+		return None
+
+	url = 'https://search.api.hubmapconsortium.org/v3/search'
+
+	headers = {'Authorization':'Bearer '+token, 'accept':'application/json'}
+	body = {
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match_phrase": {
+                        "entity_type": "dataset"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "fieldvals": {
+            "terms": {
+                "field": "data_types.keyword",
+                "size": 500
+            	}
+        	}
+    	}
+	}
+
+	data = requests.post(url=url, headers=headers, json=body).json()
+	data = data['aggregations']['fieldvals']['buckets']
+
+	assays = []
+	for datum in data:
+		assays.append(datum['key'])
+
+	return sorted(assays)

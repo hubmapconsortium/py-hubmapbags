@@ -10,12 +10,32 @@ from . import utilities
 from . import magic
 from . import apis
 
+def load_local_file_with_remote_uuids( hubmap_id, instance='prod', token=None, overwrite=False, debug=False ):
+	print('Loading local file for HuBMAP ID ' + hubmap_id + ' with remote UUIDs')
+	dataset = magic.__extract_datasets_from_input( hubmap_id, instance=instance, token=token )
+
+	if dataset is None:
+		warning('No datasets found. Exiting.')
+		return False
+
+	data_directory = dataset['full_path'][0]
+
+	if not Path('.data').is_dir():
+		Path('.data').mkdir()
+	temp_file = '.data/' + data_directory.replace('/','_').replace(' ','_') + '.pkl'
+	if Path(temp_file).is_file():
+		df = pd.read_pickle( temp_file )
+		return df
+	else:
+		warning('Unable to find or load file ' + temp_file)
+		return pd.DataFrame()
+
 def populate_local_file_with_remote_uuids( hubmap_id, instance='prod', token=None, overwrite=False, debug=False ):
 	'''
 	Helper function that populates (but does not generate) a local pickle file with remote UUIDs.
 	'''
 
-	utilities.pprint('Populating dataset with HuBMAP ID ' + hubmap_id + ' with remote UUIDs')
+	print('Populating dataset with HuBMAP ID ' + hubmap_id + ' with remote UUIDs')
 	dataset = magic.__extract_datasets_from_input( hubmap_id, instance=instance, token=token )
 
 	if dataset is None:
@@ -39,7 +59,7 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='prod', token=Non
 		return False
 	elif Path(done).is_file():
 		if Path(temp_file).is_file():
-			if should_i_generate_uuids( hubmap_id, instance=instance, token=token, debug=debug ):
+			if not should_i_generate_uuids( hubmap_id, instance=instance, token=token, debug=debug ):
 				print('Attempting to populate local file')
 				df = pd.read_pickle( temp_file )
 				uuids = get_uuids( hubmap_id, instance=instance, token=token, debug=debug )
@@ -52,6 +72,7 @@ def populate_local_file_with_remote_uuids( hubmap_id, instance='prod', token=Non
 
 				print('Updating local file ' + temp_file + ' with UUIDs.')
 				df.to_pickle( temp_file )
+				df.to_csv( temp_file.replace('pkl','tsv'), sep='\t', index=False )
 				return True
 			else:
 				return False
@@ -112,7 +133,16 @@ def get_uuids( hubmap_id, instance='prod', token=None, debug=False ):
 	'''
 
 	r = __query_uuids( hubmap_id, instance=instance, token=token, debug=debug )
-	j = json.loads(r.text)
+
+	if r.status_code == 300:
+		link = r.content #Amazon S3 bucket link
+		file = '/tmp/file.json'
+
+		with open (file, "wb") as f:
+			f.write(requests.get(link).content)
+			j = json.load(open(file,'rb'))
+	else:
+		j = json.loads(r.text)
 
 	return j
 
@@ -137,7 +167,7 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 	Main function that generates UUIDs using the UUID-API.
 	'''
 
-	utilities.pprint('Processing dataset with HuBMAP ID ' + hubmap_id)
+	print('Generating UUIDs for dataset with HuBMAP ID ' + hubmap_id)
 	dataset = magic.__extract_dataset_info_from_db( hubmap_id, token=token, instance=instance )
 
 	if dataset is None:
@@ -150,7 +180,7 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 	done = '.' + data_directory.replace('/','_').replace(' ','_') + '.done'
 	broken = '.' + data_directory.replace('/','_').replace(' ','_') + '.broken'
 
-	if not Path('.data').is_file():
+	if not Path('.data').is_dir():
 		Path('.data').mkdir()
 	temp_file = '.data/' + data_directory.replace('/','_').replace(' ','_') + '.pkl'
 
@@ -159,7 +189,7 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 		warning('Token not set.')
 		return None
 
-	answer = hubmapbags.uuids.populate_local_file_with_remote_uuids( hubmap_id, instance=instance, token=token, debug=False )
+	answer = populate_local_file_with_remote_uuids( hubmap_id, instance=instance, token=token, debug=False )
 
 	try:
 		if debug:
