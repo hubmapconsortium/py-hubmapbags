@@ -176,6 +176,16 @@ def __query_assay_types( instance='prod', token=None, debug=False ):
 	r = requests.get(URL, headers=headers)
 	return r
 
+def get_dataset_type( hubmap_id, instance='prod', token=None ):
+	metadata = hubmapbags.apis.get_dataset_info(hubmap_id, instance='prod', token=token)
+
+	if metadata['direct_ancestors'][0]['entity_type'] == 'Sample':
+		return 'Primary'
+	elif metadata['direct_ancestors'][0]['entity_type'] == 'Dataset':
+		return 'Derived'
+	else:
+		return 'Unknown'
+
 def get_assay_types( debug=False ):
 	'''
 	Request list of assay types from primary datasets.
@@ -316,10 +326,12 @@ def is_protected( hubmap_id, instance='prod', token=None ):
 
 	metadata = get_dataset_info( hubmap_id, instance=instance, token=token )
 
-	if 'contains_human_genetic_sequences' in metadata.keys():
-		return metadata['contains_human_genetic_sequences']
+	if 'contains_human_genetic_sequences' in metadata.keys() and \
+		(metadata['contains_human_genetic_sequences'] == True or metadata['contains_human_genetic_sequences'] == 'True') and \
+		get_dataset_type(hubmap_id,instance='prod',token=token) == 'Primary':
+		return True
 	else:
-		return None
+		return False
 
 def pretty_print_info_about_new_datasets( assay_name, debug=False ):
 	'''

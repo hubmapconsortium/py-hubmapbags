@@ -350,7 +350,7 @@ def do_it( input, dbgap_study_id=None, \
 
 	return True
 
-def get_dataset_info_from_local_file( hubmap_id, token=token, instance=instance ):
+def get_dataset_info_from_local_file( hubmap_id, token=None, instance='prod' ):
 
 	dataset = __extract_datasets_from_input( hubmap_id, token=token, instance=instance )
 	if dataset is None:
