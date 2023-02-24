@@ -150,7 +150,18 @@ def __query_dataset_info( hubmap_id, instance='prod', token=None, debug=False ):
 
 def get_dataset_info( hubmap_id, instance='prod', token=None, overwrite=True, debug=True ):
 	'''
-	Request dataset info given a HuBMAP id.
+	Request dataset info given a HuBMAP ID.
+
+	:param hubmap_id: HuBMAP ID
+	:type hubmap_id: string
+	:param instance: 'prod', 'stage', 'dev' and 'test'
+	:param instance: string
+	:param token: HuBMAP token
+	:type token: string
+	:param overwrite: Overwrite flag
+	:type overwrite: boolean
+	:param debug: Debug flag
+	:type debug: boolean
 	'''
 
 	directory = '.datasets'
