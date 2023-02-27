@@ -134,7 +134,7 @@ def get_uuids( hubmap_id, instance='prod', token=None, debug=False ):
 
 	r = __query_uuids( hubmap_id, instance=instance, token=token, debug=debug )
 
-	if r.status_code == 300:
+	if r.status_code == 303:
 		link = r.content #Amazon S3 bucket link
 		file = '/tmp/file.json'
 
@@ -243,7 +243,7 @@ def generate( hubmap_id, instance='prod', token=None, debug=True ):
 			else:
 				for datum in j:
 					df.loc[df['local_id'].str.contains(datum['file_path']),'hubmap_uuid']=datum['uuid']
-  
+
 				if debug:
 					print('Updating pickle file ' + temp_file + ' with the request response.')
 
@@ -330,7 +330,7 @@ def is_complete( hubmap_id, instance='prod', token=None, debug=False ):
 	'''
 	A dataset is considered to be complete if the number of remote UUIDs matches the number of local number of files. False, otherwise.
 	'''
-	
+
 	number_of_files = apis.get_number_of_files( hubmap_id, instance=instance, token=token )
 	number_of_entries_in_db = get_number_of_uuids( hubmap_id, instance=instance, token=token )
 
