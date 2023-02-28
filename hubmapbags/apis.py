@@ -342,10 +342,7 @@ def is_protected( hubmap_id, instance='prod', token=None ):
 		warning('Token not set.')
 
 	metadata = get_dataset_info( hubmap_id, instance=instance, token=token )
-
-	if 'contains_human_genetic_sequences' in metadata.keys() and \
-		(metadata['contains_human_genetic_sequences'] == True or metadata['contains_human_genetic_sequences'] == 'True') and \
-		get_dataset_type(hubmap_id,instance='prod',token=token) == 'Primary':
+	if 'data_access_level' in metadata.keys() and metadata['data_access_level'] == 'protected':
 		return True
 	else:
 		return False
