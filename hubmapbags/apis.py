@@ -202,16 +202,6 @@ def __query_assay_types( instance='prod', token=None, debug=False ):
 	r = requests.get(URL, headers=headers)
 	return r
 
-def get_dataset_type( hubmap_id, instance='prod', token=None ):
-	metadata = hubmapbags.apis.get_dataset_info(hubmap_id, instance='prod', token=token)
-
-	if metadata['direct_ancestors'][0]['entity_type'] == 'Sample':
-		return 'Primary'
-	elif metadata['direct_ancestors'][0]['entity_type'] == 'Dataset':
-		return 'Derived'
-	else:
-		return 'Unknown'
-
 def get_assay_types( debug=False ):
 	'''
 	Request list of assay types from primary datasets.
@@ -687,3 +677,13 @@ def __query_assay_types( token=None, debug=False ):
 		assays.append(datum['key'])
 
 	return sorted(assays)
+
+def get_dataset_type( hubmap_id, instance='prod', token=None ):
+	metadata = get_dataset_info(hubmap_id, instance='prod', token=token)
+
+	if metadata['direct_ancestors'][0]['entity_type'] == 'Sample':
+		return 'Primary'
+	elif metadata['direct_ancestors'][0]['entity_type'] == 'Dataset':
+		return 'Derived'
+	else:
+		return 'Unknown'
