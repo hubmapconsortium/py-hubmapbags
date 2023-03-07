@@ -152,7 +152,9 @@ def get_number_of_uuids( hubmap_id, instance='prod', token=None, debug=False ):
 	'''
 
 	try:
-		return len(get_uuids( hubmap_id, instance=instance, token=token, debug=debug ))
+		uuids = get_uuids( hubmap_id, instance=instance, token=token, debug=debug )
+		uuids = pd.DataFrame.from_dict(uuids)
+		return len(uuids[uuids['base_dir'] == 'DATA_UPLOAD'])
 	except:
 		return 0
 
