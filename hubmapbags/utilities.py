@@ -1,7 +1,9 @@
-import sys
 import os
+import sys
+
 import pandas as pd
 from tabulate import tabulate
+
 
 def __get_token( token=None ):
 	'''

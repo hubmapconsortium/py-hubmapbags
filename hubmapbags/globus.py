@@ -1,10 +1,12 @@
-import pandas as pd
 import datetime
-import urllib
 import math
+import urllib
+
+import pandas as pd
 import requests
-from . import uuids
-from . import apis
+
+from . import apis, uuids
+
 
 def __prepare_dataframe( hubmap_id, data, instance='prod', token=None ):
     df = pd.DataFrame( data )

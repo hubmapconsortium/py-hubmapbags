@@ -1,5 +1,7 @@
-import pandas as pd
 import os
+
+import pandas as pd
+
 
 def _build_dataframe( donor_id, hubmap_id ):
     '''

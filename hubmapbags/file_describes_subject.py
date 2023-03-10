@@ -1,11 +1,13 @@
-import pandas as pd
+import datetime
+import mimetypes
+import os
+import pickle
+import time
 from pathlib import Path
 from shutil import rmtree
-import datetime
-import time
-import os
-import mimetypes
-import pickle
+
+import pandas as pd
+
 
 def _build_dataframe():
     '''

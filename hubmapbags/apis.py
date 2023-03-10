@@ -1,15 +1,18 @@
-from logging import warning
-import sys
-import pandas as pd
-import os
+import glob
 import json
-from pathlib import Path
+import os
+import sys
 import time
+from logging import warning
+from pathlib import Path
+from warnings import warn as warning
+
+import pandas as pd
 import requests
 from tabulate import tabulate
-from warnings import warn as warning
+
 from . import utilities
-import glob
+
 
 def is_primary( hubmap_id, instance='prod', token=None ):
 	'''
@@ -642,6 +645,7 @@ def __query_assay_types( token=None, debug=False ):
 		return None
 
 	url = 'https://search.api.hubmapconsortium.org/v3/search'
+	url = 'https://search.api.hubmapconsortium.org/v3/'
 
 	headers = {'Authorization':'Bearer '+token, 'accept':'application/json'}
 	body = {

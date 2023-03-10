@@ -1,14 +1,16 @@
-import pandas as pd
+import datetime
+import hashlib
+import mimetypes
+import os
+import pickle
+import time
+import urllib
 from itertools import chain
 from pathlib import Path
 from shutil import rmtree
-import datetime
-import time
-import os
-import mimetypes
-import urllib
-import hashlib
-import pickle
+
+import pandas as pd
+
 
 def __get_filename( file ):
 	'''
@@ -293,7 +295,7 @@ def create_manifest( project_id, assay_type, directory, output_directory, dbgap_
 	if not Path('.data').exists():
 		Path('.data').mkdir()
 
-	temp_file = '.data/' +  directory.replace('/','_').replace(' ','_') + '.pkl'
+	temp_file = '.data/' +  directory('/','_').replace(' ','_') + '.pkl'
 	if not Path(directory).exists() and not Path(temp_file).exists():
 		print('Data directory ' + directory + ' does not exist. Temp file was not found either.')
 		return False

@@ -1,8 +1,10 @@
-import pandas as pd
-import yaml
+import os
 from urllib.request import urlopen
 from warnings import warn as warning
-import os
+
+import pandas as pd
+import yaml
+
 
 def __get_organ_from_uberon( organ ):
     '''

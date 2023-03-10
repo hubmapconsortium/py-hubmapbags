@@ -1,36 +1,30 @@
-import os
-import pandas as pd
-from pathlib import Path
-from shutil import rmtree, copy
-from shutil import move
-from os import remove
-import logging
 import glob
+import logging
+import os
 import os.path
-from os import listdir
-from os.path import isfile, join, exists
 import warnings
+from os import listdir, remove
+from os.path import exists, isfile, join
+from pathlib import Path
+from shutil import copy, move, rmtree
 
-from . import collection_anatomy, collection_compound, \
-              biosample_substance, biosample_gene, assay_type, \
-              biosample_disease, anatomy, \
-              file_describes_collection, project_in_project, \
-              file_describes_biosample, file_describes_subject, \
-              biosample_from_subject, subject, \
-              subject_in_collection, ncbi_taxonomy, \
-              id_namespace, biosample_in_collection, \
-              file_in_collection, primary_dcc_contact, \
-              biosample, projects, \
-              collection, anatomy, \
-              file as files, collection_defined_by_project, \
-              collection_disease, collection_gene, \
-              collection_phenotype, collection_protein, \
-              collection_substance, collection_taxonomy, \
-              collection_in_collection, subject_disease, \
-              subject_phenotype, subject_race, \
-              subject_role_taxonomy, subject_substance, \
-              file_format, apis, \
-              uuids, utilities
+import pandas as pd
+
+from . import (anatomy, apis, assay_type, biosample, biosample_disease,
+               biosample_from_subject, biosample_gene, biosample_in_collection,
+               biosample_substance, collection, collection_anatomy,
+               collection_compound, collection_defined_by_project,
+               collection_disease, collection_gene, collection_in_collection,
+               collection_phenotype, collection_protein, collection_substance,
+               collection_taxonomy)
+from . import file as files
+from . import (file_describes_biosample, file_describes_collection,
+               file_describes_subject, file_format, file_in_collection,
+               id_namespace, ncbi_taxonomy, primary_dcc_contact,
+               project_in_project, projects, subject, subject_disease,
+               subject_in_collection, subject_phenotype, subject_race,
+               subject_role_taxonomy, subject_substance, utilities, uuids)
+
 
 def __extract_dataset_info_from_db( hubmap_id, token=None, instance='prod', debug=None ):
 	'''

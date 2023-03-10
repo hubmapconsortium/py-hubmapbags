@@ -1,14 +1,15 @@
-import sys
-import pandas as pd
-import os
 import json
+import os
+import sys
 import time
-import requests
 from pathlib import Path
 from warnings import warn as warning
-from . import utilities
-from . import magic
-from . import apis
+
+import pandas as pd
+import requests
+
+from . import apis, magic, utilities
+
 
 def load_local_file_with_remote_uuids( hubmap_id, instance='prod', token=None, overwrite=False, debug=False ):
 	print('Loading local file for HuBMAP ID ' + hubmap_id + ' with remote UUIDs')

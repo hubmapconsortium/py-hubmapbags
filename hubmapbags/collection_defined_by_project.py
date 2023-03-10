@@ -1,5 +1,7 @@
-import pandas as pd
 import os
+
+import pandas as pd
+
 
 def _build_dataframe( collection_id, project_id ):
     '''
