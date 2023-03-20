@@ -13,7 +13,6 @@ from tabulate import tabulate
 
 from . import utilities
 
-
 def is_primary( hubmap_id, instance='prod', token=None ):
 	'''
 	Returns true if the dataset is a primary dataset.
@@ -269,9 +268,36 @@ def get_provenance_info( hubmap_id, instance='prod', token=None, overwrite=False
 			json.dump(j, outfile, indent=4)
 		return j
 
+def get_ids( assay_name, token=None, debug=False ):
+	'''
+	Get list of HuBMAP ids given an assay name. Returns public HuBMAP ID, UUID and status.
+	'''
+
+	token = utilities.__get_token( token )
+	if token is None:
+		warning('Token not set.')
+		return None
+
+	answer =  __query_hubmap_ids( assay_name, token=token, debug=debug )
+
+	if 'error' in answer.keys():
+		warning(answer['error'])
+		return None
+
+	data = answer['hits']['hits']
+
+	results = []
+	for datum in data:
+		results.append(	{
+			'uuid':datum['_source']['uuid'], \
+			'hubmap_id':datum['_source']['hubmap_id'], \
+			'status':datum['_source']['status'])
+
+	return results
+
 def get_hubmap_ids( assay_name, token=None, debug=False ):
 	'''
-	Get list of HuBMAP ids given an assay name.
+	Get list of HuBMAP IDs and other useful info given an assay name.
 	'''
 
 	token = utilities.__get_token( token )
