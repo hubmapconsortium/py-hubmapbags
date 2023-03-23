@@ -1,55 +1,26 @@
 import os
 import os.path
+import shutil
 import warnings
 from pathlib import Path
-from shutil import copy, move, rmtree
-import pandas as pd
-import shutil
+from shutil import rmtree
 
-from . import (
-    anatomy,
-    apis,
-    assay_type,
-    biosample,
-    biosample_disease,
-    biosample_from_subject,
-    biosample_gene,
-    biosample_in_collection,
-    biosample_substance,
-    collection,
-    collection_anatomy,
-    collection_compound,
-    collection_defined_by_project,
-    collection_disease,
-    collection_gene,
-    collection_in_collection,
-    collection_phenotype,
-    collection_protein,
-    collection_substance,
-    collection_taxonomy,
-)
+import pandas as pd
+
+from . import (anatomy, apis, assay_type, biosample, biosample_disease,
+               biosample_from_subject, biosample_gene, biosample_in_collection,
+               biosample_substance, collection, collection_anatomy,
+               collection_compound, collection_defined_by_project,
+               collection_disease, collection_gene, collection_in_collection,
+               collection_phenotype, collection_protein, collection_substance,
+               collection_taxonomy)
 from . import file as files
-from . import (
-    file_describes_biosample,
-    file_describes_collection,
-    file_describes_subject,
-    file_format,
-    file_in_collection,
-    id_namespace,
-    ncbi_taxonomy,
-    primary_dcc_contact,
-    project_in_project,
-    projects,
-    subject,
-    subject_disease,
-    subject_in_collection,
-    subject_phenotype,
-    subject_race,
-    subject_role_taxonomy,
-    subject_substance,
-    utilities,
-    uuids,
-)
+from . import (file_describes_biosample, file_describes_collection,
+               file_describes_subject, file_format, file_in_collection,
+               id_namespace, ncbi_taxonomy, primary_dcc_contact,
+               project_in_project, projects, subject, subject_disease,
+               subject_in_collection, subject_phenotype, subject_race,
+               subject_role_taxonomy, subject_substance, utilities, uuids)
 
 
 def __extract_dataset_info_from_db(hubmap_id, token=None, instance="prod", debug=None):
@@ -178,6 +149,21 @@ def __extract_datasets_from_input(input, instance="prod", token=None):
     return datasets
 
 
+def __get_donor_url(donor_id, instance="prod", token=None):
+    metadata = apis.get_entity_info(donor_id, instance=instance, token=token)
+    return f'https://portal.hubmapconsortium.org/browse/donor/{metadata["uuid"]}'
+
+
+def __get_sample_url(sample_id, instance="prod", token=None):
+    metadata = apis.get_entity_info(sample_id, instance=instance, token=token)
+    return f'https://portal.hubmapconsortium.org/browse/sample/{metadata["uuid"]}'
+
+
+def __get_dataset_url(dataset_id, instance="prod", token=None):
+    metadata = apis.get_entity_info(dataset_id, instance=instance, token=token)
+    return f'https://portal.hubmapconsortium.org/browse/dataset/{metadata["uuid"]}'
+
+
 def do_it(
     input,
     dbgap_study_id=None,
@@ -223,7 +209,10 @@ def do_it(
         data_provider = dataset["ds.group_name"]
         hubmap_id = dataset["ds.hubmap_id"]
         hubmap_uuid = dataset["dataset_uuid"]
+        hubmap_url = __get_dataset_url(hubmap_id, instance=instance, token=token)
+
         biosample_id = dataset["first_sample_id"]
+        biosample_url = __get_sample_url(biosample_id, instance=instance, token=token)
         data_directory = dataset["full_path"]
 
         print("Preparing bag for dataset " + data_directory)
@@ -235,6 +224,7 @@ def do_it(
         organ_shortcode = dataset["organ_type"]
         organ_id = dataset["organ_id"]
         donor_id = dataset["donor_id"]
+        donor_url = __get_donor_url(donor_id, instance=instance, token=token)
 
         if overwrite:
             print("Erasing old checkpoint. Re-computing checksums.")
@@ -298,7 +288,11 @@ def do_it(
 
                 print("Making biosample.tsv")
                 biosample.create_manifest(
-                    biosample_id, data_provider, organ_shortcode, output_directory
+                    biosample_id,
+                    biosample_url,
+                    data_provider,
+                    organ_shortcode,
+                    output_directory,
                 )
 
                 print("Making biosample_in_collection.tsv")
@@ -321,7 +315,7 @@ def do_it(
                 ncbi_taxonomy.create_manifest(output_directory)
 
                 print("Making collection.tsv")
-                collection.create_manifest(hubmap_id, output_directory)
+                collection.create_manifest(hubmap_id, hubmap_url, output_directory)
 
                 print("Making collection_defined_by_project.tsv")
                 collection_defined_by_project.create_manifest(
@@ -340,7 +334,9 @@ def do_it(
                 id_namespace.create_manifest(output_directory)
 
                 print("Making subject.tsv")
-                subject.create_manifest(data_provider, donor_id, output_directory)
+                subject.create_manifest(
+                    data_provider, donor_id, donor_url, output_directory
+                )
 
                 print("Making subject_in_collection.tsv")
                 subject_in_collection.create_manifest(

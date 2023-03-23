@@ -41,7 +41,7 @@ def __get_organ_from_uberon(organ):
     return organs[organ].replace("_", ":")
 
 
-def _build_dataframe(biosample_id, data_provider, organ):
+def _build_dataframe(biosample_id, biosample_url, data_provider, organ):
     """
     Build a dataframe with minimal information for this entity.
     """
@@ -64,6 +64,7 @@ def _build_dataframe(biosample_id, data_provider, organ):
             "local_id": biosample_id,
             "project_id_namespace": id_namespace,
             "project_local_id": data_provider,
+            "persistent_id": biosample_url,
             "anatomy": __get_organ_from_uberon(organ),
         },
         ignore_index=True,
@@ -72,9 +73,11 @@ def _build_dataframe(biosample_id, data_provider, organ):
     return df
 
 
-def create_manifest(biosample_id, data_provider, organ, output_directory):
+def create_manifest(
+    biosample_id, biosample_url, data_provider, organ, output_directory
+):
     filename = os.path.join(output_directory, "biosample.tsv")
-    df = _build_dataframe(biosample_id, data_provider, organ)
+    df = _build_dataframe(biosample_id, biosample_url, data_provider, organ)
     df.to_csv(filename, sep="\t", index=False)
 
     return True

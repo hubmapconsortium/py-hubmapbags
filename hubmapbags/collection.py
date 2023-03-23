@@ -3,7 +3,7 @@ import os
 import pandas as pd
 
 
-def _build_dataframe(hubmap_id):
+def _build_dataframe(hubmap_id, hubmap_url):
     """
     Build a dataframe with minimal information for this entity.
     """
@@ -21,16 +21,21 @@ def _build_dataframe(hubmap_id):
     ]
     df = pd.DataFrame(columns=headers)
     df = df.append(
-        {"id_namespace": id_namespace, "local_id": hubmap_id, "name": hubmap_id},
+        {
+            "id_namespace": id_namespace,
+            "local_id": hubmap_id,
+            "name": hubmap_id,
+            "persistent_id": hubmap_url,
+        },
         ignore_index=True,
     )
 
     return df
 
 
-def create_manifest(hubmap_id, output_directory):
+def create_manifest(hubmap_id, hubmap_url, output_directory):
     filename = os.path.join(output_directory, "collection.tsv")
-    df = _build_dataframe(hubmap_id)
+    df = _build_dataframe(hubmap_id, hubmap_url)
     df.to_csv(filename, sep="\t", index=False)
 
     return True
