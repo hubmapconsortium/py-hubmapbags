@@ -197,6 +197,7 @@ def __get_assay_type_from_obi(assay_type):
     assay["slide-seq"] = "OBI:0003107"
     assay["seqfish"] = "OBI:0003094"
     assay["lc-ms-untargeted"] = "OBI:0003097"
+    assay["lc-ms bottom-up"] = "OBI:0003097"
     assay["lc-ms_top_down"] = "OBI:0003097"  # ask alex
     assay["tmt-lc-ms"] = "OBI:0003097"
     assay["lc-ms"] = "OBI:0003097"
@@ -208,6 +209,7 @@ def __get_assay_type_from_obi(assay_type):
     assay["sciatacseq"] = "OBI:0003104"
     assay["scrnaseq-10xgenomics-v3"] = "OBI:0002631"
     assay["snrnaseq-10xgenomics-v3"] = "OBI:0003109"
+    assay["mibi"] = "OBI:0003100"
 
     return assay[assay_type]
 
