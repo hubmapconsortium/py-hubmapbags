@@ -30,7 +30,6 @@ def _build_dataframe(hubmap_id, hubmap_uuid, directory):
         df = df[df["filename"].str.contains("metadata.tsv")]
         df["subject_id_namespace"] = id_namespace
         df["file_id_namespace"] = id_namespace
-        print(df.keys())
         df = df.rename(columns={"file_uuid": "file_local_id"}, errors="raise")
         df["collection_local_id"] = hubmap_id
         df["collection_id_namespace"] = id_namespace
