@@ -7,20 +7,50 @@ from shutil import rmtree
 
 import pandas as pd
 
-from . import (anatomy, apis, assay_type, biosample, biosample_disease,
-               biosample_from_subject, biosample_gene, biosample_in_collection,
-               biosample_substance, collection, collection_anatomy,
-               collection_compound, collection_defined_by_project,
-               collection_disease, collection_gene, collection_in_collection,
-               collection_phenotype, collection_protein, collection_substance,
-               collection_taxonomy)
+from . import (
+    anatomy,
+    apis,
+    assay_type,
+    biosample,
+    biosample_disease,
+    biosample_from_subject,
+    biosample_gene,
+    biosample_in_collection,
+    biosample_substance,
+    collection,
+    collection_anatomy,
+    collection_compound,
+    collection_defined_by_project,
+    collection_disease,
+    collection_gene,
+    collection_in_collection,
+    collection_phenotype,
+    collection_protein,
+    collection_substance,
+    collection_taxonomy,
+)
 from . import file as files
-from . import (file_describes_biosample, file_describes_collection,
-               file_describes_subject, file_format, file_in_collection,
-               id_namespace, ncbi_taxonomy, primary_dcc_contact,
-               project_in_project, projects, subject, subject_disease,
-               subject_in_collection, subject_phenotype, subject_race,
-               subject_role_taxonomy, subject_substance, utilities, uuids)
+from . import (
+    file_describes_biosample,
+    file_describes_collection,
+    file_describes_subject,
+    file_format,
+    file_in_collection,
+    id_namespace,
+    ncbi_taxonomy,
+    primary_dcc_contact,
+    project_in_project,
+    projects,
+    subject,
+    subject_disease,
+    subject_in_collection,
+    subject_phenotype,
+    subject_race,
+    subject_role_taxonomy,
+    subject_substance,
+    utilities,
+    uuids,
+)
 
 
 def __extract_dataset_info_from_db(hubmap_id, token=None, instance="prod", debug=None):
@@ -151,17 +181,29 @@ def __extract_datasets_from_input(input, instance="prod", token=None):
 
 def __get_donor_url(donor_id, instance="prod", token=None):
     metadata = apis.get_entity_info(donor_id, instance=instance, token=token)
-    return f'https://portal.hubmapconsortium.org/browse/donor/{metadata["uuid"]}'
+
+    if "registered_doi" in metadata.keys():
+        return f'https://doi.org/{metadata["registered_doi"]}'
+    else:
+        return f'https://portal.hubmapconsortium.org/browse/donor/{metadata["uuid"]}'
 
 
 def __get_sample_url(sample_id, instance="prod", token=None):
     metadata = apis.get_entity_info(sample_id, instance=instance, token=token)
-    return f'https://portal.hubmapconsortium.org/browse/sample/{metadata["uuid"]}'
+
+    if "registered_doi" in metadata.keys():
+        return f'https://doi.org/{metadata["registered_doi"]}'
+    else:
+        return f'https://portal.hubmapconsortium.org/browse/sample/{metadata["uuid"]}'
 
 
 def __get_dataset_url(dataset_id, instance="prod", token=None):
     metadata = apis.get_entity_info(dataset_id, instance=instance, token=token)
-    return f'https://portal.hubmapconsortium.org/browse/dataset/{metadata["uuid"]}'
+
+    if "registered_doi" in metadata.keys():
+        return f'https://doi.org/{metadata["registered_doi"]}'
+    else:
+        return f'https://portal.hubmapconsortium.org/browse/dataset/{metadata["uuid"]}'
 
 
 def do_it(
