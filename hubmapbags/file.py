@@ -8,6 +8,13 @@ from pathlib import Path
 import pandas as pd
 
 
+def __get_persistent_id(file_uuid):
+    url = (
+        f"http://hubmap-drs.hubmapconsortium.org:9999/ga4gh/drs/v1/objects/{file_uuid}"
+    )
+    return url
+
+
 def __get_filename(file):
     """
     Helper method that returns a CFDE compatible version of a filename
@@ -277,13 +284,14 @@ def _build_dataframe(
             df["uncompressed_size_in_bytes"] = None
             df["data_type"] = None
             df["analysis_type"] = None
-            df["persistent_id"] = None
 
             if "file_uuid" in df.keys():
                 df["local_id"] = df["file_uuid"]
                 df = df.drop(["file_uuid"], axis=1)
             else:
                 df["local_id"] = None
+
+            df["persistent_id"] = df["local_id"].apply(__get_persistent_id)
 
             if "modification_time" in df.keys():
                 df = df.rename(columns={"modification_time": "creation_time"})
@@ -379,8 +387,6 @@ def create_manifest(
         )
         return False
     else:
-        if Path(temp_file).exists():
-            print("Temp file " + temp_file + " found. Continuing computation.")
         df = _build_dataframe(
             project_id,
             assay_type,

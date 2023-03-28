@@ -3,7 +3,7 @@ import os
 import pandas as pd
 
 
-def _build_dataframe(hubmap_id, hubmap_url):
+def _build_dataframe(dataset_metadata):
     """
     Build a dataframe with minimal information for this entity.
     """
@@ -23,9 +23,11 @@ def _build_dataframe(hubmap_id, hubmap_url):
     df = df.append(
         {
             "id_namespace": id_namespace,
-            "local_id": hubmap_id,
-            "name": hubmap_id,
-            "persistent_id": hubmap_url,
+            "local_id": dataset_metadata["local_id"],
+            "persistent_id": dataset_metadata["persistent_id"],
+            "creation_time": dataset_metadata["creation_time"],
+            "name": dataset_metadata["name"],
+            "description": dataset_metadata["description"],
         },
         ignore_index=True,
     )
@@ -33,9 +35,9 @@ def _build_dataframe(hubmap_id, hubmap_url):
     return df
 
 
-def create_manifest(hubmap_id, hubmap_url, output_directory):
+def create_manifest(dataset_metadata, output_directory):
     filename = os.path.join(output_directory, "collection.tsv")
-    df = _build_dataframe(hubmap_id, hubmap_url)
+    df = _build_dataframe(dataset_metadata)
     df.to_csv(filename, sep="\t", index=False)
 
     return True

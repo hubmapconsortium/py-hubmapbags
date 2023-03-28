@@ -60,8 +60,6 @@ def create_manifest(hubmap_id, hubmap_uuid, directory, output_directory):
 
         return False
     else:
-        if Path(temp_file).exists():
-            print("Temp file " + temp_file + " found. Continuing computation.")
         df = _build_dataframe(hubmap_id, hubmap_uuid, directory)
         df.to_csv(filename, sep="\t", index=False)
 

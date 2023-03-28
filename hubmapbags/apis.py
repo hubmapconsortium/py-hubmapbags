@@ -746,7 +746,7 @@ def __query_donor_info(hubmap_id, instance="prod", token=None, debug=False):
     return r
 
 
-def get_donor_info(hubmap_id, instance="prod", token=None, overwrite=True, debug=True):
+def get_donor_info(hubmap_id, instance="prod", token=None, overwrite=True, debug=False):
     """
     Request dataset info given a HuBMAP id.
     """

@@ -3,7 +3,7 @@ import os
 import pandas as pd
 
 
-def _build_dataframe(project_id, donor_id, donor_url):
+def _build_dataframe(donor_metadata):
     """
     Build a dataframe with minimal information for this entity.
     """
@@ -25,11 +25,13 @@ def _build_dataframe(project_id, donor_id, donor_url):
     df = df.append(
         {
             "id_namespace": id_namespace,
-            "local_id": donor_id,
+            "local_id": donor_metadata["local_id"],
             "project_id_namespace": id_namespace,
-            "project_local_id": project_id,
-            "persistent_id": donor_url,
-            "granularity": "cfde_subject_granularity:0",
+            "project_local_id": donor_metadata["project_local_id"],
+            "persistent_id": donor_metadata["persistent_id"],
+            "granularity": donor_metadata["granularity"],
+            "sex": donor_metadata["sex"],
+            "ethnicity": donor_metadata["ethnicity"],
         },
         ignore_index=True,
     )
@@ -52,9 +54,9 @@ def _build_dataframe(project_id, donor_id, donor_url):
     return df
 
 
-def create_manifest(project_id, donor_id, donor_url, output_directory):
+def create_manifest(donor_metadata, output_directory):
     filename = os.path.join(output_directory, "subject.tsv")
-    df = _build_dataframe(project_id, donor_id, donor_url)
+    df = _build_dataframe(donor_metadata)
     df.to_csv(filename, sep="\t", index=False)
 
     return True

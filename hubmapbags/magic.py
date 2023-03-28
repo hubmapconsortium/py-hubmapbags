@@ -139,22 +139,6 @@ def __extract_dataset_info_from_db(hubmap_id, token=None, instance="prod", debug
     return df
 
 
-def __get_number_of_files(output_directory):
-    """
-    Helper function that returns the number of files in a directory.
-    """
-    try:
-        return len(
-            [
-                name
-                for name in os.listdir(output_directory)
-                if os.path.isfile(os.path.join(output_directory, name))
-            ]
-        )
-    except:
-        return 0
-
-
 def __extract_datasets_from_input(input, instance="prod", token=None):
     """
     Helper function that returns a list of valid datasets (if any).
@@ -206,6 +190,88 @@ def __get_dataset_url(dataset_id, instance="prod", token=None):
         return f'https://portal.hubmapconsortium.org/browse/dataset/{metadata["uuid"]}'
 
 
+def __get_donor_metadata(hubmap_id, instance="prod", token=None):
+    metadata = apis.get_donor_info(hubmap_id, instance=instance, token=token)
+    donor_metadata = {}
+    donor_metadata["local_id"] = metadata["hubmap_id"]
+    donor_metadata["local_uuid"] = metadata["uuid"]
+    donor_metadata["persistent_id"] = __get_donor_url(
+        hubmap_id, instance=instance, token=token
+    )
+    donor_metadata["granularity"] = "cfde_subject_granularity:0"
+    donor_metadata["creation_time"] = None
+
+    for datum in metadata["metadata"]["living_donor_data"]:
+        if datum["preferred_term"] == "Age":
+            donor_metadata["age_at_enrollment"] = datum["data_value"]
+
+    for datum in metadata["metadata"]["living_donor_data"]:
+        if datum["data_value"] == "Sex":
+            donor_metadata["sex"] = datum["preferred_term"]
+
+    if "sex" in donor_metadata.keys():
+        if donor_metadata["sex"] == "Female":
+            donor_metadata["sex"] = "cfde_subject_sex:1"
+
+        if donor_metadata["sex"] == "Male":
+            donor_metadata["sex"] = "cfde_subject_sex:2"
+    else:
+        donor_metadata["sex"] = None
+
+    race = {
+        "American Indian or Alaska native": "cfde_subject_race:0",
+        "Asian or Pacific Islander": "cfde_subject_race:1",
+        "Black or African American": "cfde_subject_race:2",
+        "White": "cfde_subject_race:3",
+        "Unknown": "cfde_subject_race:4",
+        "Hispanic": "cfde_subject_race:4",
+        "Asian": "cfde_subject_race:5",
+        "Native Hawaiian or Other Pacific Islander": "cfde_subject_race:5",
+    }
+
+    for datum in metadata["metadata"]["living_donor_data"]:
+        if datum["data_value"] == "Race":
+            donor_metadata["race"] = race[datum["preferred_term"]]
+
+    for datum in metadata["metadata"]["living_donor_data"]:
+        if datum["data_value"] == "Race" and datum["preferred_term"] == "Hispanic":
+            donor_metadata["ethnicity"] = "cfde_subject_ethnicity:0"
+        else:
+            donor_metadata["ethnicity"] = "cfde_subject_ethnicity:1"
+
+    return donor_metadata
+
+
+def __get_dataset_metadata(hubmap_id, instance="prod", token=None):
+    metadata = apis.get_dataset_info(hubmap_id, instance=instance, token=token)
+    dataset_metadata = {}
+    dataset_metadata["local_id"] = hubmap_id
+    dataset_metadata["local_uuid"] = metadata["uuid"]
+    dataset_metadata["persistent_id"] = __get_dataset_url(
+        hubmap_id, instance=instance, token=token
+    )
+    dataset_metadata["creation_time"] = metadata["published_timestamp"]
+    dataset_metadata["name"] = hubmap_id
+    dataset_metadata["description"] = metadata["description"]
+
+    return dataset_metadata
+
+
+def __get_biosample_metadata(hubmap_id, instance="prod", token=None):
+    metadata = apis.get_entity_info(hubmap_id, instance=instance, token=token)
+    biosample_metadata = {}
+    biosample_metadata["local_id"] = hubmap_id
+    biosample_metadata["project_local_id"] = metadata["uuid"]
+    biosample_metadata["persistent_id"] = __get_sample_url(
+        biosample_id, instance=instance, token=token
+    )
+    biosample_metadata["creation_time"] = metadata["published_timestamp"]
+    biosample_metadata["name"] = hubmap_id
+    biosample_metadata["description"] = metadata["description"]
+
+    return biosample_metadata
+
+
 def do_it(
     input,
     dbgap_study_id=None,
@@ -249,24 +315,29 @@ def do_it(
             .lower()
         )
         data_provider = dataset["ds.group_name"]
+
         hubmap_id = dataset["ds.hubmap_id"]
         hubmap_uuid = dataset["dataset_uuid"]
+        dataset_metadata = __get_dataset_metadata(
+            hubmap_id, instance=instance, token=token
+        )
         hubmap_url = __get_dataset_url(hubmap_id, instance=instance, token=token)
+        dataset_metadata["hubmap_url"] = hubmap_url
 
         biosample_id = dataset["first_sample_id"]
         biosample_url = __get_sample_url(biosample_id, instance=instance, token=token)
         data_directory = dataset["full_path"]
 
         print("Preparing bag for dataset " + data_directory)
-
         computing = data_directory.replace("/", "_").replace(" ", "_") + ".computing"
         done = "." + data_directory.replace("/", "_").replace(" ", "_") + ".done"
         broken = "." + data_directory.replace("/", "_").replace(" ", "_") + ".broken"
 
-        organ_shortcode = dataset["organ_type"]
-        organ_id = dataset["organ_id"]
-        donor_id = dataset["donor_id"]
-        donor_url = __get_donor_url(donor_id, instance=instance, token=token)
+        # get donor information
+        donor_metadata = __get_donor_metadata(hubmap_id, instance=instance, token=token)
+        donor_metadata["project_local_id"] = data_provider
+        donor_metadata["organ_id"] = dataset["organ_id"]
+        donor_metadata["organ_shortcode"] = dataset["organ_type"]
 
         if overwrite:
             print("Erasing old checkpoint. Re-computing checksums.")
@@ -333,7 +404,7 @@ def do_it(
                     biosample_id,
                     biosample_url,
                     data_provider,
-                    organ_shortcode,
+                    donor_metadata["organ_shortcode"],
                     output_directory,
                 )
 
@@ -350,14 +421,14 @@ def do_it(
 
                 print("Making biosample_from_subject.tsv")
                 biosample_from_subject.create_manifest(
-                    biosample_id, donor_id, output_directory
+                    biosample_id, donor_metadata["local_id"], output_directory
                 )
 
                 print("Making ncbi_taxonomy.tsv")
                 ncbi_taxonomy.create_manifest(output_directory)
 
                 print("Making collection.tsv")
-                collection.create_manifest(hubmap_id, hubmap_url, output_directory)
+                collection.create_manifest(dataset_metadata, output_directory)
 
                 print("Making collection_defined_by_project.tsv")
                 collection_defined_by_project.create_manifest(
@@ -376,13 +447,11 @@ def do_it(
                 id_namespace.create_manifest(output_directory)
 
                 print("Making subject.tsv")
-                subject.create_manifest(
-                    data_provider, donor_id, donor_url, output_directory
-                )
+                subject.create_manifest(donor_metadata, output_directory)
 
                 print("Making subject_in_collection.tsv")
                 subject_in_collection.create_manifest(
-                    donor_id, hubmap_id, output_directory
+                    donor_metadata["local_id"], hubmap_id, output_directory
                 )
 
                 print("Making file_in_collection.tsv")
