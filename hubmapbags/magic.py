@@ -201,13 +201,26 @@ def __get_donor_metadata(hubmap_id, instance="prod", token=None):
     donor_metadata["granularity"] = "cfde_subject_granularity:0"
     donor_metadata["creation_time"] = None
 
-    for datum in metadata["metadata"]["living_donor_data"]:
-        if datum["preferred_term"] == "Age":
-            donor_metadata["age_at_enrollment"] = datum["data_value"]
+    if "metadata" in metadata.keys():
+        if "living_donor_data" in metadata["metadata"].keys():
+            for datum in metadata["metadata"]["living_donor_data"]:
+                if datum["preferred_term"] == "Age":
+                    donor_metadata["age_at_enrollment"] = datum["data_value"]
 
-    for datum in metadata["metadata"]["living_donor_data"]:
-        if datum["data_value"] == "Sex":
-            donor_metadata["sex"] = datum["preferred_term"]
+            for datum in metadata["metadata"]["living_donor_data"]:
+                if datum["data_value"] == "Sex":
+                    donor_metadata["sex"] = datum["preferred_term"]
+        else:
+            for datum in metadata["metadata"]["organ_donor_data"]:
+                if datum["preferred_term"] == "Age":
+                    donor_metadata["age_at_enrollment"] = datum["data_value"]
+
+            for datum in metadata["metadata"]["organ_donor_data"]:
+                if datum["data_value"] == "Sex":
+                    donor_metadata["sex"] = datum["preferred_term"]
+    else:
+        donor_metadata["sex"] = None
+        donor_metadata["age_at_enrollment"] = None
 
     if "sex" in donor_metadata.keys():
         if donor_metadata["sex"] == "Female":
@@ -229,15 +242,36 @@ def __get_donor_metadata(hubmap_id, instance="prod", token=None):
         "Native Hawaiian or Other Pacific Islander": "cfde_subject_race:5",
     }
 
-    for datum in metadata["metadata"]["living_donor_data"]:
-        if datum["data_value"] == "Race":
-            donor_metadata["race"] = race[datum["preferred_term"]]
+    if "metadata" in metadata.keys():
+        if "living_donor_data" in metadata["metadata"].keys():
+            for datum in metadata["metadata"]["living_donor_data"]:
+                if datum["data_value"] == "Race":
+                    donor_metadata["race"] = race[datum["preferred_term"]]
 
-    for datum in metadata["metadata"]["living_donor_data"]:
-        if datum["data_value"] == "Race" and datum["preferred_term"] == "Hispanic":
-            donor_metadata["ethnicity"] = "cfde_subject_ethnicity:0"
+            for datum in metadata["metadata"]["living_donor_data"]:
+                if (
+                    datum["data_value"] == "Race"
+                    and datum["preferred_term"] == "Hispanic"
+                ):
+                    donor_metadata["ethnicity"] = "cfde_subject_ethnicity:0"
+                else:
+                    donor_metadata["ethnicity"] = "cfde_subject_ethnicity:1"
         else:
-            donor_metadata["ethnicity"] = "cfde_subject_ethnicity:1"
+            for datum in metadata["metadata"]["organ_donor_data"]:
+                if datum["data_value"] == "Race":
+                    donor_metadata["race"] = race[datum["preferred_term"]]
+
+            for datum in metadata["metadata"]["organ_donor_data"]:
+                if (
+                    datum["data_value"] == "Race"
+                    and datum["preferred_term"] == "Hispanic"
+                ):
+                    donor_metadata["ethnicity"] = "cfde_subject_ethnicity:0"
+                else:
+                    donor_metadata["ethnicity"] = "cfde_subject_ethnicity:1"
+    else:
+        donor_metadata["ethnicity"] = None
+        donor_metadata["race"] = None
 
     return donor_metadata
 
@@ -252,7 +286,11 @@ def __get_dataset_metadata(hubmap_id, instance="prod", token=None):
     )
     dataset_metadata["creation_time"] = metadata["published_timestamp"]
     dataset_metadata["name"] = hubmap_id
-    dataset_metadata["description"] = metadata["description"]
+
+    if "description" in metadata.keys():
+        dataset_metadata["description"] = metadata["description"]
+    else:
+        dataset_metadata["description"] = None
 
     return dataset_metadata
 
