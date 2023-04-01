@@ -1,9 +1,8 @@
 import os
-
 import pandas as pd
 
 
-def _build_dataframe():
+def _build_dataframe() -> pd.DataFrame:
     """
     Build a dataframe with minimal information for this entity.
     """
@@ -15,9 +14,12 @@ def _build_dataframe():
     return df
 
 
-def create_manifest(output_directory):
-    filename = os.path.join(output_directory, "biosample_gene.tsv")
-    df = _build_dataframe()
-    df.to_csv(filename, sep="\t", index=False)
+def create_manifest(output_directory: str) -> bool:
+    try:
+        filename = os.path.join(output_directory, "biosample_gene.tsv")
+        df = _build_dataframe()
+        df.to_csv(filename, sep="\t", index=False)
 
-    return True
+        return True
+    except:
+        return False
