@@ -1,9 +1,8 @@
 import os
-
 import pandas as pd
 
 
-def _build_dataframe(biosample_id, subject_id):
+def _build_dataframe(biosample_id: str, subject_id: str) -> pd.DataFrame:
     """
     Build a dataframe with minimal information for this entity.
     """
@@ -31,9 +30,12 @@ def _build_dataframe(biosample_id, subject_id):
     return df
 
 
-def create_manifest(biosample_id, subject_id, output_directory):
-    filename = os.path.join(output_directory, "biosample_from_subject.tsv")
-    df = _build_dataframe(biosample_id, subject_id)
-    df.to_csv(filename, sep="\t", index=False)
+def create_manifest(biosample_id: str, subject_id: str, output_directory: str) -> bool:
+    try:
+        filename = os.path.join(output_directory, "biosample_from_subject.tsv")
+        df = _build_dataframe(biosample_id, subject_id)
+        df.to_csv(filename, sep="\t", index=False)
 
-    return True
+        return True
+    except:
+        return False
