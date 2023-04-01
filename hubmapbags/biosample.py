@@ -1,12 +1,11 @@
 import os
 from urllib.request import urlopen
 from warnings import warn as warning
-
 import pandas as pd
 import yaml
 
 
-def __get_organ_from_uberon(organ):
+def __get_organ_from_uberon(organ: str) -> str:
     """
     For full list, visit
     https://github.com/hubmapconsortium/search-api/blob/test-release/src/search-schema/data/definitions/enums/organ_types.yaml
@@ -41,7 +40,9 @@ def __get_organ_from_uberon(organ):
     return organs[organ].replace("_", ":")
 
 
-def _build_dataframe(biosample_id, biosample_url, data_provider, organ):
+def _build_dataframe(
+    biosample_id: str, biosample_url: str, data_provider: str, organ: str
+) -> pd.DataFrame:
     """
     Build a dataframe with minimal information for this entity.
     """
@@ -74,10 +75,17 @@ def _build_dataframe(biosample_id, biosample_url, data_provider, organ):
 
 
 def create_manifest(
-    biosample_id, biosample_url, data_provider, organ, output_directory
-):
-    filename = os.path.join(output_directory, "biosample.tsv")
-    df = _build_dataframe(biosample_id, biosample_url, data_provider, organ)
-    df.to_csv(filename, sep="\t", index=False)
+    biosample_id: str,
+    biosample_url: str,
+    data_provider: str,
+    organ: str,
+    output_directory: str,
+) -> bool:
+    try:
+        filename = os.path.join(output_directory, "biosample.tsv")
+        df = _build_dataframe(biosample_id, biosample_url, data_provider, organ)
+        df.to_csv(filename, sep="\t", index=False)
 
-    return True
+        return True
+    except:
+        return False
