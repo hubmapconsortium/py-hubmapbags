@@ -1,13 +1,13 @@
 import datetime
 import math
-
 import pandas as pd
 import requests
-
 from . import apis, uuids
 
 
-def __prepare_dataframe(hubmap_id, data, instance="prod", token=None):
+def __prepare_dataframe(
+    hubmap_id: str, token: str | None, data: dict, instance: str = "prod"
+) -> pd.DataFrame:
     df = pd.DataFrame(data)
     metadata = apis.get_dataset_info(hubmap_id, token=token, instance="prod")
 
@@ -38,7 +38,7 @@ def __prepare_dataframe(hubmap_id, data, instance="prod", token=None):
     return df
 
 
-def __get_assets_link(dataset_uuid, path):
+def __get_assets_link(dataset_uuid: str, path: str) -> str:
     url = (
         "https://g-d00e7b.09193a.5898.dn.glob.us/7277b2460f9c548004496508684a90ef/"
         + dataset_uuid
@@ -49,12 +49,12 @@ def __get_assets_link(dataset_uuid, path):
     return url
 
 
-def __check_assets_link(url):
+def __check_assets_link(url: str) -> dict:
     response = requests.request("HEAD", url)
     return response
 
 
-def __assets_populate(df, index):
+def __assets_populate(df: pd.DataFrame, index: int):
     datum = df.loc[index]
 
     if datum["assets_ready"] is None or math.isnan(datum["assets_ready"]):
@@ -77,7 +77,9 @@ def __assets_populate(df, index):
     return df
 
 
-def get_dataset_info(hubmap_id, instance="prod", token=None):
+def get_dataset_info(
+    hubmap_id: str, token: str | None, instance: str = "prod"
+) -> pd.DataFrame:
     data = uuids.get_uuids(hubmap_id, instance=instance, token=token)
     df = __prepare_dataframe(hubmap_id, data, instance=instance, token=token)
 
