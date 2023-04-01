@@ -1,10 +1,9 @@
 import os
-
 import pandas as pd
 from tabulate import tabulate
 
 
-def __get_token(token=None):
+def __get_token(token: str | None) -> str:
     """
     Helper method that gets the HuBMAP services token.
     """
@@ -15,7 +14,7 @@ def __get_token(token=None):
     return token
 
 
-def add_empty_duuid_column(file):
+def add_empty_duuid_column(file: str) -> bool:
     """
     Helper method that adds the UUID column of a backup pickle file.
 
@@ -36,7 +35,7 @@ def add_empty_duuid_column(file):
         return False
 
 
-def reset_hubmap_uuid_column(file):
+def reset_hubmap_uuid_column(file: str) -> bool:
     """
     Helper method that resets the UUID column of a backup pickle file.
 
@@ -54,7 +53,7 @@ def reset_hubmap_uuid_column(file):
         return False
 
 
-def add_empty_dbgap_study_id_column(file):
+def add_empty_dbgap_study_id_column(file: str) -> bool:
     """
     Helper function that adds a dbGaP study ID column to a backup pickle file.
 
@@ -63,15 +62,19 @@ def add_empty_dbgap_study_id_column(file):
     :rtype: boolean
     """
 
-    duuid = file.split("_")[-1].split(".")[0]
-    print(file)
+    try:
+        duuid = file.split("_")[-1].split(".")[0]
+        print(file)
 
-    df = pd.read_pickle(file)
-    df["dbgap_study_id"] = None
-    df.to_pickle(file)
+        df = pd.read_pickle(file)
+        df["dbgap_study_id"] = None
+        df.to_pickle(file)
+        return True
+    except:
+        return False
 
 
-def pprint(message):
+def pprint(message: str) -> None:
     """
     Helper method that pretty prints a string.
 

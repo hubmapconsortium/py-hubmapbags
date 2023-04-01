@@ -4,7 +4,6 @@ import shutil
 import warnings
 from pathlib import Path
 from shutil import rmtree
-
 import pandas as pd
 
 from . import (
@@ -53,7 +52,9 @@ from . import (
 )
 
 
-def __extract_dataset_info_from_db(hubmap_id, token=None, instance="prod", debug=None):
+def __extract_dataset_info_from_db(
+    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
+) -> pd.DataFrame:
     """
     Helper function that uses the HuBMAP APIs to get dataset info.
     """
@@ -139,7 +140,9 @@ def __extract_dataset_info_from_db(hubmap_id, token=None, instance="prod", debug
     return df
 
 
-def __extract_datasets_from_input(input, instance="prod", token=None):
+def __extract_datasets_from_input(
+    input: str, token: str | None, instance: str = "prod"
+) -> dict:
     """
     Helper function that returns a list of valid datasets (if any).
     """
@@ -163,7 +166,7 @@ def __extract_datasets_from_input(input, instance="prod", token=None):
     return datasets
 
 
-def __get_donor_url(donor_id, instance="prod", token=None):
+def __get_donor_url(donor_id: str, token: str | None, instance: str = "prod") -> str:
     metadata = apis.get_entity_info(donor_id, instance=instance, token=token)
 
     if "registered_doi" in metadata.keys():
@@ -172,7 +175,7 @@ def __get_donor_url(donor_id, instance="prod", token=None):
         return f'https://portal.hubmapconsortium.org/browse/donor/{metadata["uuid"]}'
 
 
-def __get_sample_url(sample_id, instance="prod", token=None):
+def __get_sample_url(sample_id: str, token: str | None, instance: str = "prod") -> str:
     metadata = apis.get_entity_info(sample_id, instance=instance, token=token)
 
     if "registered_doi" in metadata.keys():
@@ -181,7 +184,9 @@ def __get_sample_url(sample_id, instance="prod", token=None):
         return f'https://portal.hubmapconsortium.org/browse/sample/{metadata["uuid"]}'
 
 
-def __get_dataset_url(dataset_id, instance="prod", token=None):
+def __get_dataset_url(
+    dataset_id: str, token: str | None, instance: str = "prod"
+) -> str:
     metadata = apis.get_entity_info(dataset_id, instance=instance, token=token)
 
     if "registered_doi" in metadata.keys():
@@ -190,7 +195,9 @@ def __get_dataset_url(dataset_id, instance="prod", token=None):
         return f'https://portal.hubmapconsortium.org/browse/dataset/{metadata["uuid"]}'
 
 
-def __get_donor_metadata(hubmap_id, instance="prod", token=None):
+def __get_donor_metadata(
+    hubmap_id: str, token: str | None, instance: str = "prod"
+) -> dict:
     metadata = apis.get_donor_info(hubmap_id, instance=instance, token=token)
     donor_metadata = {}
     donor_metadata["local_id"] = metadata["hubmap_id"]
@@ -276,7 +283,9 @@ def __get_donor_metadata(hubmap_id, instance="prod", token=None):
     return donor_metadata
 
 
-def __get_dataset_metadata(hubmap_id, instance="prod", token=None):
+def __get_dataset_metadata(
+    hubmap_id: str, token: str | None, instance: str = "prod"
+) -> dict:
     metadata = apis.get_dataset_info(hubmap_id, instance=instance, token=token)
     dataset_metadata = {}
     dataset_metadata["local_id"] = hubmap_id
@@ -295,7 +304,9 @@ def __get_dataset_metadata(hubmap_id, instance="prod", token=None):
     return dataset_metadata
 
 
-def __get_biosample_metadata(hubmap_id, instance="prod", token=None):
+def __get_biosample_metadata(
+    hubmap_id: str, token: str | None, instance: str = "prod"
+) -> dict:
     metadata = apis.get_entity_info(hubmap_id, instance=instance, token=token)
     biosample_metadata = {}
     biosample_metadata["local_id"] = hubmap_id
@@ -311,13 +322,13 @@ def __get_biosample_metadata(hubmap_id, instance="prod", token=None):
 
 
 def do_it(
-    input,
-    dbgap_study_id=None,
-    overwrite=False,
-    build_bags=False,
-    token=None,
-    instance="prod",
-    debug=True,
+    input: str,
+    token: str | None,
+    dbgap_study_id: str | None,
+    instance: str = "prod",
+    overwrite: bool = False,
+    build_bags: bool = False,
+    debug: bool = True,
 ):
     """
     Magic function that (1) computes checksums, (2) generates UUIDs and, (3) builds a big data bag given a HuBMAP ID.
@@ -554,7 +565,9 @@ def do_it(
     return True
 
 
-def get_dataset_info_from_local_file(hubmap_id, token=None, instance="prod"):
+def get_dataset_info_from_local_file(
+    hubmap_id: str, token: str | None, instance: str = "prod"
+):
     dataset = __extract_datasets_from_input(hubmap_id, token=token, instance=instance)
     if dataset is None:
         return False

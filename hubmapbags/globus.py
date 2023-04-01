@@ -1,9 +1,7 @@
 import datetime
 import math
-
 import pandas as pd
 import requests
-
 from . import apis, uuids
 
 

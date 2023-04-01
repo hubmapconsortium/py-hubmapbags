@@ -4,15 +4,13 @@ import os
 from logging import warning
 from pathlib import Path
 from warnings import warn as warning
-
 import pandas as pd
 import requests
 from tabulate import tabulate
-
 from . import utilities
 
 
-def is_primary(hubmap_id, instance="prod", token=None):
+def is_primary(hubmap_id: str, token: str | None, instance: str = "prod") -> bool:
     """
     Returns true if the dataset is a primary dataset.
     """
@@ -26,7 +24,7 @@ def is_primary(hubmap_id, instance="prod", token=None):
         return False
 
 
-def __compute_number_of_files(directory=None):
+def __compute_number_of_files(directory: str | None) -> int:
     """
     Helper function that returns the number of files in a loca directory.
     """
@@ -36,7 +34,7 @@ def __compute_number_of_files(directory=None):
     return len(files)
 
 
-def __check_if_folder_is_empty(directory=None):
+def __check_if_folder_is_empty(directory: str | None) -> bool:
     """
     If the local directory is empty, then it returns true. False, otherwise.
     """
@@ -47,7 +45,7 @@ def __check_if_folder_is_empty(directory=None):
         return False
 
 
-def __get_instance(instance):
+def __get_instance(instance: str) -> str:
     """
     Helper method that returns the proper instance name.
     """
@@ -63,7 +61,9 @@ def __get_instance(instance):
         return ".test"
 
 
-def __query_ancestors_info(hubmap_id, instance="prod", token=None, debug=False):
+def __query_ancestors_info(
+    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
+) -> None | dict:
     """
     Helper method that returns the ancestors info give a HuBMAP ID.
 
@@ -98,8 +98,12 @@ def __query_ancestors_info(hubmap_id, instance="prod", token=None, debug=False):
 
 
 def get_ancestors_info(
-    hubmap_id, instance="prod", token=None, overwrite=True, debug=False
-):
+    hubmap_id: str,
+    token: str | None,
+    instance: str = "prod",
+    overwrite: bool = True,
+    debug: bool = False,
+) -> None | dict:
     """
     Helper method that returns the ancestors info give a HuBMAP ID.
     """
@@ -133,7 +137,9 @@ def get_ancestors_info(
         return j
 
 
-def __query_provenance_info(hubmap_id, instance="prod", token=None, debug=False):
+def __query_provenance_info(
+    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
+) -> None | dict:
     token = utilities.__get_token(token)
     if token is None:
         warning("Token not set.")
@@ -159,7 +165,9 @@ def __query_provenance_info(hubmap_id, instance="prod", token=None, debug=False)
     return r
 
 
-def __query_dataset_info(hubmap_id, instance="prod", token=None, debug=False):
+def __query_dataset_info(
+    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
+) -> dict | None:
     token = utilities.__get_token(token)
     if token is None:
         warning("Token not set.")
@@ -182,8 +190,12 @@ def __query_dataset_info(hubmap_id, instance="prod", token=None, debug=False):
 
 
 def get_dataset_info(
-    hubmap_id, instance="prod", token=None, overwrite=True, debug=True
-):
+    hubmap_id: str,
+    token: str | None,
+    instance: str = "prod",
+    overwrite: bool = True,
+    debug: bool = True,
+) -> dict:
     """
     Request dataset info given a HuBMAP ID.
 
@@ -222,65 +234,13 @@ def get_dataset_info(
         return j
 
 
-def __query_assay_types(instance="prod", token=None, debug=False):
-    token = utilities.__get_token(token)
-    if token is None:
-        warning("Token not set.")
-        return None
-
-    if __get_instance(instance) == "prod":
-        URL = "https://search.api.hubmapconsortium.org/v3/assaytype?primary=true&simple=true"
-    else:
-        URL = (
-            "https://search-api"
-            + __get_instance(instance)
-            + ".hubmapconsortium.org/v3/assaytype?primary=true&simple=true"
-        )
-
-    headers = {"Authorization": "Bearer " + token, "accept": "application/json"}
-
-    r = requests.get(URL, headers=headers)
-    return r
-
-
-def get_assay_types(debug=False):
-    """
-    Request list of assay types from primary datasets.
-    """
-
-    if debug:
-        print("Get dataset information via the entity-api.")
-    r = __query_assay_types(debug=debug)
-    if r is None:
-        warning("JSON object is empty.")
-        return r
-    j = json.loads(r.text)
-
-    if "message" in j:
-        warning("Request response empty.")
-        print(j["message"])
-        return None
-    else:
-        return j["result"]
-
-
-def __query_assay_types(debug=False):
-    """
-    Search dataset by a given assaytype name.
-    """
-
-    url = "https://search.api.hubmapconsortium.org/v3/assaytype"
-
-    headers = {"Accept": "application/json"}
-    params = {"primary": "true", "simple": "true"}
-
-    data = requests.get(url=url, headers=headers, params=params)
-    return data
-
-
 def get_provenance_info(
-    hubmap_id, instance="prod", token=None, overwrite=False, debug=False
-):
+    hubmap_id: str,
+    token: str | None,
+    instance: str = "prod",
+    overwrite: bool = False,
+    debug: bool = False,
+) -> None | dict:
     """
     Request provenance info given a HuBMAP id.
     """
@@ -314,7 +274,7 @@ def get_provenance_info(
         return j
 
 
-def get_ids(assay_name, token=None, debug=False):
+def get_ids(assay_name: str, token: str | None, debug: bool = False) -> None | dict:
     """
     Get list of HuBMAP ids given an assay name. Returns public HuBMAP ID, UUID and status.
     """
@@ -345,12 +305,31 @@ def get_ids(assay_name, token=None, debug=False):
     return results
 
 
-def get_hubmap_ids(assay_name, token=None, debug=False):
+def get_hubmap_ids(
+    assay_name: str, token: str | None, debug: bool = False
+) -> None | dict:
     """
     Get list of HuBMAP IDs and other useful info given an assay name.
     """
 
     token = utilities.__get_token(token)
+    if token is None:
+        warning("Token not set.")
+        return None
+
+    if __get_instance(instance) == "prod":
+        URL = "https://search.api.hubmapconsortium.org/v3/assaytype?primary=true&simple=true"
+    else:
+        URL = (
+            "https://search-api"
+            + __get_instance(instance)
+            + ".hubmapconsortium.org/v3/assaytype?primary=true&simple=true"
+        )
+
+    headers = {"Authorization": "Bearer " + token, "accept": "application/json"}
+
+    r = requests.get(URL, headers=headers)
+
     if token is None:
         warning("Token not set.")
         return None
@@ -384,7 +363,7 @@ def get_hubmap_ids(assay_name, token=None, debug=False):
     return results
 
 
-def __query_hubmap_ids(assayname, token=None, debug=False):
+def __query_hubmap_ids(assayname: str, token: str | None, debug: bool = False) -> dict:
     """
     Search dataset by a given assaytype name.
     """
@@ -413,7 +392,7 @@ def __query_hubmap_ids(assayname, token=None, debug=False):
     return data
 
 
-def __is_valid(file):
+def __is_valid(file: str) -> str:
     string1 = "No error"
     file1 = open(file, "r")
     readfile = file1.read()
@@ -426,10 +405,13 @@ def __is_valid(file):
     return answer
 
 
-def is_protected(hubmap_id, instance="prod", token=None):
+def is_protected(
+    hubmap_id: str, token: str | None, instance: str = "prod"
+) -> None | bool:
     token = utilities.__get_token(token)
     if token is None:
         warning("Token not set.")
+        return None
 
     metadata = get_dataset_info(hubmap_id, instance=instance, token=token)
     if (
@@ -441,7 +423,7 @@ def is_protected(hubmap_id, instance="prod", token=None):
         return False
 
 
-def pretty_print_info_about_new_datasets(assay_name, debug=False):
+def pretty_print_info_about_new_datasets(assay_name: str, debug: bool = False) -> None:
     """
     Pretty print results about datasets in 'New' status.
     """
@@ -530,7 +512,9 @@ def pretty_print_info_about_new_datasets(assay_name, debug=False):
     print(table)
 
 
-def pretty_print_info_about_all_new_datasets(filename=None, debug=False):
+def pretty_print_info_about_all_new_datasets(
+    filename: str | None, debug: bool = False
+) -> None:
     """
     Pretty print results about datasets in 'New' status.
     """
@@ -649,7 +633,7 @@ def pretty_print_info_about_all_new_datasets(filename=None, debug=False):
     print(table)
 
 
-def pretty_print_hubmap_ids(assay_name, debug=False):
+def pretty_print_hubmap_ids(assay_name: str, debug: bool = False) -> None:
     """
     Pretty print results.
     """
@@ -666,7 +650,9 @@ def pretty_print_hubmap_ids(assay_name, debug=False):
     print(table)
 
 
-def get_directory(hubmap_id, instance="prod", token=None):
+def get_directory(
+    hubmap_id: str, token: str | None, instance: str = "prod"
+) -> None | str:
     """
     Returns the local directory given a valid HuBMAP dataset ID.
     """
@@ -692,7 +678,7 @@ def get_directory(hubmap_id, instance="prod", token=None):
     return directory
 
 
-def get_files(hubmap_id, instance="prod", token=None):
+def get_files(hubmap_id: str, token: str | None, instance: str = "prod") -> None | list:
     """
     Returns the list of files in the file system corresponding to the HuBMAP ID.
     """
@@ -713,9 +699,9 @@ def get_files(hubmap_id, instance="prod", token=None):
         return None
 
 
-def get_number_of_files(hubmap_id, instance="prod", token=None):
-    """ """
-
+def get_number_of_files(
+    hubmap_id: str, token: str | None, instance: str = "prod"
+) -> None | int:
     answer = get_files(hubmap_id, instance=instance, token=token)
 
     if answer is None:
@@ -724,7 +710,9 @@ def get_number_of_files(hubmap_id, instance="prod", token=None):
         return len(answer)
 
 
-def __query_donor_info(hubmap_id, instance="prod", token=None, debug=False):
+def __query_donor_info(
+    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
+) -> None | dict:
     token = utilities.__get_token(token)
     if token is None:
         warning("Token not set.")
@@ -746,7 +734,13 @@ def __query_donor_info(hubmap_id, instance="prod", token=None, debug=False):
     return r
 
 
-def get_donor_info(hubmap_id, instance="prod", token=None, overwrite=True, debug=False):
+def get_donor_info(
+    hubmap_id: str,
+    token: str | None,
+    instance: str = "prod",
+    overwrite: bool = True,
+    debug: bool = False,
+) -> None | dict:
     """
     Request dataset info given a HuBMAP id.
     """
@@ -782,7 +776,9 @@ def get_donor_info(hubmap_id, instance="prod", token=None, overwrite=True, debug
         return j
 
 
-def __query_entity_info(hubmap_id, instance="prod", token=None, debug=False):
+def __query_entity_info(
+    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
+) -> None | dict:
     token = utilities.__get_token(token)
     if token is None:
         warning("Token not set.")
@@ -804,7 +800,13 @@ def __query_entity_info(hubmap_id, instance="prod", token=None, debug=False):
     return r
 
 
-def get_entity_info(hubmap_id, instance="prod", token=None, overwrite=True, debug=True):
+def get_entity_info(
+    hubmap_id: str,
+    token: str | None,
+    instance: str = "prod",
+    overwrite: bool = True,
+    debug: bool = True,
+) -> None | dict:
     """
     Request dataset info given a HuBMAP id.
     """
@@ -832,7 +834,7 @@ def get_entity_info(hubmap_id, instance="prod", token=None, overwrite=True, debu
         return j
 
 
-def get_assay_types(token=None, debug=False):
+def get_assay_types(token: str | None, debug: bool = False) -> None | list[str]:
     """
     Request list of assay types.
     """
@@ -844,7 +846,7 @@ def get_assay_types(token=None, debug=False):
     return assays
 
 
-def __query_assay_types(token=None, debug=False):
+def __query_assay_types(token: str | None, debug: bool = False) -> None | list[str]:
     """
     Search dataset by a given assaytype name.
     """
@@ -872,7 +874,7 @@ def __query_assay_types(token=None, debug=False):
     return sorted(assays)
 
 
-def get_dataset_type(hubmap_id, instance="prod", token=None):
+def get_dataset_type(hubmap_id: str, token: str | None, instance: str = "prod") -> str:
     metadata = get_dataset_info(hubmap_id, instance="prod", token=token)
 
     if metadata["direct_ancestors"][0]["entity_type"] == "Sample":

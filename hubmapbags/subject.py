@@ -1,9 +1,8 @@
 import os
-
 import pandas as pd
 
 
-def _build_dataframe(donor_metadata):
+def _build_dataframe(donor_metadata: str) -> pd.DataFrame:
     """
     Build a dataframe with minimal information for this entity.
     """
@@ -54,9 +53,12 @@ def _build_dataframe(donor_metadata):
     return df
 
 
-def create_manifest(donor_metadata, output_directory):
-    filename = os.path.join(output_directory, "subject.tsv")
-    df = _build_dataframe(donor_metadata)
-    df.to_csv(filename, sep="\t", index=False)
+def create_manifest(donor_metadata: dict, output_directory: str) -> bool:
+    try:
+        filename = os.path.join(output_directory, "subject.tsv")
+        df = _build_dataframe(donor_metadata)
+        df.to_csv(filename, sep="\t", index=False)
 
-    return True
+        return True
+    except:
+        return False
