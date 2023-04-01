@@ -1,9 +1,8 @@
 import os
-
 import pandas as pd
 
 
-def _build_dataframe(collection_id, project_id):
+def _build_dataframe(collection_id: str, project_id: str) -> pd.DataFrame:
     """
     Build a dataframe with minimal information for this entity.
     """
@@ -29,9 +28,12 @@ def _build_dataframe(collection_id, project_id):
     return df
 
 
-def create_manifest(collection_id, project_id, output_directory):
-    filename = os.path.join(output_directory, "collection_defined_by_project.tsv")
-    df = _build_dataframe(collection_id, project_id)
-    df.to_csv(filename, sep="\t", index=False)
+def create_manifest(collection_id: str, project_id: str, output_directory: str) -> bool:
+    try:
+        filename = os.path.join(output_directory, "collection_defined_by_project.tsv")
+        df = _build_dataframe(collection_id, project_id)
+        df.to_csv(filename, sep="\t", index=False)
 
-    return True
+        return True
+    except:
+        return False
