@@ -2,20 +2,21 @@ import datetime
 import hashlib
 import mimetypes
 import os
+import typing
 from itertools import chain
 from pathlib import Path
 
 import pandas as pd
 
 
-def __get_persistent_id(file_uuid):
+def __get_persistent_id(file_uuid: str) -> str:
     url = (
         f"http://hubmap-drs.hubmapconsortium.org:9999/ga4gh/drs/v1/objects/{file_uuid}"
     )
     return url
 
 
-def __get_filename(file):
+def __get_filename(file: str) -> str:
     """
     Helper method that returns a CFDE compatible version of a filename
     """
@@ -23,14 +24,14 @@ def __get_filename(file):
     return file.name.replace(" ", "%20")
 
 
-def __get_file_extension(file):
+def __get_file_extension(file: str) -> str:
     """
     Helper method that returns the file extension.
     """
     return file.suffix
 
 
-def __get_file_size(file):
+def __get_file_size(file: str) -> int:
     """
     Helper method that computes and returns the file size in bytes.
     """
@@ -38,7 +39,7 @@ def __get_file_size(file):
     return file.stat().st_size
 
 
-def __get_md5(file):
+def __get_md5(file: str) -> str:
     """
     Helper method that computes and return a file md5 checksum.
     """
@@ -56,7 +57,7 @@ def __get_md5(file):
     return m.hexdigest()
 
 
-def __get_relative_local_id(file, hubmap_uuid):
+def __get_relative_local_id(file: str, hubmap_uuid: str) -> str:
     """
     Helper function the return the relative local id.
     """
@@ -66,7 +67,7 @@ def __get_relative_local_id(file, hubmap_uuid):
     return relative_local_id
 
 
-def __get_sha256(file):
+def __get_sha256(file: str) -> str:
     """
     Helper method that computes and return a file sha256 checksum.
     """
@@ -84,7 +85,7 @@ def __get_sha256(file):
     return m.hexdigest()
 
 
-def __get_file_creation_date(file):
+def __get_file_creation_date(file: str) -> str:
     """
     Helper method that return a file creation date.
     """
@@ -93,7 +94,7 @@ def __get_file_creation_date(file):
     return str(datetime.datetime.fromtimestamp(t).strftime("%Y-%m-%d"))
 
 
-def __get_data_type(file):
+def __get_data_type(file: str) -> str | None:
     """
     Helper method that maps a file extension to an EDAM data format term.
     """
@@ -127,10 +128,10 @@ def __get_data_type(file):
         return formats[extension]
     except:
         print("Unable to find key for data type " + extension)
-        return ""
+        return None
 
 
-def __get_mime_type(file):
+def __get_mime_type(file: str) -> str | None:
     """
     Helper function that return a file MIME type.
     """
@@ -138,7 +139,7 @@ def __get_mime_type(file):
     return mimetypes.MimeTypes().guess_type(str(file))[0]
 
 
-def __get_file_format(file):
+def __get_file_format(file: str) -> str | None:
     """
     Helper method that maps a file extension to an EDAM file format term.
     """
@@ -172,10 +173,10 @@ def __get_file_format(file):
         return formats[extension]
     except:
         print("Unable to find key for file format " + extension)
-        return ""
+        return None
 
 
-def __get_dbgap_study_id(file, dbgap_study_id):
+def __get_dbgap_study_id(file: str, dbgap_study_id: str | None) -> str | None:
     if dbgap_study_id == "" or dbgap_study_id is None:
         return ""
     else:
@@ -185,7 +186,7 @@ def __get_dbgap_study_id(file, dbgap_study_id):
             return ""
 
 
-def __get_assay_type_from_obi(assay_type):
+def __get_assay_type_from_obi(assay_type: str) -> str:
     assay = {}
     assay["af"] = "OBI:0003087"  # AF
     assay["atacseq-bulk"] = "OBI:0003089"  # Bulk ATAC-seq
@@ -222,17 +223,17 @@ def __get_assay_type_from_obi(assay_type):
     return assay[assay_type]
 
 
-def _get_list_of_files(directory):
+def _get_list_of_files(directory: str) -> generator:
     return Path(directory).glob("**/*")
 
 
 def _build_dataframe(
-    project_id,
-    assay_type,
-    directory,
-    dbgap_study_id=None,
-    dataset_hmid=None,
-    dataset_uuid=None,
+    project_id: str,
+    assay_type: str,
+    directory: str,
+    dbgap_study_id: str | None,
+    dataset_hmid: str | None,
+    dataset_uuid: str | None,
 ):
     """
     Build a dataframe with minimal information for this entity.
@@ -364,14 +365,14 @@ def _build_dataframe(
 
 
 def create_manifest(
-    project_id,
-    assay_type,
-    directory,
-    output_directory,
-    dbgap_study_id,
-    token,
-    dataset_hmid,
-    dataset_uuid,
+    project_id: str,
+    assay_type: str,
+    directory: str,
+    output_directory: str,
+    dbgap_study_id: str | None,
+    token: str | None,
+    dataset_hmid: str,
+    dataset_uuid: str,
 ):
     filename = os.path.join(output_directory, "file.tsv")
 

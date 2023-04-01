@@ -1,12 +1,10 @@
 import os
 from pathlib import Path
-
 import pandas as pd
-
 from .apis import *
 
 
-def _build_dataframe(hubmap_id, hubmap_uuid, directory):
+def _build_dataframe(hubmap_id: str, hubmap_uuid: str, directory: str) -> pd.DataFrame:
     """
     Build a dataframe with minimal information for this entity.
     """
@@ -47,7 +45,9 @@ def _build_dataframe(hubmap_id, hubmap_uuid, directory):
     return df
 
 
-def create_manifest(hubmap_id, hubmap_uuid, directory, output_directory):
+def create_manifest(
+    hubmap_id: str, hubmap_uuid: str, directory: str, output_directory: str
+) -> bool:
     filename = os.path.join(output_directory, "file_describes_collection.tsv")
 
     if not Path(".data").exists():
