@@ -2,8 +2,10 @@ import os
 import os.path
 import shutil
 import warnings
+import logging
 from pathlib import Path
 from shutil import rmtree
+from datetime import datetime
 import pandas as pd
 
 from . import (
@@ -27,9 +29,6 @@ from . import (
     collection_protein,
     collection_substance,
     collection_taxonomy,
-)
-from . import file as files
-from . import (
     file_describes_biosample,
     file_describes_collection,
     file_describes_subject,
@@ -50,6 +49,7 @@ from . import (
     utilities,
     uuids,
 )
+from . import file as files
 
 
 def __extract_dataset_info_from_db(
@@ -324,12 +324,10 @@ def __get_biosample_metadata(
 def do_it(
     input: str,
     token: str | None,
-    dbgap_study_id: str | None,
     instance: str = "prod",
-    overwrite: bool = False,
     build_bags: bool = False,
     debug: bool = True,
-):
+) -> bool:
     """
     Magic function that (1) computes checksums, (2) generates UUIDs and, (3) builds a big data bag given a HuBMAP ID.
 
@@ -350,9 +348,23 @@ def do_it(
     :rtype: boolean
     """
 
+    if not Path("logs").exists():
+        Path("logs").mkdir()
+
+    now = datetime.now()
+    log_filename = "hubmapbags-" + str(now.strftime("%Y%m%d")) + ".log"
+    logging.basicConfig(
+        filename=f"logs/{log_filename}",
+        filemode="w",
+        format="%(asctime)s - %(levelname)s - %(message)s",
+    )
+
     datasets = __extract_datasets_from_input(input, token=token, instance=instance)
     if datasets is None:
+        logging.critical("Unable to extract dataset information from the given input")
         return False
+    else:
+        logging.info(f"Extracted dataset information from {input}")
 
     for index, dataset in datasets.iterrows():
         status = dataset["ds.status"].lower()
@@ -363,42 +375,135 @@ def do_it(
             .replace("'", "")
             .lower()
         )
-        data_provider = dataset["ds.group_name"]
 
-        hubmap_id = dataset["ds.hubmap_id"]
-        hubmap_uuid = dataset["dataset_uuid"]
-        dataset_metadata = __get_dataset_metadata(
-            hubmap_id, instance=instance, token=token
-        )
-        hubmap_url = __get_dataset_url(hubmap_id, instance=instance, token=token)
-        dataset_metadata["hubmap_url"] = hubmap_url
+        if "ds.hubmap_id" in dataset.keys():
+            logging.info(f'HuBMAP ID set to {dataset["ds.hubmap_id"]}')
+            hubmap_id = dataset["ds.hubmap_id"]
+        else:
+            logging.error("Unable to extract HuBMAP ID from dataset metadata")
+            return False
 
-        biosample_id = dataset["first_sample_id"]
-        biosample_url = __get_sample_url(biosample_id, instance=instance, token=token)
-        data_directory = dataset["full_path"]
+        if "dataset_uuid" in dataset.keys():
+            logging.info(f'HuBMAP UUID set to {dataset["dataset_uuid"]}')
+            hubmap_uuid = dataset["dataset_uuid"]
+        else:
+            ("Unable to extract HuBMAP UUID from dataset metadata")
+            return False
 
-        print("Preparing bag for dataset " + data_directory)
+        if "ds.group_name" in dataset.keys():
+            logging.info(f'Group name set to {dataset["ds.group_name"]}')
+            data_provider = dataset["ds.group_name"]
+        else:
+            logging.error("Unable to extract group name from dataset metadata")
+            return False
+
+        if status != "published":
+            logging.critical(
+                f"Dataset {hubmap_id} is not published. Stopping computation."
+            )
+            print(f"Dataset {hubmap_id} is not published. Stopping computation.")
+            return False
+
+        try:
+            dataset_metadata = __get_dataset_metadata(
+                hubmap_id, instance=instance, token=token
+            )
+            logging.info(f"Gathered additional metadata to continue processing dataset")
+        except:
+            logging.critical(
+                f"Unable to extract additional dataset metadata for {hubmap_id}"
+            )
+            return False
+
+        try:
+            hubmap_url = __get_dataset_url(hubmap_id, instance=instance, token=token)
+            dataset_metadata["hubmap_url"] = hubmap_url
+            logging.info(f"Extracted dataset URL ({hubmap_url})")
+        except:
+            logging.warning("Unable to extract HuBMAP dataset URL")
+            dataset_metadata["hubmap_url"] = None
+
+        if "first_sample_id" in dataset.keys():
+            biosample_id = dataset["first_sample_id"]
+            logging.inf(f"Extracted first sample ID {biosample_id}")
+        else:
+            logging.critical("Unable to extract first sample ID")
+            return False
+
+        try:
+            biosample_url = __get_sample_url(
+                biosample_id, instance=instance, token=token
+            )
+            logging.info(f"Extracted sample URL ({biosample_url})")
+        except:
+            logging.critical(f"Unable to extract biosample metadata for {hubmap_id}")
+            return False
+
+        if "full_path" in dataset.keys():
+            data_directory = dataset["full_path"]
+            logging.info(f"EXtracted data direcstatustory full ({data_directory})")
+        else:
+            logging.critical(f"Data directory full path is not available")
+            return False
+
+        print(f"Building bag for dataset in {data_directory}")
+        logging.info(f"Building bag for dataset in {data_directory}")
         computing = data_directory.replace("/", "_").replace(" ", "_") + ".computing"
         done = "." + data_directory.replace("/", "_").replace(" ", "_") + ".done"
         broken = "." + data_directory.replace("/", "_").replace(" ", "_") + ".broken"
 
         # get donor information
-        donor_metadata = __get_donor_metadata(hubmap_id, instance=instance, token=token)
-        donor_metadata["project_local_id"] = data_provider
-        donor_metadata["organ_id"] = dataset["organ_id"]
-        donor_metadata["organ_shortcode"] = dataset["organ_type"]
+        try:
+            donor_metadata = __get_donor_metadata(
+                hubmap_id, instance=instance, token=token
+            )
+            logging.info(f"Gathered donor metadata to continue processing dataset")
+        except:
+            logging.critical(f"Unable to extract donor metadata for {hubmap_id}")
+            return False
+
+        if "project_local_id" in donor_metadata.keys():
+            donor_metadata["project_local_id"] = data_provider
+            logging.info(f"Donor project local ID set to {data_provider}")
+        else:
+            logging.critical(f"Unable to extract project local ID from donor metadata")
+            return False
+
+        if "organ_id" in dataset.keys():
+            donor_metadata["organ_id"] = dataset["organ_id"]
+            logging.info(f'Donor organ ID set to {dataset["organ_id"]}')
+        else:
+            logging.critical(f"Unable to extract organ ID from donor metadata")
+            return False
+
+        if "organ_type" in dataset.keys():
+            donor_metadata["organ_shortcode"] = dataset["organ_type"]
+            logging.info(f'Donor organ type set to {dataset["organ_type"]}')
+        else:
+            logging.critical(f"Unable to extract organ type from donor metadata")
+            return False
 
         if overwrite:
             print("Erasing old checkpoint. Re-computing checksums.")
+            logging.info("Erasing old checkpoint. Re-computing checksums.")
             if Path(done).exists():
-                Path(done).unlink()
+                try:
+                    Path(done).unlink()
+                except:
+                    logging.warning(f"Unable to remove file {done}.")
+                    return False
 
         if Path(done).exists():
             print(
-                "Checkpoint found. Avoiding computation. To re-compute erase file "
-                + done
+                f"Checkpoint found. Avoiding computation. To re-compute erase file {done}"
+            )
+            logging.info(
+                f"Checkpoint found. Avoiding computation. To re-compute erase file {done}"
             )
         elif Path(computing).exists():
+            logging.info(
+                "Computing checkpoint found. Avoiding computation since another process is building this bag."
+            )
             print(
                 "Computing checkpoint found. Avoiding computation since another process is building this bag."
             )
@@ -406,34 +511,43 @@ def do_it(
             with open(computing, "w") as file:
                 pass
 
-            print("Creating checkpoint " + computing)
-
-            if status == "new":
-                print("Dataset is not published. Aborting computation.")
-                return
+            print(f"Creating checkpoint {computing}")
+            logging.info(f"Creating checkpoint {computing}")
 
             if build_bags:
-                print("Checking if output directory exists.")
-                output_directory = (
-                    data_type + "-" + status + "-" + dataset["dataset_uuid"]
-                )
+                logging.info(f"Checking if output directory exists")
+                print("Checking if output directory exists")
+                output_directory = f'{data_type}-{status}-{dataset["dataset_uuid"]}'
 
-                print("Creating output directory " + output_directory + ".")
                 if Path(output_directory).exists() and Path(output_directory).is_dir():
                     print("Output directory found. Removing old copy.")
+                    logging.info("Output directory found. Removing old copy.")
                     rmtree(output_directory)
+                    print(f"Creating output directory {output_directory}")
+                    logging.info(f"Creating output directory {output_directory}")
                     os.mkdir(output_directory)
                 else:
-                    print("Output directory does not exist. Creating directory.")
+                    print(
+                        f"Output directory {output_directory} does not exist. Creating directory."
+                    )
+                    logging.info(
+                        f"Output directory {output_directory} does not exist. Creating directory."
+                    )
                     os.mkdir(output_directory)
 
                 print("Making file.tsv")
+                logging.info("Making file.tsv")
+
                 if not Path(".data").exists():
+                    logging.info("Make directory .data/")
                     Path(".data").mkdir()
+
                 temp_file = ".data/" + hubmap_uuid + ".tsv"
+                logging.info("")
 
                 if overwrite:
                     print("Removing precomputed checksums")
+                    logging.info("Removing precomputed checksums")
                     if Path(temp_file).exists():
                         Path(temp_file).unlink()
 
@@ -449,6 +563,7 @@ def do_it(
                 )
 
                 print("Making biosample.tsv")
+                logging.info("Making biosample.tsv")
                 biosample.create_manifest(
                     biosample_id,
                     biosample_url,
@@ -458,57 +573,71 @@ def do_it(
                 )
 
                 print("Making biosample_in_collection.tsv")
+                logging.info("Making biosample_in_collection.tsv")
                 biosample_in_collection.create_manifest(
                     biosample_id, hubmap_id, output_directory
                 )
 
                 print("Making project.tsv")
+                logging.info("Making project.tsv")
                 projects.create_manifest(data_provider, output_directory)
 
                 print("Making project_in_project.tsv")
+                logging.info("Making project_in_project.tsv")
                 project_in_project.create_manifest(data_provider, output_directory)
 
                 print("Making biosample_from_subject.tsv")
+                logging.info("Making biosample_from_subject.tsv")
                 biosample_from_subject.create_manifest(
                     biosample_id, donor_metadata["local_id"], output_directory
                 )
 
                 print("Making ncbi_taxonomy.tsv")
+                logging.info("Making ncbi_taxonomy.tsv")
                 ncbi_taxonomy.create_manifest(output_directory)
 
                 print("Making collection.tsv")
+                logging.info("Making collection.tsv")
                 collection.create_manifest(dataset_metadata, output_directory)
 
                 print("Making collection_defined_by_project.tsv")
+                logging.info("Making collection_defined_by_project.tsv")
                 collection_defined_by_project.create_manifest(
                     hubmap_id, data_provider, output_directory
                 )
 
                 print("Making file_describes_collection.tsv")
+                logging.info("Making file_describes_collection.tsv")
                 file_describes_collection.create_manifest(
                     hubmap_id, hubmap_uuid, data_directory, output_directory
                 )
 
                 print("Making dcc.tsv")
+                logging.info("Making dcc.tsv")
                 primary_dcc_contact.create_manifest(output_directory)
 
                 print("Making id_namespace.tsv")
+                logging.info("Making id_namespace.tsv")
                 id_namespace.create_manifest(output_directory)
 
                 print("Making subject.tsv")
+                logging.info("Making subject.tsv")
                 subject.create_manifest(donor_metadata, output_directory)
 
                 print("Making subject_in_collection.tsv")
+                logging.info("Making subject_in_collection.tsv")
                 subject_in_collection.create_manifest(
                     donor_metadata["local_id"], hubmap_id, output_directory
                 )
 
                 print("Making file_in_collection.tsv")
+                logging.info("Making file_in_collection.tsv")
                 answer = file_in_collection.create_manifest(
                     hubmap_id, hubmap_uuid, data_directory, output_directory
                 )
 
                 print("Creating empty files")
+                logging.info("Creating empty files")
                 file_describes_subject.create_manifest(output_directory)
                 file_describes_biosample.create_manifest(output_directory)
                 anatomy.create_manifest(output_directory)
@@ -550,10 +679,12 @@ def do_it(
                     dataset_uuid=hubmap_uuid,
                 )
 
-            print("Removing checkpoint " + computing)
+            print(f"Removing checkpoint {computing}")
+            logging.info(f"Removing checkpoint {computing}")
             Path(computing).unlink()
 
-            print("Creating final checkpoint " + done)
+            print(f"Creating final checkpoint {done}")
+            logging.info(f"Creating final checkpoint {done}")
             if build_bags:
                 if not Path("bags").exists():
                     Path("bags").mkdir()
