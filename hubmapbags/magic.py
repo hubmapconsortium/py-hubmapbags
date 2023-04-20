@@ -53,7 +53,7 @@ from . import file as files
 
 
 def __extract_dataset_info_from_db(
-    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
+    hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
 ) -> pd.DataFrame:
     """
     Helper function that uses the HuBMAP APIs to get dataset info.
@@ -141,7 +141,7 @@ def __extract_dataset_info_from_db(
 
 
 def __extract_datasets_from_input(
-    input: str, token: str | None, instance: str = "prod"
+    input: str, token: str, instance: str = "prod"
 ) -> dict:
     """
     Helper function that returns a list of valid datasets (if any).
@@ -166,7 +166,7 @@ def __extract_datasets_from_input(
     return datasets
 
 
-def __get_donor_url(donor_id: str, token: str | None, instance: str = "prod") -> str:
+def __get_donor_url(donor_id: str, token: str, instance: str = "prod") -> str:
     metadata = apis.get_entity_info(donor_id, instance=instance, token=token)
 
     if "registered_doi" in metadata.keys():
@@ -175,7 +175,7 @@ def __get_donor_url(donor_id: str, token: str | None, instance: str = "prod") ->
         return f'https://portal.hubmapconsortium.org/browse/donor/{metadata["uuid"]}'
 
 
-def __get_sample_url(sample_id: str, token: str | None, instance: str = "prod") -> str:
+def __get_sample_url(sample_id: str, token: str, instance: str = "prod") -> str:
     metadata = apis.get_entity_info(sample_id, instance=instance, token=token)
 
     if "registered_doi" in metadata.keys():
@@ -185,7 +185,7 @@ def __get_sample_url(sample_id: str, token: str | None, instance: str = "prod") 
 
 
 def __get_dataset_url(
-    dataset_id: str, token: str | None, instance: str = "prod"
+    dataset_id: str, token: str, instance: str = "prod"
 ) -> str:
     metadata = apis.get_entity_info(dataset_id, instance=instance, token=token)
 
@@ -196,7 +196,7 @@ def __get_dataset_url(
 
 
 def __get_donor_metadata(
-    hubmap_id: str, token: str | None, instance: str = "prod"
+    hubmap_id: str, token: str, instance: str = "prod"
 ) -> dict:
     metadata = apis.get_donor_info(hubmap_id, instance=instance, token=token)
     donor_metadata = {}
@@ -284,7 +284,7 @@ def __get_donor_metadata(
 
 
 def __get_dataset_metadata(
-    hubmap_id: str, token: str | None, instance: str = "prod"
+    hubmap_id: str, token: str, instance: str = "prod"
 ) -> dict:
     metadata = apis.get_dataset_info(hubmap_id, instance=instance, token=token)
     dataset_metadata = {}
@@ -305,7 +305,7 @@ def __get_dataset_metadata(
 
 
 def __get_biosample_metadata(
-    hubmap_id: str, token: str | None, instance: str = "prod"
+    hubmap_id: str, token: str, instance: str = "prod"
 ) -> dict:
     metadata = apis.get_entity_info(hubmap_id, instance=instance, token=token)
     biosample_metadata = {}
@@ -323,7 +323,7 @@ def __get_biosample_metadata(
 
 def do_it(
     input: str,
-    token: str | None,
+    token: str,
     instance: str = "prod",
     build_bags: bool = False,
     debug: bool = True,
@@ -697,7 +697,7 @@ def do_it(
 
 
 def get_dataset_info_from_local_file(
-    hubmap_id: str, token: str | None, instance: str = "prod"
+    hubmap_id: str, token: str, instance: str = "prod"
 ):
     dataset = __extract_datasets_from_input(hubmap_id, token=token, instance=instance)
     if dataset is None:

@@ -10,7 +10,7 @@ from tabulate import tabulate
 from . import utilities
 
 
-def is_primary(hubmap_id: str, token: str | None, instance: str = "prod") -> bool:
+def is_primary(hubmap_id: str, token: str, instance: str = "prod") -> bool:
     """
     Returns true if the dataset is a primary dataset.
     """
@@ -24,7 +24,7 @@ def is_primary(hubmap_id: str, token: str | None, instance: str = "prod") -> boo
         return False
 
 
-def __compute_number_of_files(directory: str | None) -> int:
+def __compute_number_of_files(directory: str) -> int:
     """
     Helper function that returns the number of files in a loca directory.
     """
@@ -34,7 +34,7 @@ def __compute_number_of_files(directory: str | None) -> int:
     return len(files)
 
 
-def __check_if_folder_is_empty(directory: str | None) -> bool:
+def __check_if_folder_is_empty(directory: str) -> bool:
     """
     If the local directory is empty, then it returns true. False, otherwise.
     """
@@ -62,8 +62,8 @@ def __get_instance(instance: str) -> str:
 
 
 def __query_ancestors_info(
-    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
-) -> None | dict:
+    hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
+) -> dict:
     """
     Helper method that returns the ancestors info give a HuBMAP ID.
 
@@ -99,11 +99,11 @@ def __query_ancestors_info(
 
 def get_ancestors_info(
     hubmap_id: str,
-    token: str | None,
+    token: str,
     instance: str = "prod",
     overwrite: bool = True,
     debug: bool = False,
-) -> None | dict:
+) -> dict:
     """
     Helper method that returns the ancestors info give a HuBMAP ID.
     """
@@ -138,8 +138,8 @@ def get_ancestors_info(
 
 
 def __query_provenance_info(
-    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
-) -> None | dict:
+    hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
+) -> dict:
     token = utilities.__get_token(token)
     if token is None:
         warning("Token not set.")
@@ -166,8 +166,8 @@ def __query_provenance_info(
 
 
 def __query_dataset_info(
-    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
-) -> dict | None:
+    hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
+) -> dict:
     token = utilities.__get_token(token)
     if token is None:
         warning("Token not set.")
@@ -191,7 +191,7 @@ def __query_dataset_info(
 
 def get_dataset_info(
     hubmap_id: str,
-    token: str | None,
+    token: str,
     instance: str = "prod",
     overwrite: bool = True,
     debug: bool = True,
@@ -236,11 +236,11 @@ def get_dataset_info(
 
 def get_provenance_info(
     hubmap_id: str,
-    token: str | None,
+    token: str,
     instance: str = "prod",
     overwrite: bool = False,
     debug: bool = False,
-) -> None | dict:
+) -> dict:
     """
     Request provenance info given a HuBMAP id.
     """
@@ -274,7 +274,7 @@ def get_provenance_info(
         return j
 
 
-def get_ids(assay_name: str, token: str | None, debug: bool = False) -> None | dict:
+def get_ids(assay_name: str, token: str, debug: bool = False) -> dict:
     """
     Get list of HuBMAP ids given an assay name. Returns public HuBMAP ID, UUID and status.
     """
@@ -306,8 +306,8 @@ def get_ids(assay_name: str, token: str | None, debug: bool = False) -> None | d
 
 
 def get_hubmap_ids(
-    assay_name: str, token: str | None, debug: bool = False
-) -> None | dict:
+    assay_name: str, token: str, debug: bool = False
+) -> dict:
     """
     Get list of HuBMAP IDs and other useful info given an assay name.
     """
@@ -363,7 +363,7 @@ def get_hubmap_ids(
     return results
 
 
-def __query_hubmap_ids(assayname: str, token: str | None, debug: bool = False) -> dict:
+def __query_hubmap_ids(assayname: str, token: str, debug: bool = False) -> dict:
     """
     Search dataset by a given assaytype name.
     """
@@ -406,8 +406,8 @@ def __is_valid(file: str) -> str:
 
 
 def is_protected(
-    hubmap_id: str, token: str | None, instance: str = "prod"
-) -> None | bool:
+    hubmap_id: str, token: str, instance: str = "prod"
+) -> bool:
     token = utilities.__get_token(token)
     if token is None:
         warning("Token not set.")
@@ -513,7 +513,7 @@ def pretty_print_info_about_new_datasets(assay_name: str, debug: bool = False) -
 
 
 def pretty_print_info_about_all_new_datasets(
-    filename: str | None, debug: bool = False
+    filename: str, debug: bool = False
 ) -> None:
     """
     Pretty print results about datasets in 'New' status.
@@ -651,8 +651,8 @@ def pretty_print_hubmap_ids(assay_name: str, debug: bool = False) -> None:
 
 
 def get_directory(
-    hubmap_id: str, token: str | None, instance: str = "prod"
-) -> None | str:
+    hubmap_id: str, token: str, instance: str = "prod"
+) -> str:
     """
     Returns the local directory given a valid HuBMAP dataset ID.
     """
@@ -678,7 +678,7 @@ def get_directory(
     return directory
 
 
-def get_files(hubmap_id: str, token: str | None, instance: str = "prod") -> None | list:
+def get_files(hubmap_id: str, token: str, instance: str = "prod") -> list:
     """
     Returns the list of files in the file system corresponding to the HuBMAP ID.
     """
@@ -700,7 +700,7 @@ def get_files(hubmap_id: str, token: str | None, instance: str = "prod") -> None
 
 
 def get_number_of_files(
-    hubmap_id: str, token: str | None, instance: str = "prod"
+    hubmap_id: str, token: str, instance: str = "prod"
 ) -> None | int:
     answer = get_files(hubmap_id, instance=instance, token=token)
 
@@ -711,8 +711,8 @@ def get_number_of_files(
 
 
 def __query_donor_info(
-    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
-) -> None | dict:
+    hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
+) -> dict:
     token = utilities.__get_token(token)
     if token is None:
         warning("Token not set.")
@@ -736,11 +736,11 @@ def __query_donor_info(
 
 def get_donor_info(
     hubmap_id: str,
-    token: str | None,
+    token: str,
     instance: str = "prod",
     overwrite: bool = True,
     debug: bool = False,
-) -> None | dict:
+) -> dict:
     """
     Request dataset info given a HuBMAP id.
     """
@@ -777,8 +777,8 @@ def get_donor_info(
 
 
 def __query_entity_info(
-    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
-) -> None | dict:
+    hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
+) -> dict:
     token = utilities.__get_token(token)
     if token is None:
         warning("Token not set.")
@@ -802,11 +802,11 @@ def __query_entity_info(
 
 def get_entity_info(
     hubmap_id: str,
-    token: str | None,
+    token: str,
     instance: str = "prod",
     overwrite: bool = True,
     debug: bool = True,
-) -> None | dict:
+) -> dict:
     """
     Request dataset info given a HuBMAP id.
     """
@@ -834,7 +834,7 @@ def get_entity_info(
         return j
 
 
-def get_assay_types(token: str | None, debug: bool = False) -> None | list[str]:
+def get_assay_types(token: str, debug: bool = False) -> None | list[str]:
     """
     Request list of assay types.
     """
@@ -846,7 +846,7 @@ def get_assay_types(token: str | None, debug: bool = False) -> None | list[str]:
     return assays
 
 
-def __query_assay_types(token: str | None, debug: bool = False) -> None | list[str]:
+def __query_assay_types(token: str, debug: bool = False) -> None | list[str]:
     """
     Search dataset by a given assaytype name.
     """
@@ -874,7 +874,7 @@ def __query_assay_types(token: str | None, debug: bool = False) -> None | list[s
     return sorted(assays)
 
 
-def get_dataset_type(hubmap_id: str, token: str | None, instance: str = "prod") -> str:
+def get_dataset_type(hubmap_id: str, token: str, instance: str = "prod") -> str:
     metadata = get_dataset_info(hubmap_id, instance="prod", token=token)
 
     if metadata["direct_ancestors"][0]["entity_type"] == "Sample":

@@ -93,7 +93,7 @@ def __get_file_creation_date(file: str) -> str:
     return str(datetime.datetime.fromtimestamp(t).strftime("%Y-%m-%d"))
 
 
-def __get_data_type(file: str) -> str | None:
+def __get_data_type(file: str) -> str:
     """
     Helper method that maps a file extension to an EDAM data format term.
     """
@@ -130,7 +130,7 @@ def __get_data_type(file: str) -> str | None:
         return None
 
 
-def __get_mime_type(file: str) -> str | None:
+def __get_mime_type(file: str) -> str:
     """
     Helper function that return a file MIME type.
     """
@@ -138,7 +138,7 @@ def __get_mime_type(file: str) -> str | None:
     return mimetypes.MimeTypes().guess_type(str(file))[0]
 
 
-def __get_file_format(file: str) -> str | None:
+def __get_file_format(file: str) -> str:
     """
     Helper method that maps a file extension to an EDAM file format term.
     """
@@ -175,7 +175,7 @@ def __get_file_format(file: str) -> str | None:
         return None
 
 
-def __get_dbgap_study_id(file: str, dbgap_study_id: str | None) -> str | None:
+def __get_dbgap_study_id(file: str, dbgap_study_id: str) -> str:
     if dbgap_study_id == "" or dbgap_study_id is None:
         return ""
     else:
@@ -222,7 +222,7 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     return assay[assay_type]
 
 
-def _get_list_of_files(directory: str) -> generator:
+def _get_list_of_files(directory: str):
     return Path(directory).glob("**/*")
 
 
@@ -230,9 +230,9 @@ def _build_dataframe(
     project_id: str,
     assay_type: str,
     directory: str,
-    dbgap_study_id: str | None,
-    dataset_hmid: str | None,
-    dataset_uuid: str | None,
+    dbgap_study_id: str,
+    dataset_hmid: str,
+    dataset_uuid: str,
 ):
     """
     Build a dataframe with minimal information for this entity.
@@ -368,8 +368,8 @@ def create_manifest(
     assay_type: str,
     directory: str,
     output_directory: str,
-    dbgap_study_id: str | None,
-    token: str | None,
+    dbgap_study_id: str,
+    token: str,
     dataset_hmid: str,
     dataset_uuid: str,
 ):

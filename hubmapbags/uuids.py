@@ -8,7 +8,7 @@ from . import apis, magic, utilities
 
 def load_local_file_with_remote_uuids(
     hubmap_id: str,
-    token: str | None,
+    token: str,
     instance: str = "prod",
     overwrite: bool = False,
     debug: bool = False,
@@ -37,7 +37,7 @@ def load_local_file_with_remote_uuids(
 
 def populate_local_file_with_remote_uuids(
     hubmap_id: str,
-    token: str | None,
+    token: str,
     instance: str = "prod",
     overwrite: bool = False,
     debug: bool = False,
@@ -120,7 +120,7 @@ def __get_instance(instance: str) -> str:
 
 
 def __query_existence(
-    uuid: str, token: str | None, instance: str = "prod", debug: bool = False
+    uuid: str, token: str, instance: str = "prod", debug: bool = False
 ) -> dict:
     token = utilities.__get_token(token)
     if token is None:
@@ -145,7 +145,7 @@ def __query_existence(
 
 
 def __query_uuids(
-    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
+    hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
 ) -> dict:
     token = utilities.__get_token(token)
     if token is None:
@@ -170,7 +170,7 @@ def __query_uuids(
 
 
 def get_uuids(
-    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
+    hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
 ) -> dict:
     """
     Get UUIDs, if any, given a HuBMAP id.
@@ -192,7 +192,7 @@ def get_uuids(
 
 
 def get_number_of_uuids(
-    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
+    hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
 ) -> int:
     """
     Get number of UUIDs associated with this HuBMAP id using the UUID API.
@@ -206,7 +206,7 @@ def get_number_of_uuids(
         return 0
 
 
-def has_uuids(hubmap_id: str, token: str | None, instance: str = "prod") -> bool:
+def has_uuids(hubmap_id: str, token: str, instance: str = "prod") -> bool:
     if get_number_of_uuids(hubmap_id, instance="prod", token=token) == 0:
         return False
     else:
@@ -214,7 +214,7 @@ def has_uuids(hubmap_id: str, token: str | None, instance: str = "prod") -> bool
 
 
 def generate(
-    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = True
+    hubmap_id: str, token: str, instance: str = "prod", debug: bool = True
 ) -> bool:
     """
     Main function that generates UUIDs using the UUID-API.
@@ -419,7 +419,7 @@ def generate(
 
 
 def should_i_generate_uuids(
-    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
+    hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
 ) -> bool:
     """
     Helper function that compares the number of files on disk versus the number of
@@ -453,7 +453,7 @@ def should_i_generate_uuids(
 
 
 def is_complete(
-    hubmap_id: str, token: str | None, instance: str = "prod", debug: bool = False
+    hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
 ) -> bool:
     """
     A dataset is considered to be complete if the number of remote UUIDs matches the number of local number of files. False, otherwise.
