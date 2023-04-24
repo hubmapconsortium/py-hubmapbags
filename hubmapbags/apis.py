@@ -700,8 +700,7 @@ def get_files(hubmap_id: str, token: str, instance: str = "prod") -> list:
 
 
 def get_number_of_files(
-    hubmap_id: str, token: str, instance: str = "prod"
-) -> None | int:
+    hubmap_id: str, token: str, instance: str = "prod") -> int:
     answer = get_files(hubmap_id, instance=instance, token=token)
 
     if answer is None:
