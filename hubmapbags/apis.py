@@ -274,6 +274,25 @@ def get_provenance_info(
         return j
 
 
+def get_all_ids(token: str, debug: bool = False) -> pd.DataFrame:
+    """
+    Get list of HuBMAP ids given an assay name. Returns public HuBMAP ID, UUID and status.
+    """
+
+    token = utilities.__get_token(token)
+    if token is None:
+        warning("Token not set.")
+        return None
+
+    datasets = []
+    assay_types = get_assay_types(token=token)
+    for assay_type in assay_types:
+        hubmap_ids = get_ids(assay_type, instance="prod", token=token)
+        datasets.extend(hubmap_ids)
+
+    return pd.DataFrame(datasets)
+
+
 def get_ids(assay_name: str, token: str, debug: bool = False) -> dict:
     """
     Get list of HuBMAP ids given an assay name. Returns public HuBMAP ID, UUID and status.
@@ -305,9 +324,7 @@ def get_ids(assay_name: str, token: str, debug: bool = False) -> dict:
     return results
 
 
-def get_hubmap_ids(
-    assay_name: str, token: str, debug: bool = False
-) -> dict:
+def get_hubmap_ids(assay_name: str, token: str, debug: bool = False) -> dict:
     """
     Get list of HuBMAP IDs and other useful info given an assay name.
     """
@@ -405,9 +422,7 @@ def __is_valid(file: str) -> str:
     return answer
 
 
-def is_protected(
-    hubmap_id: str, token: str, instance: str = "prod"
-) -> bool:
+def is_protected(hubmap_id: str, token: str, instance: str = "prod") -> bool:
     token = utilities.__get_token(token)
     if token is None:
         warning("Token not set.")
@@ -650,9 +665,7 @@ def pretty_print_hubmap_ids(assay_name: str, debug: bool = False) -> None:
     print(table)
 
 
-def get_directory(
-    hubmap_id: str, token: str, instance: str = "prod"
-) -> str:
+def get_directory(hubmap_id: str, token: str, instance: str = "prod") -> str:
     """
     Returns the local directory given a valid HuBMAP dataset ID.
     """
@@ -699,8 +712,7 @@ def get_files(hubmap_id: str, token: str, instance: str = "prod") -> list:
         return None
 
 
-def get_number_of_files(
-    hubmap_id: str, token: str, instance: str = "prod") -> int:
+def get_number_of_files(hubmap_id: str, token: str, instance: str = "prod") -> int:
     answer = get_files(hubmap_id, instance=instance, token=token)
 
     if answer is None:

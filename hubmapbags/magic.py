@@ -184,9 +184,7 @@ def __get_sample_url(sample_id: str, token: str, instance: str = "prod") -> str:
         return f'https://portal.hubmapconsortium.org/browse/sample/{metadata["uuid"]}'
 
 
-def __get_dataset_url(
-    dataset_id: str, token: str, instance: str = "prod"
-) -> str:
+def __get_dataset_url(dataset_id: str, token: str, instance: str = "prod") -> str:
     metadata = apis.get_entity_info(dataset_id, instance=instance, token=token)
 
     if "registered_doi" in metadata.keys():
@@ -195,9 +193,7 @@ def __get_dataset_url(
         return f'https://portal.hubmapconsortium.org/browse/dataset/{metadata["uuid"]}'
 
 
-def __get_donor_metadata(
-    hubmap_id: str, token: str, instance: str = "prod"
-) -> dict:
+def __get_donor_metadata(hubmap_id: str, token: str, instance: str = "prod") -> dict:
     metadata = apis.get_donor_info(hubmap_id, instance=instance, token=token)
     donor_metadata = {}
     donor_metadata["local_id"] = metadata["hubmap_id"]
@@ -283,9 +279,7 @@ def __get_donor_metadata(
     return donor_metadata
 
 
-def __get_dataset_metadata(
-    hubmap_id: str, token: str, instance: str = "prod"
-) -> dict:
+def __get_dataset_metadata(hubmap_id: str, token: str, instance: str = "prod") -> dict:
     metadata = apis.get_dataset_info(hubmap_id, instance=instance, token=token)
     dataset_metadata = {}
     dataset_metadata["local_id"] = hubmap_id
