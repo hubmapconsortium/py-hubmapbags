@@ -222,7 +222,7 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     return assay[assay_type]
 
 
-def _get_list_of_files(directory: str) -> generator:
+def _get_list_of_files(directory: str):
     return Path(directory).glob("**/*")
 
 
