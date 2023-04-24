@@ -833,7 +833,7 @@ def get_entity_info(
         return j
 
 
-def get_assay_types(token: str, debug: bool = False) -> None | list[str]:
+def get_assay_types(token: str, debug: bool = False) -> list[str]:
     """
     Request list of assay types.
     """
@@ -845,7 +845,7 @@ def get_assay_types(token: str, debug: bool = False) -> None | list[str]:
     return assays
 
 
-def __query_assay_types(token: str, debug: bool = False) -> None | list[str]:
+def __query_assay_types(token: str, debug: bool = False) -> list[str]:
     """
     Search dataset by a given assaytype name.
     """
