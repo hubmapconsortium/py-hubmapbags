@@ -1,26 +1,45 @@
-import pandas as pd
 import os
+import pandas as pd
 
-def _build_dataframe( hubmap_id ):
-    '''
+
+def _build_dataframe(dataset_metadata: dict) -> pd.DataFrame:
+    """
     Build a dataframe with minimal information for this entity.
-    '''
+    """
 
-    id_namespace = 'tag:hubmapconsortium.org,2022:'
-    headers = ['id_namespace', 'local_id', \
-               'persistent_id', 'creation_time', \
-               'abbreviation', 'name', \
-               'description', 'has_time_series_data']
+    id_namespace = "tag:hubmapconsortium.org,2023:"
+    headers = [
+        "id_namespace",
+        "local_id",
+        "persistent_id",
+        "creation_time",
+        "abbreviation",
+        "name",
+        "description",
+        "has_time_series_data",
+    ]
     df = pd.DataFrame(columns=headers)
-    df = df.append({'id_namespace':id_namespace, \
-                    'local_id':hubmap_id, \
-                    'name':hubmap_id}, ignore_index=True)
+    df = df.append(
+        {
+            "id_namespace": id_namespace,
+            "local_id": dataset_metadata["local_id"],
+            "persistent_id": dataset_metadata["persistent_id"],
+            "creation_time": dataset_metadata["creation_time"],
+            "name": dataset_metadata["name"],
+            "description": dataset_metadata["description"],
+        },
+        ignore_index=True,
+    )
 
     return df
 
-def create_manifest( hubmap_id, output_directory ):
-    filename = os.path.join( output_directory, 'collection.tsv' )
-    df = _build_dataframe( hubmap_id )
-    df.to_csv( filename, sep="\t", index=False)
 
-    return True
+def create_manifest(dataset_metadata: dict, output_directory: str) -> bool:
+    try:
+        filename = os.path.join(output_directory, "collection.tsv")
+        df = _build_dataframe(dataset_metadata)
+        df.to_csv(filename, sep="\t", index=False)
+
+        return True
+    except:
+        return False
