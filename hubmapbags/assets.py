@@ -6,7 +6,7 @@ from . import apis, uuids
 
 
 def __prepare_dataframe(
-    hubmap_id: str, token: str | None, data: dict, instance: str = "prod"
+    hubmap_id: str, token: str, data: dict, instance: str = "prod"
 ) -> pd.DataFrame:
     df = pd.DataFrame(data)
     metadata = apis.get_dataset_info(hubmap_id, token=token, instance="prod")
@@ -78,7 +78,7 @@ def __assets_populate(df: pd.DataFrame, index: int):
 
 
 def get_dataset_info(
-    hubmap_id: str, token: str | None, instance: str = "prod"
+    hubmap_id: str, token: str, instance: str = "prod"
 ) -> pd.DataFrame:
     data = uuids.get_uuids(hubmap_id, instance=instance, token=token)
     df = __prepare_dataframe(hubmap_id, data, instance=instance, token=token)
