@@ -1,4 +1,5 @@
 import os
+
 import pandas as pd
 
 
@@ -29,6 +30,9 @@ def _build_dataframe(collection_id: str, project_id: str) -> pd.DataFrame:
 
 
 def create_manifest(collection_id: str, project_id: str, output_directory: str) -> bool:
+    """
+    Manifest file builder.
+    """
     try:
         filename = os.path.join(output_directory, "collection_defined_by_project.tsv")
         df = _build_dataframe(collection_id, project_id)

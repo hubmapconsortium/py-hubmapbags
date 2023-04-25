@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
+
 import pandas as pd
+
 from .apis import *
 
 
@@ -48,6 +50,9 @@ def _build_dataframe(hubmap_id: str, hubmap_uuid: str, directory: str) -> pd.Dat
 def create_manifest(
     hubmap_id: str, hubmap_uuid: str, directory: str, output_directory: str
 ) -> bool:
+    """
+    Manifest file builder.
+    """
     filename = os.path.join(output_directory, "file_describes_collection.tsv")
 
     if not Path(".data").exists():

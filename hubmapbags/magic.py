@@ -1,55 +1,28 @@
+import logging
 import os
 import os.path
 import shutil
 import warnings
-import logging
+from datetime import datetime
 from pathlib import Path
 from shutil import rmtree
-from datetime import datetime
+
 import pandas as pd
 
-from . import (
-    anatomy,
-    apis,
-    assay_type,
-    biosample,
-    biosample_disease,
-    biosample_from_subject,
-    biosample_gene,
-    biosample_in_collection,
-    biosample_substance,
-    collection,
-    collection_anatomy,
-    collection_compound,
-    collection_defined_by_project,
-    collection_disease,
-    collection_gene,
-    collection_in_collection,
-    collection_phenotype,
-    collection_protein,
-    collection_substance,
-    collection_taxonomy,
-    file_describes_biosample,
-    file_describes_collection,
-    file_describes_subject,
-    file_format,
-    file_in_collection,
-    id_namespace,
-    ncbi_taxonomy,
-    primary_dcc_contact,
-    project_in_project,
-    projects,
-    subject,
-    subject_disease,
-    subject_in_collection,
-    subject_phenotype,
-    subject_race,
-    subject_role_taxonomy,
-    subject_substance,
-    utilities,
-    uuids,
-)
+from . import (anatomy, apis, assay_type, biosample, biosample_disease,
+               biosample_from_subject, biosample_gene, biosample_in_collection,
+               biosample_substance, collection, collection_anatomy,
+               collection_compound, collection_defined_by_project,
+               collection_disease, collection_gene, collection_in_collection,
+               collection_phenotype, collection_protein, collection_substance,
+               collection_taxonomy)
 from . import file as files
+from . import (file_describes_biosample, file_describes_collection,
+               file_describes_subject, file_format, file_in_collection,
+               id_namespace, ncbi_taxonomy, primary_dcc_contact,
+               project_in_project, projects, subject, subject_disease,
+               subject_in_collection, subject_phenotype, subject_race,
+               subject_role_taxonomy, subject_substance, utilities, uuids)
 
 
 def __extract_dataset_info_from_db(

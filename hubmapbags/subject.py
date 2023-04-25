@@ -1,4 +1,5 @@
 import os
+
 import pandas as pd
 
 
@@ -54,6 +55,9 @@ def _build_dataframe(donor_metadata: str) -> pd.DataFrame:
 
 
 def create_manifest(donor_metadata: dict, output_directory: str) -> bool:
+    """
+    Manifest file builder.
+    """
     try:
         filename = os.path.join(output_directory, "subject.tsv")
         df = _build_dataframe(donor_metadata)
