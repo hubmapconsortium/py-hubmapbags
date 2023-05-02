@@ -37,25 +37,33 @@ def __get_created_timestamp(hubmap_id, token=None):
 
 
 def __get_group_name(hubmap_id, token=None):
-    metadata = apis.get_dataset_info(hubmap_id, instance="prod", token=token)
-    return metadata["group_name"]
+    try:
+        metadata = apis.get_dataset_info(hubmap_id, instance="prod", token=token)
+        return metadata["group_name"]
+    except:
+        return None
 
 
 def __get_data_type(hubmap_id, token=None):
-    metadata = apis.get_dataset_info(hubmap_id, instance="prod", token=token)
-    return metadata["data_types"]
+    try:
+        metadata = apis.get_dataset_info(hubmap_id, instance="prod", token=token)
+        return metadata["data_types"]
+    except:
+        return None
 
 
 def __get_dataset_type(hubmap_id, token=None):
-    return apis.get_dataset_type(hubmap_id, instance="prod", token=token)
+    try:
+        return apis.get_dataset_type(hubmap_id, instance="prod", token=token)
+    except:
+        return None
 
 
-def daily(token: str) -> pd.DataFrame:
+def daily(token: str, ncores=16) -> pd.DataFrame:
     """
     Creates daily report and returns a helpful dataframe
     """
 
-    ncores = 16
     pandarallel.initialize(progress_bar=True, nb_workers=ncores)
 
     utilities.pprint("Getting list of assay types")
