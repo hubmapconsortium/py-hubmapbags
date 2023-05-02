@@ -4,9 +4,11 @@ import os
 from logging import warning
 from pathlib import Path
 from warnings import warn as warning
+
 import pandas as pd
 import requests
 from tabulate import tabulate
+
 from . import utilities
 
 
