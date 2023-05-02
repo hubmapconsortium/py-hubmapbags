@@ -1,8 +1,10 @@
 import json
 from pathlib import Path
 from warnings import warn as warning
+
 import pandas as pd
 import requests
+
 from . import apis, magic, utilities
 
 
