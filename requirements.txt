@@ -7,3 +7,5 @@ tqdm
 jupyterlab
 scipy
 matplotlib
+seaborn
+pandarallel

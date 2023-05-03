@@ -1,11 +1,12 @@
+import logging
 import os
 import os.path
 import shutil
 import warnings
-import logging
+from datetime import datetime
 from pathlib import Path
 from shutil import rmtree
-from datetime import datetime
+
 import pandas as pd
 
 from . import (
@@ -29,6 +30,9 @@ from . import (
     collection_protein,
     collection_substance,
     collection_taxonomy,
+)
+from . import file as files
+from . import (
     file_describes_biosample,
     file_describes_collection,
     file_describes_subject,
@@ -49,7 +53,6 @@ from . import (
     utilities,
     uuids,
 )
-from . import file as files
 
 
 def __extract_dataset_info_from_db(

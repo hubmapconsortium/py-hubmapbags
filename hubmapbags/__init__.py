@@ -40,6 +40,7 @@ from .ncbi_taxonomy import *
 from .primary_dcc_contact import *
 from .project_in_project import *
 from .projects import *
+from .reports import *
 from .subject import *
 from .subject_in_collection import *
 from .utilities import *
