@@ -6,6 +6,8 @@ import seaborn as sns
 
 
 def by_data_type(df: pd.DataFrame) -> None:
+    df = df[df["status"] == "Published"]
+
     now = datetime.now()
     plt.rcParams["figure.figsize"] = [50.0, 50.0]
     plt.rcParams["figure.dpi"] = 500
@@ -51,6 +53,8 @@ def by_data_type(df: pd.DataFrame) -> None:
 
 
 def by_group(df: pd.DataFrame) -> None:
+    df = df[df["status"] == "Published"]
+
     now = datetime.now()
     plt.rcParams["figure.figsize"] = [50.0, 50.0]
     plt.rcParams["figure.dpi"] = 500
@@ -82,6 +86,43 @@ def by_group(df: pd.DataFrame) -> None:
         now = datetime.now()
         report_output_filename = (
             f'{report_output_directory}/groups-{str(now.strftime("%Y%m%d"))}.png'
+        )
+        plt.savefig(report_output_filename)
+    except:
+        print(f"Unable to save plot to {report_output_filename}.")
+
+    try:
+        plt.show()
+    except:
+        print("Unable to display plot.")
+
+
+def by_date(df: pd.DataFrame) -> None:
+    df = df[df["status"] == "Published"]
+
+    now = datetime.now()
+    plt.rcParams["figure.figsize"] = [15.0, 15.0]
+    plt.rcParams["figure.dpi"] = 100
+
+    df = df.groupby("published_datetime").count()
+    df = df[["uuid"]]
+    df = df.rename({"uuid": "counts"}, axis=1)
+    df["cumsum"] = df["counts"].cumsum()
+
+    g = sns.pointplot(x=df.index, y="cumsum", data=df)
+    plt.xticks(rotation="vertical")
+    g.set(xlabel="Dates", ylabel="Cumulative sum", title=str(now.strftime("%Y%m%d")))
+    plt.tight_layout()
+
+    # get daily report
+    try:
+        report_output_directory = "daily-report"
+        if not Path(report_output_directory).exists():
+            Path(report_output_directory).mkdir()
+
+        now = datetime.now()
+        report_output_filename = (
+            f'{report_output_directory}/date-{str(now.strftime("%Y%m%d"))}.png'
         )
         plt.savefig(report_output_filename)
     except:

@@ -8,7 +8,6 @@ from warnings import warn as warning
 import pandas as pd
 import requests
 from tabulate import tabulate
-
 from . import utilities
 
 
@@ -887,8 +886,12 @@ def __query_assay_types(token: str, debug: bool = False) -> list[str]:
     return sorted(assays)
 
 
-def get_dataset_type(hubmap_id: str, token: str, instance: str = "prod") -> str:
-    metadata = get_dataset_info(hubmap_id, instance="prod", token=token)
+def get_dataset_type(
+    hubmap_id: str, token: str, instance: str = "prod", overwrite: bool = False
+) -> str:
+    metadata = get_dataset_info(
+        hubmap_id, instance="prod", token=token, overwrite=overwrite
+    )
 
     if metadata["direct_ancestors"][0]["entity_type"] == "Sample":
         return "Primary"
