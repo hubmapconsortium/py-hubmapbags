@@ -44,3 +44,4 @@ from .subject import *
 from .subject_in_collection import *
 from .utilities import *
 from .uuids import *
+from .plots import *
