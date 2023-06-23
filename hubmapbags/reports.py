@@ -102,6 +102,12 @@ def daily(token: str, ncores=16) -> pd.DataFrame:
     print("Sorting dataframe")
     df = df.sort_values("published_datetime", ascending=False)
 
+    # Remove duplicates
+    original_length = len(df)
+    df = df.drop_duplicates()
+    if original_length - len(df) > 0:
+        print(f"Duplicates have been removed from dataframe.")
+
     report_output_directory = "daily-report"
     if not Path(report_output_directory).exists():
         Path(report_output_directory).mkdir()
