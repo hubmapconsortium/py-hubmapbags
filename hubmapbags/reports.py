@@ -80,31 +80,31 @@ def daily(token: str, ncores=16) -> pd.DataFrame:
     utilities.pprint("Getting group name")
     df["group_name"] = df["hubmap_id"].parallel_apply(__get_group_name, token=token)
 
-    utilities.pprint("Getting data type")
+    utilities.pprint("\nGetting data type")
     df["data_type"] = df["hubmap_id"].parallel_apply(__get_data_type, token=token)
 
-    utilities.pprint("Get dataset type")
+    utilities.pprint("\nGet dataset type")
     df["dataset_type"] = df["hubmap_id"].parallel_apply(__get_dataset_type, token=token)
 
-    utilities.pprint("Getting creation timestamp")
+    utilities.pprint("\nGetting creation timestamp")
     df["created_datetime"] = df["hubmap_id"].parallel_apply(
         __get_created_timestamp, token=token
     )
 
-    utilities.pprint("Getting published timestamp")
+    utilities.pprint("\nGetting published timestamp")
     df["published_datetime"] = df["hubmap_id"].parallel_apply(
         __get_published_timestamp, token=token
     )
 
-    utilities.pprint("Getting protected status")
+    utilities.pprint("\nGetting protected status")
     df["is_protected"] = df["hubmap_id"].parallel_apply(__is_protected, token=token)
 
-    print("Sorting dataframe")
+    print("\nSorting dataframe")
     df = df.sort_values("published_datetime", ascending=False)
 
     # Remove duplicates
     original_length = len(df)
-    df = df.drop_duplicates()
+    df = df.drop_duplicates(subset=["hubmap_id"])
     if original_length - len(df) > 0:
         print(f"Duplicates have been removed from dataframe.")
 
