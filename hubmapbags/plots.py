@@ -61,40 +61,37 @@ def by_group(df: pd.DataFrame) -> None:
 
     group = df.groupby(["group_name", "status"]).count()[["data_type"]]
 
-    fig = plt.gcf()
-    fig.set_size_inches(15, 15)
+    # First plot
+    plt.figure(figsize=(30, 35))
+    g = sns.displot(df[df['dataset_type'] == 'Primary'], height=10, x="group_name", hue="status", multiple='stack', aspect=1.5, log_scale=(False, True))
+    plt.xticks(rotation=45, fontsize=10, ha='right')
+    g.set(xlabel='Groups', ylabel='Count', title=str(now.strftime("%Y%m%d")))
+    report_output_directory = "daily-report"
+    Path(report_output_directory).mkdir(exist_ok=True)
+    report_output_filename = f'{report_output_directory}/groups-{str(now.strftime("%Y%m%d"))}.png'
+    plt.savefig(report_output_filename)
+    plt.tight_layout()
+    plt.savefig('plot.png')
+    plt.close()
 
-    g = sns.displot(
-        df[df["dataset_type"] == "Primary"],
-        height=15,
-        x="group_name",
-        hue="status",
-        multiple="stack",
-        aspect=1.5,
-    )
-    sns.move_legend(g, "upper right", ncol=1, title="Status", frameon=False)
-    plt.xticks(df["group_name"], df["group_name"], rotation="vertical")
+    # Second plot
+    plt.figure(figsize=(50.0, 50.0))
+    g = sns.displot(df[df['dataset_type'] == 'Primary'], x="status", height=12, hue="data_type", multiple='stack', aspect=1, palette="hls")
+    plt.xticks(df[df['dataset_type'] == 'Primary']['status'], df[df['dataset_type'] == 'Primary']['status'], rotation=45, fontsize=10)
+    g.set(xlabel='Data Type', ylabel='Count', title=str(now.strftime("%Y%m%d")))
+    sns.move_legend(g, "upper right", ncol=4, title='Data Type', frameon=False)
+    plt.tight_layout()
+    plt.savefig('plot.png')
+    plt.close()
 
-    g.set(xlabel="Groups", ylabel="Count", title=str(now.strftime("%Y%m%d")))
-
-    # get daily report
-    try:
-        report_output_directory = "daily-report"
-        if not Path(report_output_directory).exists():
-            Path(report_output_directory).mkdir()
-
-        now = datetime.now()
-        report_output_filename = (
-            f'{report_output_directory}/groups-{str(now.strftime("%Y%m%d"))}.png'
-        )
-        plt.savefig(report_output_filename)
-    except:
-        print(f"Unable to save plot to {report_output_filename}.")
-
-    try:
-        plt.show()
-    except:
-        print("Unable to display plot.")
+    # Third plot
+    plt.figure(figsize=(50.0, 50.0))
+    g = sns.displot(df[df['dataset_type'] == 'Primary'], height=10, x="data_type", hue="status", multiple='stack', aspect=2)
+    plt.xticks(df[df['dataset_type'] == 'Primary']['data_type'], df[df['dataset_type'] == 'Primary']['data_type'], rotation=45, fontsize=10, ha='right')
+    g.set(xlabel='Data Type', ylabel='Count', title=str(now.strftime("%Y%m%d")))
+    sns.move_legend(g, "center right", ncol=1, title='Dataset status', frameon=False)
+    plt.tight_layout()
+    plt.show()
 
 
 def by_date(df: pd.DataFrame) -> None:

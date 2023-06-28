@@ -1,6 +1,6 @@
 from datetime import datetime
 from pathlib import Path
-
+from plot import by_group
 import pandas as pd
 from pandarallel import pandarallel
 from tqdm import tqdm
@@ -129,6 +129,9 @@ def daily(token: str, ncores=16) -> pd.DataFrame:
             df.to_csv(report_output_filename, sep="\t", index=False)
         except:
             print(f"Unable to save dataframe to {report_output_filename}.")
+
+        # Call the by_group function from plot.py
+        by_group(df)
         return df
 
 
