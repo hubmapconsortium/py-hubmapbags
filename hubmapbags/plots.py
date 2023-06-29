@@ -63,33 +63,69 @@ def by_group(df: pd.DataFrame) -> None:
 
     # First plot
     plt.figure(figsize=(30, 35))
-    g = sns.displot(df[df['dataset_type'] == 'Primary'], height=10, x="group_name", hue="status", multiple='stack', aspect=1.5, log_scale=(False, True))
-    plt.xticks(rotation=45, fontsize=10, ha='right')
-    g.set(xlabel='Groups', ylabel='Count', title=str(now.strftime("%Y%m%d")))
+    g = sns.displot(
+        df[df["dataset_type"] == "Primary"],
+        height=10,
+        x="group_name",
+        hue="status",
+        multiple="stack",
+        aspect=1.5,
+        log_scale=(False, True),
+    )
+    plt.xticks(rotation=45, fontsize=10, ha="right")
+    g.set(xlabel="Groups", ylabel="Count", title=str(now.strftime("%Y%m%d")))
     report_output_directory = "daily-report"
     Path(report_output_directory).mkdir(exist_ok=True)
-    report_output_filename = f'{report_output_directory}/groups-{str(now.strftime("%Y%m%d"))}.png'
+    report_output_filename = (
+        f'{report_output_directory}/groups-{str(now.strftime("%Y%m%d"))}.png'
+    )
     plt.savefig(report_output_filename)
     plt.tight_layout()
-    plt.savefig('plot.png')
+    plt.savefig("plot.png")
     plt.close()
 
     # Second plot
     plt.figure(figsize=(50.0, 50.0))
-    g = sns.displot(df[df['dataset_type'] == 'Primary'], x="status", height=12, hue="data_type", multiple='stack', aspect=1, palette="hls")
-    plt.xticks(df[df['dataset_type'] == 'Primary']['status'], df[df['dataset_type'] == 'Primary']['status'], rotation=45, fontsize=10)
-    g.set(xlabel='Data Type', ylabel='Count', title=str(now.strftime("%Y%m%d")))
-    sns.move_legend(g, "upper right", ncol=4, title='Data Type', frameon=False)
+    g = sns.displot(
+        df[df["dataset_type"] == "Primary"],
+        x="status",
+        height=12,
+        hue="data_type",
+        multiple="stack",
+        aspect=1,
+        palette="hls",
+    )
+    plt.xticks(
+        df[df["dataset_type"] == "Primary"]["status"],
+        df[df["dataset_type"] == "Primary"]["status"],
+        rotation=45,
+        fontsize=10,
+    )
+    g.set(xlabel="Data Type", ylabel="Count", title=str(now.strftime("%Y%m%d")))
+    sns.move_legend(g, "upper right", ncol=4, title="Data Type", frameon=False)
     plt.tight_layout()
-    plt.savefig('plot.png')
+    plt.savefig("plot.png")
     plt.close()
 
     # Third plot
     plt.figure(figsize=(50.0, 50.0))
-    g = sns.displot(df[df['dataset_type'] == 'Primary'], height=10, x="data_type", hue="status", multiple='stack', aspect=2)
-    plt.xticks(df[df['dataset_type'] == 'Primary']['data_type'], df[df['dataset_type'] == 'Primary']['data_type'], rotation=45, fontsize=10, ha='right')
-    g.set(xlabel='Data Type', ylabel='Count', title=str(now.strftime("%Y%m%d")))
-    sns.move_legend(g, "center right", ncol=1, title='Dataset status', frameon=False)
+    g = sns.displot(
+        df[df["dataset_type"] == "Primary"],
+        height=10,
+        x="data_type",
+        hue="status",
+        multiple="stack",
+        aspect=2,
+    )
+    plt.xticks(
+        df[df["dataset_type"] == "Primary"]["data_type"],
+        df[df["dataset_type"] == "Primary"]["data_type"],
+        rotation=45,
+        fontsize=10,
+        ha="right",
+    )
+    g.set(xlabel="Data Type", ylabel="Count", title=str(now.strftime("%Y%m%d")))
+    sns.move_legend(g, "center right", ncol=1, title="Dataset status", frameon=False)
     plt.tight_layout()
     plt.show()
 
