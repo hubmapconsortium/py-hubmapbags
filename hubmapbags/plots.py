@@ -6,34 +6,8 @@ import seaborn as sns
 
 
 def by_data_type(df: pd.DataFrame) -> None:
-    df = df[df["status"] == "Published"]
-
-    now = datetime.now()
-    plt.rcParams["figure.figsize"] = [50.0, 50.0]
-    plt.rcParams["figure.dpi"] = 500
-
-    g = sns.displot(
-        df[df["dataset_type"] == "Primary"],
-        height=10,
-        x="data_type",
-        hue="status",
-        multiple="stack",
-        aspect=2,
-    )
-    plt.xticks(
-        df[df["dataset_type"] == "Primary"]["data_type"],
-        df[df["dataset_type"] == "Primary"]["data_type"],
-        rotation="vertical",
-    )
-
-    plt.tight_layout()
-
-    g.set(xlabel="Data Type", ylabel="Count", title=str(now.strftime("%Y%m%d")))
-
-    sns.move_legend(g, "center right", ncol=1, title="Dataset status", frameon=False)
-
-    # get daily report
     try:
+        # ./daily-report
         report_output_directory = "daily-report"
         if not Path(report_output_directory).exists():
             Path(report_output_directory).mkdir()
@@ -42,13 +16,57 @@ def by_data_type(df: pd.DataFrame) -> None:
         report_output_filename = (
             f'{report_output_directory}/data-type-{str(now.strftime("%Y%m%d"))}.png'
         )
+
+        fig = plt.gcf()
+        fig.set_size_inches(30, 35)
+        plt.rcParams["figure.dpi"] = 250
+
+        g = sns.displot(
+            df[df["dataset_type"] == "Primary"],
+            x="status",
+            height=12,
+            hue="data_type",
+            multiple="stack",
+            aspect=1,
+            palette="hls",
+        )
+        plt.xticks(
+            df[df["dataset_type"] == "Primary"]["status"],
+            df[df["dataset_type"] == "Primary"]["status"],
+            rotation=45,
+            fontsize=10,
+        )
+
+        g.set(
+            xlabel="Data Type",
+            ylabel="Count",
+            title=f'HuBMAP Data Status as of {now.strftime("%Y%m%d")} {now.strftime("%H:%M:%S")}',
+        )
+        sns.move_legend(g, "right", ncol=2, title="Data Type", frameon=False)
+
         plt.savefig(report_output_filename)
-    except:
+    except Exception as e:
+        print(e)
+        print(f"Unable to save plot to {report_output_filename}.")
+
+    try:
+        # /hive/hubmap/bdbags/reports/
+        report_output_directory = "/hive/hubmap/bdbags/reports"
+        if Path(report_output_directory).exists():
+            now = datetime.now()
+            report_output_filename = (
+                f'{report_output_directory}/data-type-{str(now.strftime("%Y%m%d"))}.png'
+            )
+            print(f"Backing up plot to {report_output_filename}")
+            plt.savefig(report_output_filename)
+    except Exception as e:
+        print(e)
         print(f"Unable to save plot to {report_output_filename}.")
 
     try:
         plt.show()
-    except:
+    except Exception as e:
+        print(e)
         print("Unable to display plot.")
 
 
@@ -65,29 +83,56 @@ def by_group(df: pd.DataFrame) -> None:
 
         fig = plt.gcf()
         fig.set_size_inches(30, 35)
+        plt.rcParams["figure.dpi"] = 250
+
+        if "status" in df:
+            df.rename(columns={"status": "Status"}, inplace=True)
 
         g = sns.displot(
             df[df["dataset_type"] == "Primary"],
             height=10,
             x="group_name",
-            hue="status",
+            hue="Status",
             multiple="stack",
             aspect=1.5,
-            log_scale=(False, True),
+            log_scale=(False, False),
         )  # Apply log scale on y-axis
         plt.xticks(rotation=45, fontsize=10, ha="right")
 
-        g.set(xlabel="Groups", ylabel="Count", title=str(now.strftime("%Y%m%d")))
+        g.set(
+            xlabel="Groups",
+            ylabel="Count",
+            title=f'HuBMAP Data Status as of {now.strftime("%Y%m%d")} {now.strftime("%H:%M:%S")}',
+        )
 
         plt.tight_layout()
         plt.savefig(report_output_filename)
-    except:
+    except Exception as e:
+        print(e)
+        print(f"Unable to save plot to {report_output_filename}.")
+
+    try:
+        # /hive/hubmap/bdbags/reports/
+        report_output_directory = "/hive/hubmap/bdbags/reports"
+        if Path(report_output_directory).exists():
+            now = datetime.now()
+            report_output_filename = (
+                f'{report_output_directory}/group-{str(now.strftime("%Y%m%d"))}.png'
+            )
+            print(f"Backing up plot to {report_output_filename}")
+            plt.savefig(report_output_filename)
+    except Exception as e:
+        print(e)
         print(f"Unable to save plot to {report_output_filename}.")
 
     try:
         plt.show()
-    except:
+    except Exception as e:
+        print(e)
         print("Unable to display plot.")
+
+    if "Status" in df:
+        df.rename(columns={"Status": "status"}, inplace=True)
 
 
 def by_date(df: pd.DataFrame) -> None:
