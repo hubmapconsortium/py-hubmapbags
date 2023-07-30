@@ -1,5 +1,6 @@
 from datetime import datetime
 from pathlib import Path
+import os
 
 import pandas as pd
 from pandarallel import pandarallel
@@ -59,7 +60,7 @@ def __get_dataset_type(hubmap_id, token=None):
         return None
 
 
-def daily(token: str, ncores=16) -> pd.DataFrame:
+def daily(token: str, ncores=16, backup=True) -> pd.DataFrame:
     """
     Creates daily report and returns a helpful dataframe
     """
@@ -116,3 +117,25 @@ def daily(token: str, ncores=16) -> pd.DataFrame:
     except:
         print(f"Unable to save dataframe to {report_output_filename}.")
     return df
+
+    if backup:
+        report_output_directory = "/hive/hubmap/bdbags/reports/"
+        report_output_filename = (
+            f'{report_output_directory}/{str(now.strftime("%Y%m%d"))}.tsv'
+        )
+
+        if Path(report_output_directory).exists():
+            print(f"Saving backup copy to {report_output_filename}")
+            df.to_csv(report_output_filename, sep="\t", index=False)
+
+            report_output_symlink = f"{report_output_directory}today.tsv"
+            if Path(report_output_symlink).is_symlink():
+                Path(report_output_symlink).unlink()
+
+            try:
+                os.symlink(report_output_filename, report_output_symlink)
+                print(
+                    f"Symlink created: {report_output_symlink} -> {report_output_filename}"
+                )
+            except OSError as e:
+                print(f"Failed to create symlink: {e}")
