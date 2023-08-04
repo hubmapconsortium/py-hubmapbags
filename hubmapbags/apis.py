@@ -27,7 +27,7 @@ def is_primary(hubmap_id: str, token: str, instance: str = "prod") -> bool:
 
 def __compute_number_of_files(directory: str) -> int:
     """
-    Helper function that returns the number of files in a loca directory.
+    Helper function that returns the number of files in a local directory.
     """
     pathname = directory + "/**/*"
     files = glob.glob(pathname, recursive=True)
@@ -846,7 +846,7 @@ def get_entity_info(
         return j
 
 
-def get_assay_types(token: str, debug: bool = False) -> list[str]:
+def get_assay_types(token: str, debug: bool = False) -> list:
     """
     Request list of assay types.
     """
@@ -858,7 +858,7 @@ def get_assay_types(token: str, debug: bool = False) -> list[str]:
     return assays
 
 
-def __query_assay_types(token: str, debug: bool = False) -> list[str]:
+def __query_assay_types(token: str, debug: bool = False) -> list:
     """
     Search dataset by a given assaytype name.
     """
