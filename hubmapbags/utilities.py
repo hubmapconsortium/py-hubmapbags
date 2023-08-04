@@ -1,6 +1,5 @@
-import os
-import shutil
-
+from shutil import rmtree
+from pathlib import Path
 import pandas as pd
 from tabulate import tabulate
 
@@ -86,7 +85,7 @@ def pprint(message: str) -> None:
 
     table = [[message]]
     output = tabulate(table, tablefmt="grid")
-    print(output)
+    print(f'\n{output}')
 
 
 def clean():
@@ -96,5 +95,5 @@ def clean():
 
     directories = [".datasets", ".provenance"]
     for directory in directories:
-        if os.path.exists(directory):
-            shutil.rmtree(directory)
+        if Path(directory).exists():
+            rmtree(directory)
