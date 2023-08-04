@@ -291,7 +291,7 @@ def daily(token: str, ncores=16) -> pd.DataFrame:
         utilities.pprint("Getting protected status")
         df["is_protected"] = df["hubmap_id"].parallel_apply(__is_protected, token=token)
 
-        print("Sorting dataframe")
+        print("\nSorting dataframe")
         df = df.sort_values("published_datetime", ascending=False)
 
         if not Path(report_output_directory).exists():
