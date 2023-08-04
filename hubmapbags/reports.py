@@ -303,14 +303,5 @@ def daily(token: str, ncores=16) -> pd.DataFrame:
             print(f"Unable to save dataframe to {report_output_filename}.")
 
         # Call the by_group function from plot.py
-        try:
-            plots.by_group(df)
-        except:
-            print("Unable to create plot")
-
-        try:
-            plots.by_data_type(df)
-        except:
-            print("Unable to create plot")
-
-        return df
+        plots.by_group(df)
+        plots.by_data_type(df)
