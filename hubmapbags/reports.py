@@ -308,4 +308,9 @@ def daily(token: str, ncores=16) -> pd.DataFrame:
         except:
             print("Unable to create plot")
 
+        try:
+            plots.by_data_type(df)
+        except:
+            print("Unable to create plot")
+
         return df
