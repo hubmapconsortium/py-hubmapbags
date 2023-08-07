@@ -85,7 +85,7 @@ def pprint(message: str) -> None:
 
     table = [[message]]
     output = tabulate(table, tablefmt="grid")
-    print(output)
+    print(f'\n{output}')
 
 
 def clean():
