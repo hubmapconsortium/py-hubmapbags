@@ -651,6 +651,7 @@ def do_it(
                 collection_protein.create_manifest(output_directory)
                 collection_substance.create_manifest(output_directory)
                 collection_taxonomy.create_manifest(output_directory)
+                analysis_type.create_manifest(output_directory)
                 file_format.create_manifest(output_directory)
                 ncbi_taxonomy.create_manifest(output_directory)
                 subject_disease.create_manifest(output_directory)
