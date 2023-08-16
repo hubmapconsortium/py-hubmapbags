@@ -1590,7 +1590,9 @@ def get_dataset_type(
         hubmap_id, instance="prod", token=token, overwrite=overwrite
     )
 
-    if metadata["direct_ancestors"][0]["entity_type"] == "Sample":
+    if "publication_ancillary" in metadata["data_types"]:
+        return "Publication"
+    elif metadata["direct_ancestors"][0]["entity_type"] == "Sample":
         return "Primary"
     elif metadata["direct_ancestors"][0]["entity_type"] == "Dataset":
         return "Derived"
