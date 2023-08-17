@@ -48,6 +48,7 @@ from . import (
     ncbi_taxonomy,
     phenotype,
     phenotype_disease,
+    phenotype_gene,
     project_in_project,
     projects,
     subject,
@@ -664,6 +665,7 @@ def do_it(
                 disease.create_manifest(output_directory)
                 gene.create_manifest(output_directory)
                 phentoype_disease.create_manifest(output_directory)
+                phentoype_gene.create_manifest(output_directory)
                 phentoype.create_manifest(output_directory)
                 file_format.create_manifest(output_directory)
                 ncbi_taxonomy.create_manifest(output_directory)
