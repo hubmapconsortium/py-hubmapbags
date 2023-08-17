@@ -33,6 +33,7 @@ from . import (
     collection_taxonomy,
     compound,
     data_type,
+    dcc,
 )
 from . import file as files
 from . import (
@@ -43,7 +44,6 @@ from . import (
     file_in_collection,
     id_namespace,
     ncbi_taxonomy,
-    primary_dcc_contact,
     project_in_project,
     projects,
     subject,
@@ -614,7 +614,7 @@ def do_it(
 
                 print("Making dcc.tsv")
                 logging.info("Making dcc.tsv")
-                primary_dcc_contact.create_manifest(output_directory)
+                dcc.create_manifest(output_directory)
 
                 print("Making id_namespace.tsv")
                 logging.info("Making id_namespace.tsv")
