@@ -536,7 +536,7 @@ def get_ids(assay_name: str, token: str, debug: bool = False) -> dict:
     return results
 
 
-def get_hubmap_ids(assay_name: str, token: str, debug: bool = False) -> dict:
+def get_hubmap_ids(assay_name: str, token: str, instance: str = 'prod', debug: bool = False) -> dict:
     """
     Retrieve HuBMAP IDs and associated metadata for a specific assay type.
 
