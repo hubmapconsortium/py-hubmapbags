@@ -32,6 +32,7 @@ from . import (
     collection_substance,
     collection_taxonomy,
     compound,
+    data_type,
 )
 from . import file as files
 from . import (
@@ -655,6 +656,7 @@ def do_it(
                 collection_taxonomy.create_manifest(output_directory)
                 analysis_type.create_manifest(output_directory)
                 compound.create_manifest(output_directory)
+                data_type.create_manifest(output_directory)
                 file_format.create_manifest(output_directory)
                 ncbi_taxonomy.create_manifest(output_directory)
                 subject_disease.create_manifest(output_directory)
