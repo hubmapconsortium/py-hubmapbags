@@ -10,6 +10,7 @@ from shutil import rmtree
 import pandas as pd
 
 from . import (
+    analysis_type,
     anatomy,
     apis,
     assay_type,
@@ -30,6 +31,7 @@ from . import (
     collection_protein,
     collection_substance,
     collection_taxonomy,
+    compound,
 )
 from . import file as files
 from . import (
