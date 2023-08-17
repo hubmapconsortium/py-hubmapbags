@@ -43,6 +43,7 @@ from . import (
     file_describes_subject,
     file_format,
     file_in_collection,
+    gene,
     id_namespace,
     ncbi_taxonomy,
     project_in_project,
@@ -659,6 +660,7 @@ def do_it(
                 compound.create_manifest(output_directory)
                 data_type.create_manifest(output_directory)
                 disease.create_manifest(output_directory)
+                gene.create_manifest(output_directory)
                 file_format.create_manifest(output_directory)
                 ncbi_taxonomy.create_manifest(output_directory)
                 subject_disease.create_manifest(output_directory)
