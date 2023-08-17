@@ -9,7 +9,7 @@ def _build_dataframe() -> pd.DataFrame:
     """
 
     id_namespace = "tag:hubmapconsortium.org,2023:"
-    headers = ["id", "clade", "name", "description"]
+    headers = ["id", "clade", "name", "description", "synonyms"]
     df = pd.DataFrame(columns=headers)
     df = df.append(
         {
