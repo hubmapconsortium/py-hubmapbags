@@ -51,6 +51,7 @@ from . import (
     phenotype_gene,
     project_in_project,
     project,
+    protein,
     subject,
     subject_disease,
     subject_in_collection,
@@ -666,6 +667,7 @@ def do_it(
                 gene.create_manifest(output_directory)
                 phentoype_disease.create_manifest(output_directory)
                 phentoype_gene.create_manifest(output_directory)
+                protein.create_manifest(output_directory)
                 phentoype.create_manifest(output_directory)
                 file_format.create_manifest(output_directory)
                 ncbi_taxonomy.create_manifest(output_directory)
