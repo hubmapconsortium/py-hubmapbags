@@ -50,7 +50,7 @@ from . import (
     phenotype_disease,
     phenotype_gene,
     project_in_project,
-    projects,
+    project,
     subject,
     subject_disease,
     subject_in_collection,
@@ -585,7 +585,7 @@ def do_it(
 
                 print("Making project.tsv")
                 logging.info("Making project.tsv")
-                projects.create_manifest(data_provider, output_directory)
+                project.create_manifest(data_provider, output_directory)
 
                 print("Making project_in_project.tsv")
                 logging.info("Making project_in_project.tsv")
