@@ -8,7 +8,7 @@ def _build_dataframe() -> pd.DataFrame:
     Build a dataframe with minimal information for this entity.
     """
 
-    headers = ["id", "name", "description", "synonym"]
+    headers = ["id", "name", "description", "synonyms"]
 
     df = pd.DataFrame(columns=headers)
 
