@@ -60,6 +60,7 @@ from . import (
     subject_race,
     subject_role_taxonomy,
     subject_substance,
+    substance,
     utilities,
     uuids,
 )
@@ -671,6 +672,7 @@ def do_it(
                 phentoype.create_manifest(output_directory)
                 protein.create_manifest(output_directory)
                 protein_gene.create_manifest(output_directory)
+                substance.create_manifest(output_directory)
                 file_format.create_manifest(output_directory)
                 ncbi_taxonomy.create_manifest(output_directory)
                 subject_disease.create_manifest(output_directory)
