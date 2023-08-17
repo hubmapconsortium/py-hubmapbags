@@ -250,19 +250,16 @@ def _build_dataframe(
         "uncompressed_size_in_bytes",
         "sha256",
         "md5",
-        "compression_format",
         "filename",
         "file_format",
+        "compression_format",
         "data_type",
         "assay_type",
+        "analysis_type",
         "mime_type",
-        "analysis_type" "bundle_collection_id_namespace",
+        "bundle_collection_id_namespace",
         "bundle_collection_local_id",
         "dbgap_study_id",
-        "hubmap_uuid",
-        "dataset_hmid",
-        "dataset_uuid",
-        "relative_local_id",
     ]
 
     if not Path(".data").exists():
