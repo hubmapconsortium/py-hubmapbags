@@ -10,6 +10,7 @@ from shutil import rmtree
 import pandas as pd
 
 from . import (
+    analysis_type,
     anatomy,
     apis,
     assay_type,
@@ -30,6 +31,10 @@ from . import (
     collection_protein,
     collection_substance,
     collection_taxonomy,
+    compound,
+    data_type,
+    dcc,
+    disease,
 )
 from . import file as files
 from . import (
@@ -38,11 +43,16 @@ from . import (
     file_describes_subject,
     file_format,
     file_in_collection,
+    gene,
     id_namespace,
     ncbi_taxonomy,
-    primary_dcc_contact,
+    phenotype,
+    phenotype_disease,
+    phenotype_gene,
     project_in_project,
-    projects,
+    project,
+    protein,
+    protein_gene,
     subject,
     subject_disease,
     subject_in_collection,
@@ -50,6 +60,7 @@ from . import (
     subject_race,
     subject_role_taxonomy,
     subject_substance,
+    substance,
     utilities,
     uuids,
 )
@@ -577,7 +588,7 @@ def do_it(
 
                 print("Making project.tsv")
                 logging.info("Making project.tsv")
-                projects.create_manifest(data_provider, output_directory)
+                project.create_manifest(data_provider, output_directory)
 
                 print("Making project_in_project.tsv")
                 logging.info("Making project_in_project.tsv")
@@ -611,7 +622,7 @@ def do_it(
 
                 print("Making dcc.tsv")
                 logging.info("Making dcc.tsv")
-                primary_dcc_contact.create_manifest(output_directory)
+                dcc.create_manifest(output_directory)
 
                 print("Making id_namespace.tsv")
                 logging.info("Making id_namespace.tsv")
@@ -652,6 +663,16 @@ def do_it(
                 collection_substance.create_manifest(output_directory)
                 collection_taxonomy.create_manifest(output_directory)
                 analysis_type.create_manifest(output_directory)
+                compound.create_manifest(output_directory)
+                data_type.create_manifest(output_directory)
+                disease.create_manifest(output_directory)
+                gene.create_manifest(output_directory)
+                phentoype_disease.create_manifest(output_directory)
+                phentoype_gene.create_manifest(output_directory)
+                phentoype.create_manifest(output_directory)
+                protein.create_manifest(output_directory)
+                protein_gene.create_manifest(output_directory)
+                substance.create_manifest(output_directory)
                 file_format.create_manifest(output_directory)
                 ncbi_taxonomy.create_manifest(output_directory)
                 subject_disease.create_manifest(output_directory)
