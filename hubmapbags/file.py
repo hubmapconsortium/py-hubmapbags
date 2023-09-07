@@ -357,7 +357,7 @@ def _build_dataframe(
                 ]
             ]
 
-        return df
+    return df
 
 
 def create_manifest(
