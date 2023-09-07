@@ -528,6 +528,7 @@ def do_it(
             print(f"Creating checkpoint {computing}")
             logging.info(f"Creating checkpoint {computing}")
 
+            print(build_bags)
             if build_bags:
                 logging.info(f"Checking if output directory exists")
                 print("Checking if output directory exists")
