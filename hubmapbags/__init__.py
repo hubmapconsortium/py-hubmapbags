@@ -11,6 +11,7 @@ from .apis import *
 from .assay_type import *
 from .assets import *
 from .biosample import *
+from .gene import *
 from .biosample_disease import *
 from .biosample_from_subject import *
 from .biosample_gene import *

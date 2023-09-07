@@ -6,6 +6,7 @@ import warnings
 from datetime import datetime
 from pathlib import Path
 from shutil import rmtree
+import traceback
 
 import pandas as pd
 
@@ -332,8 +333,10 @@ def __get_biosample_metadata(
 def do_it(
     input: str,
     token: str,
+    dbgap_study_id: None,
     instance: str = "prod",
     build_bags: bool = False,
+    overwrite: bool = False,
     debug: bool = True,
 ) -> bool:
     """
@@ -433,7 +436,7 @@ def do_it(
 
         if "first_sample_id" in dataset.keys():
             biosample_id = dataset["first_sample_id"]
-            logging.inf(f"Extracted first sample ID {biosample_id}")
+            logging.info(f"Extracted first sample ID {biosample_id}")
         else:
             logging.critical("Unable to extract first sample ID")
             return False
@@ -466,15 +469,18 @@ def do_it(
                 hubmap_id, instance=instance, token=token
             )
             logging.info(f"Gathered donor metadata to continue processing dataset")
-        except:
+        except Exception as e:
             logging.critical(f"Unable to extract donor metadata for {hubmap_id}")
+            traceback.print_exc()
             return False
 
-        if "project_local_id" in donor_metadata.keys():
+        if "local_uuid" in donor_metadata.keys():
             donor_metadata["project_local_id"] = data_provider
             logging.info(f"Donor project local ID set to {data_provider}")
         else:
-            logging.critical(f"Unable to extract project local ID from donor metadata")
+            logging.critical(
+                f"Unable to extract project local ID (project_local_id) from donor metadata"
+            )
             return False
 
         if "organ_id" in dataset.keys():
