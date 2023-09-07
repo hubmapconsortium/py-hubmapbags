@@ -263,7 +263,7 @@ def _build_dataframe(
         "dbgap_study_id",
     ]
 
-    df = hubmapinventory.get(hubmap_id=project_id, token=token)
+    df = hubmapinventory.get(hubmap_id=dataset_hmid, token=token)
 
     df["id_namespace"] = id_namespace
     df["project_id_namespace"] = id_namespace
