@@ -1,6 +1,6 @@
 import logging
 import os
-from shutil import rmtree
+from shutil import rmtree, move
 import pandas as pd
 from pathlib import Path
 from datetime import datetime
@@ -718,8 +718,8 @@ def do_it(
                     Path("bags").mkdir()
 
                 if Path(f"bags/{output_directory}").exists():
-                    shutil.rmtree(f"bags/{output_directory}")
-                shutil.move(output_directory, "bags")
+                    rmtree(f"bags/{output_directory}")
+                move(output_directory, "bags")
 
     return True
 
