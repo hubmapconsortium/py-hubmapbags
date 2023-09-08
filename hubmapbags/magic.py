@@ -10,6 +10,7 @@ import traceback
 
 import pandas as pd
 
+from cfde import data_type
 from . import (
     analysis_type,
     anatomy,
@@ -33,7 +34,7 @@ from . import (
     collection_substance,
     collection_taxonomy,
     compound,
-    data_type,
+    data_types,
     dcc,
     disease,
 )
