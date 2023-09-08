@@ -4,7 +4,9 @@ import hubmapinventory
 import pandas as pd
 
 
-def _build_dataframe(hubmap_id: str, token: str, hubmap_uuid: str, directory: str) -> pd.DataFrame:
+def __build_dataframe(
+    hubmap_id: str, token: str, hubmap_uuid: str, directory: str
+) -> pd.DataFrame:
     """
     Build a dataframe with minimal information for this entity.
     """
@@ -43,7 +45,9 @@ def create_manifest(
 ) -> bool:
     filename = os.path.join(output_directory, "file_in_collection.tsv")
 
-    df = _build_dataframe(hubmap_id=hubmap_id, token=token, hubmap_uuid=hubmap_uuid, directory=directory)
+    df = __build_dataframe(
+        hubmap_id=hubmap_id, token=token, hubmap_uuid=hubmap_uuid, directory=directory
+    )
     df.to_csv(filename, sep="\t", index=False)
 
     return True
