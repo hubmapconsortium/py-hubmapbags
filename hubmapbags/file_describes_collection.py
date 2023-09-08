@@ -1,6 +1,5 @@
 import os
-from pathlib import Path
-
+import hubmapinventory
 import pandas as pd
 
 from .apis import *
