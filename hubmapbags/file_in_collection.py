@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+import hubmapinventory
 import pandas as pd
 
 
@@ -17,50 +17,33 @@ def _build_dataframe(hubmap_id: str, hubmap_uuid: str, directory: str) -> pd.Dat
         "collection_local_id",
     ]
 
-    if not Path(".data").exists():
-        Path(".data").mkdir()
+    id_namespace = "tag:hubmapconsortium.org,2023:"
 
-    temp_file = f".data/{hubmap_uuid}.tsv"
+    df = hubmapinventory.get(hubmap_id=hubmap_id, token=token)
+    df["collection_id_namespace"] = id_namespace
+    df["file_id_namespace"] = id_namespace
 
-    if Path(temp_file).exists():
-        print("Temporary file " + temp_file + " found. Loading df into memory.")
-        id_namespace = "tag:hubmapconsortium.org,2023:"
-        df = pd.read_csv(temp_file, sep="\t")
+    df = df.rename(columns={"file_uuid": "file_local_id"}, errors="raise")
+    df["collection_local_id"] = hubmap_id
 
-        df["collection_id_namespace"] = id_namespace
-        df["file_id_namespace"] = id_namespace
-
-        df = df.rename(columns={"file_uuid": "file_local_id"}, errors="raise")
-        df["collection_local_id"] = hubmap_id
-
-        df = df[
-            [
-                "file_id_namespace",
-                "file_local_id",
-                "collection_id_namespace",
-                "collection_local_id",
-            ]
+    df = df[
+        [
+            "file_id_namespace",
+            "file_local_id",
+            "collection_id_namespace",
+            "collection_local_id",
         ]
+    ]
 
     return df
 
 
 def create_manifest(
-    hubmap_id: str, hubmap_uuid: str, directory: str, output_directory: str
+    hubmap_id: str, hubmap_uuid: str, token: str, directory: str, output_directory: str
 ) -> bool:
     filename = os.path.join(output_directory, "file_in_collection.tsv")
 
-    if not Path(".data").exists():
-        Path(".data").mkdir()
-    temp_file = f".data/{hubmap_uuid}.tsv"
-    if not Path(directory).exists() and not Path(temp_file).exists():
-        print(
-            f"Data directory {directory} does not exist. Temp file was not found either."
-        )
+    df = _build_dataframe(hubmap_id, token, hubmap_uuid, directory)
+    df.to_csv(filename, sep="\t", index=False)
 
-        return False
-    else:
-        df = _build_dataframe(hubmap_id, hubmap_uuid, directory)
-        df.to_csv(filename, sep="\t", index=False)
-
-        return True
+    return True
