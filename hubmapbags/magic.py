@@ -66,7 +66,47 @@ def __extract_dataset_info_from_db(
     hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
 ) -> pd.DataFrame:
     """
-    Helper function that uses the HuBMAP APIs to get dataset info.
+    Extract dataset information from the HubMap database.
+
+    :param hubmap_id: The HubMap ID of the dataset.
+    :type hubmap_id: str
+    :param token: Authentication token for accessing the database.
+    :type token: str
+    :param instance: The database instance to connect to (default is "prod").
+    :type instance: str
+    :param debug: Set to True for debugging mode (default is False).
+    :type debug: bool
+
+    :return: A Pandas DataFrame containing the extracted dataset information.
+    :rtype: pd.DataFrame
+
+    :raises UserWarning: If the information cannot be retrieved from the database.
+
+    .. note::
+        - The returned DataFrame has the following columns:
+            - ds.group_name
+            - ds.uuid
+            - ds.hubmap_id
+            - dataset_uuid
+            - ds.status
+            - ds.data_types
+            - first_sample_id
+            - first_sample_uuid
+            - organ_type
+            - organ_id
+            - donor_id
+            - donor_uuid
+            - is_protected
+            - full_path
+
+        - If the dataset contains human genetic sequences, it is considered protected,
+          and the data is retrieved from the protected data path. Otherwise, it is
+          retrieved from the public data path.
+
+    :example:
+
+    >>> df = __extract_dataset_info_from_db("dataset123", token="mytoken")
+
     """
 
     j = apis.get_dataset_info(hubmap_id, token=token, instance=instance)
@@ -154,7 +194,66 @@ def __extract_datasets_from_input(
     input: str, token: str, instance: str = "prod"
 ) -> dict:
     """
-    Helper function that returns a list of valid datasets (if any).
+    Extract datasets from input sources.
+
+    This function extracts datasets either from one or multiple metadata files
+    (specified by the 'inputs' parameter) or directly from the HubMap database
+    (using the provided HuBMAP IDs). It returns a dictionary containing information
+    about the datasets.
+
+    :param inputs: A single string or a list of strings. If a single string is provided,
+                   it is treated as an input source. If it is a file path, datasets
+                   are extracted from the specified metadata file. If it is a list
+                   of strings, each element is treated as an input source. If an
+                   element is a file path, datasets are extracted from the corresponding
+                   metadata file. If an element is a HuBMAP ID, information about the
+                   dataset is retrieved from the database.
+    :type inputs: Union[str, List[str]]
+
+    :param tokens: A single authentication token or a list of authentication tokens
+                   corresponding to each input source in 'inputs' (required if any
+                   input is a HuBMAP ID).
+    :type tokens: Union[str, List[str]]
+
+    :param instance: The database instance to connect to (e.g., "prod" for production).
+                    (default is "prod")
+    :type instance: str, optional
+
+    :return: A dictionary containing information about the extracted datasets.
+             The structure of the dictionary depends on the source of the datasets:
+             - If 'inputs' is a single metadata file, the dictionary contains metadata
+               for each dataset in that file.
+             - If 'inputs' is a list of metadata files, the dictionary contains combined
+               metadata for all datasets across the files.
+             - If 'inputs' is a single HuBMAP ID or a list of HuBMAP IDs, the dictionary
+               contains information for the specified dataset(s).
+    :rtype: dict
+
+    :raises UserWarning: If no datasets are found in any of the metadata files or in
+                        the database.
+
+    :Example:
+
+    Extract datasets from a single metadata file:
+    >>> input_file = "metadata.tsv"
+    >>> token = "mytoken"
+    >>> datasets = __extract_datasets_from_input(input_file, token)
+
+    Extract datasets from multiple metadata files:
+    >>> input_files = ["metadata1.tsv", "metadata2.tsv"]
+    >>> tokens = ["mytoken1", "mytoken2"]
+    >>> datasets = __extract_datasets_from_input(input_files, tokens)
+
+    Extract a dataset by HuBMAP ID from the database:
+    >>> hubmap_id = "dataset123"
+    >>> token = "mytoken"
+    >>> datasets = __extract_datasets_from_input(hubmap_id, token)
+
+    Extract datasets by multiple HuBMAP IDs from the database:
+    >>> hubmap_ids = ["dataset123", "dataset456"]
+    >>> tokens = ["mytoken1", "mytoken2"]
+    >>> datasets = __extract_datasets_from_input(hubmap_ids, tokens)
+
     """
 
     if os.path.isfile(input):
@@ -177,6 +276,40 @@ def __extract_datasets_from_input(
 
 
 def __get_donor_url(donor_id: str, token: str, instance: str = "prod") -> str:
+    """
+    Get the URL of the donor's information page.
+
+    This function retrieves the URL of the information page for a donor specified
+    by the provided donor ID. The URL can point to either a registered DOI page
+    or the HubMap Consortium portal, depending on the availability of the registered DOI.
+
+    :param donor_id: The donor ID for which to retrieve the information page URL.
+    :type donor_id: str
+
+    :param token: Authentication token for accessing donor information.
+    :type token: str
+
+    :param instance: The database instance to connect to (e.g., "prod" for production).
+                    (default is "prod")
+    :type instance: str, optional
+
+    :return: The URL of the donor's information page, either the registered DOI page
+             or the HubMap Consortium portal page.
+    :rtype: str
+
+    :Example:
+
+    Get the URL for a donor with a registered DOI:
+    >>> donor_id = "donor123"
+    >>> token = "mytoken"
+    >>> url = __get_donor_url(donor_id, token)
+
+    Get the URL for a donor without a registered DOI:
+    >>> donor_id = "donor456"
+    >>> token = "mytoken"
+    >>> url = __get_donor_url(donor_id, token)
+    """
+
     metadata = apis.get_entity_info(donor_id, instance=instance, token=token)
 
     if "registered_doi" in metadata.keys():
@@ -186,6 +319,41 @@ def __get_donor_url(donor_id: str, token: str, instance: str = "prod") -> str:
 
 
 def __get_sample_url(sample_id: str, token: str, instance: str = "prod") -> str:
+    """
+    Get the URL of the sample's information page.
+
+    This function retrieves the URL of the information page for a sample specified
+    by the provided sample ID. The URL can point to either a registered DOI page
+    or the HubMap Consortium portal, depending on the availability of the registered DOI.
+
+    :param sample_id: The sample ID for which to retrieve the information page URL.
+    :type sample_id: str
+
+    :param token: Authentication token for accessing sample information.
+    :type token: str
+
+    :param instance: The database instance to connect to (e.g., "prod" for production).
+                    (default is "prod")
+    :type instance: str, optional
+
+    :return: The URL of the sample's information page, either the registered DOI page
+             or the HubMap Consortium portal page.
+    :rtype: str
+
+    :Example:
+
+    Get the URL for a sample with a registered DOI:
+    >>> sample_id = "sample123"
+    >>> token = "mytoken"
+    >>> url = __get_sample_url(sample_id, token)
+
+    Get the URL for a sample without a registered DOI:
+    >>> sample_id = "sample456"
+    >>> token = "mytoken"
+    >>> url = __get_sample_url(sample_id, token)
+
+    """
+
     metadata = apis.get_entity_info(sample_id, instance=instance, token=token)
 
     if "registered_doi" in metadata.keys():
@@ -195,6 +363,41 @@ def __get_sample_url(sample_id: str, token: str, instance: str = "prod") -> str:
 
 
 def __get_dataset_url(dataset_id: str, token: str, instance: str = "prod") -> str:
+    """
+    Get the URL of the dataset's information page.
+
+    This function retrieves the URL of the information page for a dataset specified
+    by the provided dataset ID. The URL can point to either a registered DOI page
+    or the HubMap Consortium portal, depending on the availability of the registered DOI.
+
+    :param dataset_id: The dataset ID for which to retrieve the information page URL.
+    :type dataset_id: str
+
+    :param token: Authentication token for accessing dataset information.
+    :type token: str
+
+    :param instance: The database instance to connect to (e.g., "prod" for production).
+                    (default is "prod")
+    :type instance: str, optional
+
+    :return: The URL of the dataset's information page, either the registered DOI page
+             or the HubMap Consortium portal page.
+    :rtype: str
+
+    :Example:
+
+    Get the URL for a dataset with a registered DOI:
+    >>> dataset_id = "dataset123"
+    >>> token = "mytoken"
+    >>> url = __get_dataset_url(dataset_id, token)
+
+    Get the URL for a dataset without a registered DOI:
+    >>> dataset_id = "dataset456"
+    >>> token = "mytoken"
+    >>> url = __get_dataset_url(dataset_id, token)
+
+    """
+
     metadata = apis.get_entity_info(dataset_id, instance=instance, token=token)
 
     if "registered_doi" in metadata.keys():
@@ -204,6 +407,35 @@ def __get_dataset_url(dataset_id: str, token: str, instance: str = "prod") -> st
 
 
 def __get_donor_metadata(hubmap_id: str, token: str, instance: str = "prod") -> dict:
+    """
+    Get metadata for a donor.
+
+    This function retrieves metadata for a donor specified by the provided HubMap ID.
+    The returned metadata includes information such as local ID, local UUID,
+    persistent ID (URL), granularity, creation time, age at enrollment, sex, race,
+    and ethnicity.
+
+    :param hubmap_id: The HubMap ID of the donor for which to retrieve metadata.
+    :type hubmap_id: str
+
+    :param token: Authentication token for accessing donor metadata.
+    :type token: str
+
+    :param instance: The database instance to connect to (e.g., "prod" for production).
+                    (default is "prod")
+    :type instance: str, optional
+
+    :return: A dictionary containing metadata for the donor.
+    :rtype: dict
+
+    :Example:
+
+    Get metadata for a donor:
+    >>> hubmap_id = "donor123"
+    >>> token = "mytoken"
+    >>> metadata = __get_donor_metadata(hubmap_id, token)
+    """
+
     metadata = apis.get_donor_info(hubmap_id, instance=instance, token=token)
     donor_metadata = {}
     donor_metadata["local_id"] = metadata["hubmap_id"]
@@ -290,6 +522,34 @@ def __get_donor_metadata(hubmap_id: str, token: str, instance: str = "prod") -> 
 
 
 def __get_dataset_metadata(hubmap_id: str, token: str, instance: str = "prod") -> dict:
+    """
+    Get metadata for a dataset.
+
+    This function retrieves metadata for a dataset specified by the provided HubMap ID.
+    The returned metadata includes information such as local ID, local UUID,
+    persistent ID (URL), creation time, name, and description.
+
+    :param hubmap_id: The HubMap ID of the dataset for which to retrieve metadata.
+    :type hubmap_id: str
+
+    :param token: Authentication token for accessing dataset metadata.
+    :type token: str
+
+    :param instance: The database instance to connect to (e.g., "prod" for production).
+                    (default is "prod")
+    :type instance: str, optional
+
+    :return: A dictionary containing metadata for the dataset.
+    :rtype: dict
+
+    :Example:
+
+    Get metadata for a dataset:
+    >>> hubmap_id = "dataset123"
+    >>> token = "mytoken"
+    >>> metadata = __get_dataset_metadata(hubmap_id, token)
+    """
+
     metadata = apis.get_dataset_info(hubmap_id, instance=instance, token=token)
     dataset_metadata = {}
     dataset_metadata["local_id"] = hubmap_id
@@ -311,6 +571,35 @@ def __get_dataset_metadata(hubmap_id: str, token: str, instance: str = "prod") -
 def __get_biosample_metadata(
     hubmap_id: str, token: str, instance: str = "prod"
 ) -> dict:
+    """
+    Get metadata for a biosample.
+
+    This function retrieves metadata for a biosample specified by the provided HubMap ID.
+    The returned metadata includes information such as local ID, project local ID,
+    persistent ID (URL), creation time, name, and description.
+
+    :param hubmap_id: The HubMap ID of the biosample for which to retrieve metadata.
+    :type hubmap_id: str
+
+    :param token: Authentication token for accessing biosample metadata.
+    :type token: str
+
+    :param instance: The database instance to connect to (e.g., "prod" for production).
+                    (default is "prod")
+    :type instance: str, optional
+
+    :return: A dictionary containing metadata for the biosample.
+    :rtype: dict
+
+    :Example:
+
+    Get metadata for a biosample:
+    >>> hubmap_id = "biosample123"
+    >>> token = "mytoken"
+    >>> metadata = __get_biosample_metadata(hubmap_id, token)
+
+    """
+
     metadata = apis.get_entity_info(hubmap_id, instance=instance, token=token)
     biosample_metadata = {}
     biosample_metadata["local_id"] = hubmap_id
@@ -335,23 +624,42 @@ def do_it(
     debug: bool = True,
 ) -> bool:
     """
-    Magic function that (1) computes checksums, (2) generates UUIDs and, (3) builds a big data bag given a HuBMAP ID.
+    Process and build bags for datasets.
 
-    :param input: A string representing a HuBMAP ID or a TSV file with one line per dataset, e.g. HBM632.JSNP.578
-    :type input: string
-    :param dbgap_study_id: A string representing a dbGaP study ID, e.g. phs00265
-    :type dbgap_study_id: None or string
-    :param overwrite: If set to TRUE, then it will overwrite an existing pickle file associated with the HuBMAP ID
-    :type overwrite: boolean
-    :param build_bags: If set to TRUE, the it will build the big data bag.
-    :type build_bags: boolean
-    :param token: A token to access HuBMAP resources
-    :type token: string or None
-    :param instance: Either 'dev', 'test' or 'prod'
-    :type instance: string
-    :param debug: debug flag
-    :type debug: boolean
-    :rtype: boolean
+    This function processes and builds bags for datasets based on the provided input.
+    It extracts dataset information, retrieves metadata, and creates bags for the datasets.
+
+    :param input: The input source, which can be a file path or a HubMap ID.
+    :type input: str
+
+    :param token: Authentication token for accessing dataset metadata.
+    :type token: str
+
+    :param dbgap_study_id: The dbGaP study ID (optional).
+    :type dbgap_study_id: None
+
+    :param instance: The database instance to connect to (e.g., "prod" for production).
+                    (default is "prod")
+    :type instance: str, optional
+
+    :param build_bags: Whether to build bags (True) or perform a dry run (False).
+    :type build_bags: bool, optional
+
+    :param overwrite: Whether to overwrite existing bags.
+    :type overwrite: bool, optional
+
+    :param debug: Whether to enable debugging information.
+    :type debug: bool, optional
+
+    :return: True if the operation was successful, False otherwise.
+    :rtype: bool
+
+    :Example:
+
+    Process and build bags for datasets:
+    >>> input_source = "dataset123"
+    >>> token = "mytoken"
+    >>> success = do_it(input_source, token)
     """
 
     if not Path("logs").exists():
@@ -722,65 +1030,3 @@ def do_it(
                 move(output_directory, "bags")
 
     return True
-
-
-def get_dataset_info_from_local_file(
-    hubmap_id: str, token: str, instance: str = "prod", build_bags: bool = False
-):
-    dataset = __extract_datasets_from_input(hubmap_id, token=token, instance=instance)
-    if dataset is None:
-        return False
-
-    data_directory = dataset["full_path"]
-    print("Preparing bag for dataset " + data_directory)
-
-    computing = data_directory.replace("/", "_").replace(" ", "_") + ".computing"
-    done = "." + data_directory.replace("/", "_").replace(" ", "_") + ".done"
-    broken = "." + data_directory.replace("/", "_").replace(" ", "_") + ".broken"
-
-    organ_shortcode = dataset["organ_type"]
-    organ_id = dataset["organ_id"]
-    donor_id = dataset["donor_id"]
-
-    if overwrite:
-        print("Erasing old checkpoint. Re-computing checksums.")
-        if Path(done).exists():
-            Path(done).unlink()
-
-    if Path(done).exists():
-        print(
-            "Checkpoint found. Avoiding computation. To re-compute erase file " + done
-        )
-    elif Path(computing).exists():
-        print(
-            "Computing checkpoint found. Avoiding computation since another process is building this bag."
-        )
-    else:
-        with open(computing, "w") as file:
-            pass
-
-        print(f"Creating checkpoint {computing}")
-
-        if status == "new":
-            print("Dataset is not published. Aborting computation.")
-            return
-
-        if build_bags:
-            print("Checking if output directory exists.")
-            output_directory = data_type + "-" + status + "-" + dataset["dataset_uuid"]
-
-            print("Creating output directory " + output_directory + ".")
-            if Path(output_directory).exists() and Path(output_directory).is_dir():
-                print("Output directory found. Removing old copy.")
-                rmtree(output_directory)
-                os.mkdir(output_directory)
-            else:
-                print("Output directory does not exist. Creating directory.")
-                os.mkdir(output_directory)
-
-            print("Making file.tsv")
-            if not Path(".data").exists():
-                Path(".data").mkdir()
-            temp_file = (
-                ".data/" + data_directory.replace("/", "_").replace(" ", "_") + ".pkl"
-            )
