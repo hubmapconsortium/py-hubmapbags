@@ -21,9 +21,6 @@ def _build_dataframe(
     ]
 
     df = hubmapinventory.get(hubmap_id=hubmap_id, token=token)
-    print(f"Temporary file {temp_file} found. Loading df into memory.")
-    df = pd.read_csv(temp_file, sep="\t")
-
     df = df[df["filename"].str.contains("metadata.tsv")]
     df["subject_id_namespace"] = id_namespace
     df["file_id_namespace"] = id_namespace
