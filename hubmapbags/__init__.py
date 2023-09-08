@@ -6,63 +6,44 @@ __version__ = "2023.3"  # year 2023 3nd quarter
 __author__ = "Ivan Cao-Berg"
 __credits__ = "HuBMAP IEC Team"
 
-# mypackage/__init__.py
-
-__all__ = [
-    "analysis_type",
-    "anatomy",
-    "apis",
-    "assay_type",
-    "assets",
-    "biosample_disease",
-    "biosample_from_subject",
-    "biosample_gene",
-    "biosample_in_collection",
-    "biosample",
-    "biosample_substance",
-    "cfde",
-    "collection_anatomy",
-    "collection_compound",
-    "collection_defined_by_project",
-    "collection_disease",
-    "collection_gene",
-    "collection_in_collection",
-    "collection_phenotype",
-    "collection_protein",
-    "collection",
-    "collection_substance",
-    "collection_taxonomy",
-    "compound",
-    "dcc",
-    "disease",
-    "file_describes_biosample",
-    "file_describes_collection",
-    "file_describes_subject",
-    "file_format",
-    "file_in_collection",
-    "file",
-    "gene",
-    "globus",
-    "id_namespace",
-    "magic",
-    "ncbi_taxonomy",
-    "phenotype_disease",
-    "phenotype_gene",
-    "phenotype",
-    "plots",
-    "project_in_project",
-    "project",
-    "protein_gene",
-    "protein",
-    "reports",
-    "subject_disease",
-    "subject_in_collection",
-    "subject_phenotype",
-    "subject",
-    "subject_race",
-    "subject_role_taxonomy",
-    "subject_substance",
-    "substance",
-    "utilities",
-    "uuids",
-]
+from .anatomy import *
+from .apis import *
+from .assay_type import *
+from .assets import *
+from .biosample import *
+from .biosample_disease import *
+from .biosample_from_subject import *
+from .biosample_gene import *
+from .biosample_in_collection import *
+from .biosample_substance import *
+from .collection import *
+from .collection_anatomy import *
+from .collection_compound import *
+from .collection_defined_by_project import *
+from .collection_disease import *
+from .collection_gene import *
+from .collection_in_collection import *
+from .collection_phenotype import *
+from .collection_protein import *
+from .collection_substance import *
+from .collection_taxonomy import *
+from .data_type import *
+from .file import *
+from .file_describes_biosample import *
+from .file_describes_collection import *
+from .file_describes_subject import *
+from .file_format import *
+from .file_in_collection import *
+from .globus import *
+from .id_namespace import *
+from .magic import *
+from .ncbi_taxonomy import *
+from .primary_dcc_contact import *
+from .project_in_project import *
+from .projects import *
+from .reports import *
+from .subject import *
+from .subject_in_collection import *
+from .utilities import *
+from .uuids import *
+from .plots import *

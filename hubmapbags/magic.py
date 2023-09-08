@@ -1,16 +1,3 @@
-import logging
-import os
-import os.path
-import shutil
-import warnings
-from datetime import datetime
-from pathlib import Path
-from shutil import rmtree
-import traceback
-
-import pandas as pd
-
-from cfde import data_type
 from . import (
     analysis_type,
     anatomy,
@@ -34,11 +21,12 @@ from . import (
     collection_substance,
     collection_taxonomy,
     compound,
-    data_types,
+    data_type,
     dcc,
     disease,
 )
 from . import file as files
+from . data_type as data_type_file
 from . import (
     file_describes_biosample,
     file_describes_collection,
@@ -675,7 +663,7 @@ def do_it(
                 collection_taxonomy.create_manifest(output_directory)
                 analysis_type.create_manifest(output_directory)
                 compound.create_manifest(output_directory)
-                data_type.create_manifest(output_directory)
+                data_type_file.create_manifest(output_directory)
                 disease.create_manifest(output_directory)
                 gene.create_manifest(output_directory)
                 phentoype_disease.create_manifest(output_directory)
