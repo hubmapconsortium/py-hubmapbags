@@ -43,7 +43,7 @@ from . import (
     id_namespace,
     ncbi_taxonomy,
     phenotype,
-    phenotype_disease,
+    phentoype_disease,
     phenotype_gene,
     project_in_project,
     project,
