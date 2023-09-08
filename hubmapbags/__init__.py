@@ -39,7 +39,7 @@ from .id_namespace import *
 from .magic import *
 from .ncbi_taxonomy import *
 from .primary_dcc_contact import *
-from .phentoype_disease import *
+from .phenotype_disease import *
 from .project_in_project import *
 from .projects import *
 from .reports import *

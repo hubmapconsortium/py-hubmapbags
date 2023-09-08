@@ -43,7 +43,7 @@ from . import (
     id_namespace,
     ncbi_taxonomy,
     phenotype,
-    phentoype_disease,
+    phenotype_disease,
     phenotype_gene,
     project_in_project,
     project,
@@ -676,9 +676,9 @@ def do_it(
                 data_type_file.create_manifest(output_directory)
                 disease.create_manifest(output_directory)
                 gene.create_manifest(output_directory)
-                phentoype_disease.create_manifest(output_directory)
-                phentoype_gene.create_manifest(output_directory)
-                phentoype.create_manifest(output_directory)
+                phenotype_disease.create_manifest(output_directory)
+                phenotype_gene.create_manifest(output_directory)
+                phenotype.create_manifest(output_directory)
                 protein.create_manifest(output_directory)
                 protein_gene.create_manifest(output_directory)
                 substance.create_manifest(output_directory)
