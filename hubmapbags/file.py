@@ -43,7 +43,7 @@ def __get_md5(file: str) -> str:
     Helper method that computes and return a file md5 checksum.
     """
 
-    blocksize = 2 ** 20
+    blocksize = 2**20
     m = hashlib.md5()
 
     with open(file, "rb") as f:
@@ -71,7 +71,7 @@ def __get_sha256(file: str) -> str:
     Helper method that computes and return a file sha256 checksum.
     """
 
-    blocksize = 2 ** 20
+    blocksize = 2**20
     m = hashlib.md5()
 
     with open(file, "rb") as f:
@@ -218,6 +218,12 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["snrnaseq-10xgenomics-v3"] = "OBI:0003109"
     assay["mibi"] = "OBI:0003100"
     assay["cell-dive"] = "OBI:0003092"
+    assay["cell-dive"] = "OBI:0003092"
+    assay["maldi-ims"] = "OBI:000309"
+    assay["maldi-ims-neg"] = "OBI:000309"
+    assay["maldi-ims-pos"] = "OBI:000309"
+    assay["nanodesi"] = "OBI:0003101"
+    assay["ms"] = "OBI:0000470"
 
     return assay[assay_type]
 
