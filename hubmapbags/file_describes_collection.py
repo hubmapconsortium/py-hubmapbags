@@ -5,7 +5,9 @@ import pandas as pd
 from .apis import *
 
 
-def _build_dataframe(hubmap_id: str, hubmap_uuid: str, directory: str) -> pd.DataFrame:
+def _build_dataframe(
+    hubmap_id: str, token: str, hubmap_uuid: str, directory: str
+) -> pd.DataFrame:
     """
     Build a dataframe with minimal information for this entity.
     """
@@ -41,10 +43,12 @@ def _build_dataframe(hubmap_id: str, hubmap_uuid: str, directory: str) -> pd.Dat
 
 
 def create_manifest(
-    hubmap_id: str, hubmap_uuid: str, directory: str, output_directory: str
+    hubmap_id: str, hubmap_uuid: str, token: str, directory: str, output_directory: str
 ) -> bool:
     filename = os.path.join(output_directory, "file_describes_collection.tsv")
-    df = _build_dataframe(hubmap_id, hubmap_uuid, directory)
+    df = _build_dataframe(
+        hubmap_id=hubmap_id, token=token, hubmap_uuid=hubmap_uuid, directory=directory
+    )
     df.to_csv(filename, sep="\t", index=False)
 
     return True

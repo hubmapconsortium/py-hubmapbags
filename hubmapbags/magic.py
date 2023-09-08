@@ -528,7 +528,6 @@ def do_it(
             print(f"Creating checkpoint {computing}")
             logging.info(f"Creating checkpoint {computing}")
 
-            print(build_bags)
             if build_bags:
                 logging.info(f"Checking if output directory exists")
                 print("Checking if output directory exists")
@@ -624,7 +623,11 @@ def do_it(
                 print("Making file_describes_collection.tsv")
                 logging.info("Making file_describes_collection.tsv")
                 file_describes_collection.create_manifest(
-                    hubmap_id, hubmap_uuid, data_directory, output_directory
+                    hubmap_id=hubmap_id,
+                    token=token,
+                    hubmap_uuid=hubmap_uuid,
+                    directory=data_directory,
+                    output_directory=output_directory,
                 )
 
                 print("Making dcc.tsv")
@@ -723,7 +726,7 @@ def do_it(
 
 
 def get_dataset_info_from_local_file(
-    hubmap_id: str, token: str, instance: str = "prod"
+    hubmap_id: str, token: str, instance: str = "prod", build_bags: bool = False
 ):
     dataset = __extract_datasets_from_input(hubmap_id, token=token, instance=instance)
     if dataset is None:
@@ -757,7 +760,7 @@ def get_dataset_info_from_local_file(
         with open(computing, "w") as file:
             pass
 
-        print("Creating checkpoint " + computing)
+        print(f"Creating checkpoint {computing}")
 
         if status == "new":
             print("Dataset is not published. Aborting computation.")
