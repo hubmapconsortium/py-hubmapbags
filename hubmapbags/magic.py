@@ -1,3 +1,4 @@
+import pandas as pd
 from . import (
     analysis_type,
     anatomy,
@@ -640,7 +641,11 @@ def do_it(
                 print("Making file_in_collection.tsv")
                 logging.info("Making file_in_collection.tsv")
                 answer = file_in_collection.create_manifest(
-                    hubmap_id=hubmap_id, token=token, hubmap_uuid=hubmap_uuid, directory=data_directory, output_directory=output_directory
+                    hubmap_id=hubmap_id,
+                    token=token,
+                    hubmap_uuid=hubmap_uuid,
+                    directory=data_directory,
+                    output_directory=output_directory,
                 )
 
                 print("Creating empty files")
