@@ -28,7 +28,7 @@ from .collection_phenotype import *
 from .collection_protein import *
 from .collection_substance import *
 from .collection_taxonomy import *
-from .cfde.data_type import *
+from cfde import data_type
 from .file import *
 from .file_describes_biosample import *
 from .file_describes_collection import *
