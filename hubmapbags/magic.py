@@ -1,5 +1,6 @@
 import logging
 import os
+from shutil import rmtree
 import pandas as pd
 from pathlib import Path
 from datetime import datetime
