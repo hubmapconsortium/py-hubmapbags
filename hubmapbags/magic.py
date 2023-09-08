@@ -26,7 +26,7 @@ from . import (
     disease,
 )
 from . import file as files
-from . data_type as data_type_file
+from . import data_type as data_type_file
 from . import (
     file_describes_biosample,
     file_describes_collection,
