@@ -62,7 +62,6 @@ from . import (
     subject_substance,
     substance,
     utilities,
-    uuids,
 )
 
 
