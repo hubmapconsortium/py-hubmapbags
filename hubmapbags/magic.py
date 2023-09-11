@@ -1130,7 +1130,7 @@ def create_submission(token: str, debug: bool = True):
     >>> create_submission(token="your_token_here", debug=True)
     """
 
-    assay_types = utilities.get_assay_types(token=token, debug=debug)
+    assay_types = apis.get_assay_types(token=token, debug=debug)
 
     for assay_type in assay_types:
         utilities.pprint(assay_type)
