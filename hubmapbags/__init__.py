@@ -37,7 +37,6 @@ from .globus import *
 from .id_namespace import *
 from .magic import *
 from .ncbi_taxonomy import *
-from .primary_dcc_contact import *
 from .project_in_project import *
 from .reports import *
 from .subject import *
