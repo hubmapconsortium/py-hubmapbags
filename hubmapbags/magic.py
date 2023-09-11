@@ -1,4 +1,5 @@
 import logging
+import traceback
 import os
 from shutil import rmtree, move
 import pandas as pd
@@ -1030,3 +1031,146 @@ def do_it(
                 move(output_directory, "bags")
 
     return True
+
+
+def __get_dbgap_study_id(hubmap_id: str, debug: bool = False):
+    """
+    Get the dbGaP study ID associated with a HubMap ID.
+
+    :param hubmap_id: The HubMap ID for which the dbGaP study ID is requested.
+    :type hubmap_id: str
+
+    :param debug: If True, enable debugging mode. Defaults to False.
+    :type debug: bool
+
+    :return: The dbGaP study ID associated with the given HubMap ID.
+             Returns None if no matching study ID is found.
+    :rtype: str or None
+
+    This function first checks if the provided `hubmap_id` is in a predefined list of HubMap IDs.
+    If a match is found, it returns the corresponding dbGaP study ID.
+
+    If no match is found in the predefined list, it checks additional criteria to determine
+    the dbGaP study ID. Specifically, it checks if the metadata indicates that the HubMap dataset
+    is from UCLA and meets certain conditions related to status, dataset type, and group name.
+    If these conditions are met, it returns the UCLA dbGaP study ID (phs002267). Otherwise, it
+    returns None.
+
+    Note:
+    - The predefined list of HubMap IDs to exclude is provided as `datasets_to_remove`.
+    - The function relies on external functions and data for some of its logic, such as
+      querying metadata, checking dataset type, and evaluating group names.
+
+    :Example:
+
+    >>> __get_dbgap_study_id("HBM955.HLLV.597")
+    'phs002272'
+
+    >>> __get_dbgap_study_id("HBM654.VQLP.438", debug=True)
+    None
+    """
+
+    # Stanford
+    hubmap_ids = "HBM955.HLLV.597 HBM659.TVWH.432 HBM463.QNLT.332 HBM774.KLGK.828 HBM439.WKBL.739 HBM338.SSPB.265 HBM772.BLMV.579 HBM397.LPDS.629 HBM296.NBPZ.987 HBM589.SDPS.578 HBM892.BKPQ.552 HBM655.CTDD.395 HBM989.JQKP.746 HBM645.KNRR.524 HBM298.BJXM.949 HBM985.RHTM.678 HBM757.DVSN.643 HBM443.CTRV.486 HBM562.FTNH.728 HBM829.FJPP.583 HBM899.PGTB.347 HBM592.GVWV.947 HBM329.SNBL.255 HBM584.XLZR.364 HBM693.BHLJ.499 HBM789.WPJN.678 HBM283.VGKK.538 HBM546.NVKL.577 HBM576.LVBL.359 HBM675.WGCV.363 HBM346.XMWF.667 HBM957.HKSV.373 HBM654.VQLP.438 HBM357.ZRCT.729 HBM425.HGPQ.798 HBM673.ZXZT.494 HBM838.NDBV.498 HBM764.TNMB.956 HBM329.LFSX.674 HBM342.FWKM.533 HBM356.HJJX.599 HBM433.TSNT.433 HBM492.NPXK.885 HBM496.NWMZ.649 HBM688.VFBR.562 HBM786.RRSH.472 HBM947.LJKB.895 HBM972.LWTD.655 HBM979.DRXV.239 HBM364.JHKZ.383 HBM427.SRRW.989 HBM568.TFRG.449 HBM739.KSDT.896 HBM748.MMQM.339 HBM372.FSCF.979 HBM443.RQDW.442 HBM865.WSGK.682 HBM747.VBFK.754 HBM398.THRG.589 HBM452.SKFP.725 HBM264.QCGR.632 HBM632.PMDT.978 HBM849.QFWQ.926 HBM232.XPHF.775 HBM397.SHGQ.476 HBM357.WRHQ.827 HBM993.LPCM.624 HBM882.HDWL.396 HBM535.KPZS.733 HBM582.DFHH.268 HBM722.HPXF.559 HBM442.MWFQ.639 HBM835.DHSZ.473 HBM522.LSNV.433 HBM623.PHGT.682 HBM376.RMDH.899 HBM658.RLQC.482 HBM667.ZWGS.745 HBM239.CKSF.677 HBM792.GHWK.356 HBM332.PGSG.277 HBM227.XCNT.648 HBM424.RQMH.756 HBM946.NKHN.264 HBM255.JXWV.538 HBM389.XRDV.828 HBM272.JZLF.372 HBM233.XQZM.395 HBM243.MXBM.589 HBM247.JTNN.859 HBM322.TNGF.859 HBM367.NSZK.788 HBM367.ZMBH.758 HBM373.VTNH.683 HBM433.SPRB.778 HBM444.XJKC.552 HBM469.MMFJ.248 HBM477.KVFD.827 HBM545.QLKW.543 HBM553.DVSQ.754 HBM557.VZPM.253 HBM579.JKPM.857 HBM599.CXNC.464 HBM655.MFTK.764 HBM655.RVNL.232 HBM659.GSQR.225 HBM745.GCNN.553 HBM778.QZPM.472 HBM793.LCCQ.642 HBM874.FDKQ.476 HBM925.FQDP.328 HBM949.PNXL.623 HBM254.XFHN.834 HBM292.FTLJ.343 HBM324.MKDC.693 HBM346.LSFW.324 HBM354.FMKQ.822 HBM373.FZMG.625 HBM379.PCLL.836 HBM382.VHCQ.532 HBM399.GZRJ.726 HBM439.LWSZ.467 HBM453.GWNF.247 HBM479.LFNT.246 HBM487.WJST.938 HBM493.KSXW.563 HBM543.QTVF.423 HBM558.BHPZ.328 HBM569.FMVR.429 HBM575.GQQG.346 HBM638.CDHV.585 HBM639.VPHX.366 HBM657.XWQQ.636 HBM684.SLGB.599 HBM879.DFQN.248 HBM889.DMLC.292 HBM892.VLVC.242 HBM895.FSVF.555 HBM895.RVGB.733 HBM928.PDBD.287 HBM958.VZLG.297 HBM967.JBBL.592 HBM983.LKMP.544 HBM987.BFBR.496 HBM378.WGXD.394 HBM854.LQKL.226 HBM945.QNRF.244 HBM338.HJRC.646 HBM393.FCNB.633 HBM394.NMWZ.594 HBM846.LZNC.567 HBM974.CTTF.889 HBM998.WTJK.564 HBM243.QRKL.558 HBM393.DSCC.392 HBM398.JXVV.636 HBM438.NJKG.575 HBM534.XNJK.939 HBM577.NRCL.952 HBM653.SPBN.555 HBM999.NRRQ.328 HBM233.GVDL.962 HBM254.SXCB.872 HBM368.BMZL.342 HBM596.PZBR.726 HBM669.FBKC.238 HBM725.ZXDG.482 HBM848.VLZL.329 HBM893.LCWM.423 HBM522.WKQN.772 HBM283.XXQN.824 HBM366.TWHT.638 HBM473.HNPK.434 HBM563.PTWZ.467 HBM688.DRXP.369 HBM726.DDNW.235 HBM733.SLXV.683 HBM782.XQRG.998 HBM323.JGNJ.947 HBM379.MLVH.522 HBM422.GKTR.735 HBM638.SQBD.338 HBM666.QBKB.629 HBM723.SFNS.898 HBM875.LBGV.674 HBM975.DJNJ.667 HBM454.ZWSD.895 HBM756.GJDX.884 HBM946.HHKL.578 HBM954.PCBD.364 HBM634.HGLT.739"
+    hubmap_ids = hubmap_ids.split(" ")
+    datasets_to_remove = "HBM998.WTJK.564 HBM338.HJRC.646 HBM974.CTTF.889 HBM846.LZNC.567 HBM394.NMWZ.594 HBM553.DVSQ.754"
+    datasets_to_remove = datasets_to_remove.split(" ")
+    for dataset_to_remove in datasets_to_remove:
+        hubmap_ids.remove(dataset_to_remove)
+
+    if hubmap_id in hubmap_ids:
+        dbgap_study_id = "phs002272"
+        return dbgap_study_id
+
+    # UCLA
+    if (
+        metadata["status"] == "Published"
+        and hubmapbags.apis.get_dataset_type(hubmap_id=hubmap_id, token=token)
+        == "Primary"
+        and metadata["contains_human_genetic_sequences"] == True
+        and (
+            metadata["group_name"] == "California Institute of Technology TMC"
+            or metadata["group_name"] == "Broad Institute RTI"
+        )
+    ):
+        dbgap_study_id = "phs002267"
+    else:
+        dbgap_study_id = None
+
+    return dbgap_study_id
+
+
+def create_submission(token: str, debug: bool = True):
+    """
+    Create a HuBMAP data submission.
+
+    :param token: The authentication token for accessing HubMap resources.
+    :type token: str
+
+    :param debug: If True, enable debugging mode. Defaults to True.
+    :type debug: bool
+
+    This function creates a HubMap data submission by performing the following steps:
+    1. Retrieves assay types using the provided authentication token.
+    2. Iterates through each assay type and retrieves dataset IDs.
+    3. For each dataset, it checks if it meets specific criteria and performs data submission.
+
+    The criteria for data submission include:
+    - Dataset status is "Published"
+    - The dataset is not protected (is_protected is False)
+    - The dataset is marked as primary (is_primary is True)
+    - If the dataset meets these criteria, it calls the `do_it` function to
+      initiate data submission with the provided parameters, including the HubMap ID, token,
+      instance, and dbGaP study ID (obtained using the `__get_dbgap_study_id` function).
+
+    If the dataset is protected, it initiates data submission with a None dbGaP study ID.
+
+    :Example:
+
+    >>> create_submission(token="your_token_here", debug=True)
+    """
+
+    assay_types = utilities.get_assay_types(token=token, debug=debug)
+
+    for assay_type in assay_types:
+        utilities.pprint(assay_type)
+        print("Retrieving dataset IDs. This might take a while. Be patient.")
+        datasets = apis.get_hubmap_ids(assay_type, token=token)
+
+        for dataset in datasets:
+            try:
+                if (
+                    dataset["status"] == "Published"
+                    and not dataset["is_protected"]
+                    and dataset["is_primary"]
+                ):
+                    hubmap_id = dataset["hubmap_id"]
+                    do_it(
+                        hubmap_id,
+                        token=token,
+                        instance="prod",
+                        overwrite=False,
+                        dbgap_study_id=__get_dbgap_study_id(
+                            hubmap_id=hubmap_id, token=token
+                        ),
+                        build_bags=True,
+                    )
+                elif (
+                    dataset["status"] == "Published"
+                    and dataset["is_protected"]
+                    and dataset["is_primary"]
+                ):
+                    hubmap_id = dataset["hubmap_id"]
+                    dbgap_study_id = __get_dbgap_study_id(hubmap_id=hubmap_id)
+                    do_it(
+                        hubmap_id,
+                        token=token,
+                        instance="prod",
+                        overwrite=False,
+                        dbgap_study_id=None,
+                        build_bags=True,
+                    )
+                else:
+                    print(f'Avoiding computation of dataset {dataset["hubmap_id"]}.')
+            except:
+                print(f'Failed to process dataset {dataset["hubmap_id"]}.')
