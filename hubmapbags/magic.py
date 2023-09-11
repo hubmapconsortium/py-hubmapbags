@@ -1100,7 +1100,17 @@ def __get_dbgap_study_id(hubmap_id: str, debug: bool = False):
     return dbgap_study_id
 
 
-def create_submission(token: str, debug: bool = True):
+def create_submission(
+    token: str,
+    data_types_to_ignore: list = [
+        "LC-MS",
+        "LC-MS-untargeted",
+        "LC-MS_bottom_up",
+        "LC-MS_top_down",
+        "TMT-LC-MS",
+    ],
+    debug: bool = True,
+):
     """
     Create a HuBMAP data submission.
 
@@ -1133,44 +1143,49 @@ def create_submission(token: str, debug: bool = True):
     assay_types = apis.get_assay_types(token=token, debug=debug)
 
     for assay_type in assay_types:
-        utilities.pprint(assay_type)
-        print("Retrieving dataset IDs. This might take a while. Be patient.")
-        datasets = apis.get_hubmap_ids(assay_type, token=token)
+        if assay_type in data_types_to_ignore:
+            utilities.pprint(f"Ignoring assay type {assay_type}")
+        else:
+            utilities.pprint(f"Processing assay type {assay_type}")
+            print("Retrieving dataset IDs. This might take a while. Be patient.")
+            datasets = apis.get_hubmap_ids(assay_type, token=token)
 
-        for dataset in datasets:
-            try:
-                if (
-                    dataset["status"] == "Published"
-                    and not dataset["is_protected"]
-                    and dataset["is_primary"]
-                ):
-                    hubmap_id = dataset["hubmap_id"]
-                    do_it(
-                        hubmap_id,
-                        token=token,
-                        instance="prod",
-                        overwrite=False,
-                        dbgap_study_id=__get_dbgap_study_id(
-                            hubmap_id=hubmap_id, token=token
-                        ),
-                        build_bags=True,
-                    )
-                elif (
-                    dataset["status"] == "Published"
-                    and dataset["is_protected"]
-                    and dataset["is_primary"]
-                ):
-                    hubmap_id = dataset["hubmap_id"]
-                    dbgap_study_id = __get_dbgap_study_id(hubmap_id=hubmap_id)
-                    do_it(
-                        hubmap_id,
-                        token=token,
-                        instance="prod",
-                        overwrite=False,
-                        dbgap_study_id=None,
-                        build_bags=True,
-                    )
-                else:
-                    print(f'Avoiding computation of dataset {dataset["hubmap_id"]}.')
-            except:
-                print(f'Failed to process dataset {dataset["hubmap_id"]}.')
+            for dataset in datasets:
+                try:
+                    if (
+                        dataset["status"] == "Published"
+                        and not dataset["is_protected"]
+                        and dataset["is_primary"]
+                    ):
+                        hubmap_id = dataset["hubmap_id"]
+                        do_it(
+                            hubmap_id,
+                            token=token,
+                            instance="prod",
+                            overwrite=False,
+                            dbgap_study_id=__get_dbgap_study_id(
+                                hubmap_id=hubmap_id, token=token
+                            ),
+                            build_bags=True,
+                        )
+                    elif (
+                        dataset["status"] == "Published"
+                        and dataset["is_protected"]
+                        and dataset["is_primary"]
+                    ):
+                        hubmap_id = dataset["hubmap_id"]
+                        dbgap_study_id = __get_dbgap_study_id(hubmap_id=hubmap_id)
+                        do_it(
+                            hubmap_id,
+                            token=token,
+                            instance="prod",
+                            overwrite=False,
+                            dbgap_study_id=None,
+                            build_bags=True,
+                        )
+                    else:
+                        print(
+                            f'Avoiding computation of dataset {dataset["hubmap_id"]}.'
+                        )
+                except:
+                    print(f'Failed to process dataset {dataset["hubmap_id"]}.')
