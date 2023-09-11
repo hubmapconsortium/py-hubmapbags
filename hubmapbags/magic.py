@@ -1187,5 +1187,6 @@ def create_submission(
                         print(
                             f'Avoiding computation of dataset {dataset["hubmap_id"]}.'
                         )
-                except:
+                except Exception as e:
                     print(f'Failed to process dataset {dataset["hubmap_id"]}.')
+                    traceback.print_exc()
