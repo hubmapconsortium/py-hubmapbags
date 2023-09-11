@@ -10,7 +10,7 @@ import pandas as pd
 
 def __get_persistent_id(file_uuid: str) -> str:
     url = (
-        f"http://hubmap-drs.hubmapconsortium.org:9999/ga4gh/drs/v1/objects/{file_uuid}"
+        f"http://hubmap-drs.hubmapconsortium.org/ga4gh/drs/v1/objects/{file_uuid}"
     )
     return url
 
