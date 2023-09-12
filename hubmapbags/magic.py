@@ -330,6 +330,76 @@ def __get_biosample_metadata(
     return biosample_metadata
 
 
+def aggregate(directory: str):
+    tsv_files = [
+        "analysis_type.tsv",
+        "anatomy.tsv",
+        "assay_type.tsv",
+        "biosample.tsv",
+        "biosample_disease.tsv",
+        "biosample_from_subject.tsv",
+        "biosample_gene.tsv",
+        "biosample_in_collection.tsv",
+        "biosample_substance.tsv",
+        "collection.tsv",
+        "collection_anatomy.tsv",
+        "collection_compound.tsv",
+        "collection_defined_by_project.tsv",
+        "collection_disease.tsv",
+        "collection_gene.tsv",
+        "collection_in_collection.tsv",
+        "collection_phenotype.tsv",
+        "collection_protein.tsv",
+        "collection_substance.tsv",
+        "collection_taxonomy.tsv",
+        "compound.tsv",
+        "data_type.tsv",
+        "dcc.tsv",
+        "disease.tsv",
+        "file.tsv",
+        "file_describes_biosample.tsv",
+        "file_describes_collection.tsv",
+        "file_describes_subject.tsv",
+        "file_format.tsv",
+        "file_in_collection.tsv",
+        "gene.tsv",
+        "id_namespace.tsv",
+        "ncbi_taxonomy.tsv",
+        "phenotype.tsv",
+        "phenotype_disease.tsv",
+        "phenotype_gene.tsv",
+        "project.tsv",
+        "project_in_project.tsv",
+        "protein.tsv",
+        "protein_gene.tsv",
+        "subject.tsv",
+        "subject_disease.tsv",
+        "subject_in_collection.tsv",
+        "subject_phenotype.tsv",
+        "subject_race.tsv",
+        "subject_role_taxonomy.tsv",
+        "subject_substance.tsv",
+        "substance.tsv",
+    ]
+
+    output_directory = "submission"
+    if Path(output_directory).exists():
+        rmtree(output_directory)
+        Path(output_directory).mkdir()
+
+    for tsv_file in tsv_files:
+        p = Path(".").glob(f"**/{file}")
+        files = list(p)
+
+        for file in files:
+            print(f"Appending file {file}")
+            temp = pd.read_csv(file, sep="\t")
+            df = pd.concat([df, temp], axis=0).reset_index(drop=True)
+
+        output_filename = f"{output_directory}/{tsv_file}"
+        df.to_csv(output_filename, sep="\t")
+
+
 def do_it(
     input: str,
     token: str,
@@ -723,65 +793,3 @@ def do_it(
                 shutil.move(output_directory, "bags")
 
     return True
-
-
-def get_dataset_info_from_local_file(
-    hubmap_id: str, token: str, instance: str = "prod", build_bags: bool = False
-):
-    dataset = __extract_datasets_from_input(hubmap_id, token=token, instance=instance)
-    if dataset is None:
-        return False
-
-    data_directory = dataset["full_path"]
-    print("Preparing bag for dataset " + data_directory)
-
-    computing = data_directory.replace("/", "_").replace(" ", "_") + ".computing"
-    done = "." + data_directory.replace("/", "_").replace(" ", "_") + ".done"
-    broken = "." + data_directory.replace("/", "_").replace(" ", "_") + ".broken"
-
-    organ_shortcode = dataset["organ_type"]
-    organ_id = dataset["organ_id"]
-    donor_id = dataset["donor_id"]
-
-    if overwrite:
-        print("Erasing old checkpoint. Re-computing checksums.")
-        if Path(done).exists():
-            Path(done).unlink()
-
-    if Path(done).exists():
-        print(
-            "Checkpoint found. Avoiding computation. To re-compute erase file " + done
-        )
-    elif Path(computing).exists():
-        print(
-            "Computing checkpoint found. Avoiding computation since another process is building this bag."
-        )
-    else:
-        with open(computing, "w") as file:
-            pass
-
-        print(f"Creating checkpoint {computing}")
-
-        if status == "new":
-            print("Dataset is not published. Aborting computation.")
-            return
-
-        if build_bags:
-            print("Checking if output directory exists.")
-            output_directory = data_type + "-" + status + "-" + dataset["dataset_uuid"]
-
-            print("Creating output directory " + output_directory + ".")
-            if Path(output_directory).exists() and Path(output_directory).is_dir():
-                print("Output directory found. Removing old copy.")
-                rmtree(output_directory)
-                os.mkdir(output_directory)
-            else:
-                print("Output directory does not exist. Creating directory.")
-                os.mkdir(output_directory)
-
-            print("Making file.tsv")
-            if not Path(".data").exists():
-                Path(".data").mkdir()
-            temp_file = (
-                ".data/" + data_directory.replace("/", "_").replace(" ", "_") + ".pkl"
-            )
