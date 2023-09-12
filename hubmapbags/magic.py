@@ -1087,8 +1087,7 @@ def __get_dbgap_study_id(hubmap_id: str, token: str, debug: bool = False):
     # UCLA
     if (
         metadata["status"] == "Published"
-        and hubmapbags.apis.get_dataset_type(hubmap_id=hubmap_id, token=token)
-        == "Primary"
+        and apis.get_dataset_type(hubmap_id=hubmap_id, token=token) == "Primary"
         and metadata["contains_human_genetic_sequences"] == True
         and (
             metadata["group_name"] == "California Institute of Technology TMC"
