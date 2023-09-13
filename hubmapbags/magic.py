@@ -1343,4 +1343,5 @@ def generate_random_sample(directory: str, number_of_samples: int = 10):
             df = pd.concat([df, temp], axis=0).reset_index(drop=True)
 
         output_filename = f"{output_directory}/{tsv_file}"
+        df = df.drop_duplicates()
         df.to_csv(output_filename, sep="\t")
