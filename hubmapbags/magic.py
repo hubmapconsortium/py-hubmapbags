@@ -1272,7 +1272,7 @@ def generate_random_sample(directory: str, number_of_samples: int = 10):
         rmtree(output_directory)
     Path(output_directory).mkdir()
 
-    temp_directory = f"/tmp/{str(uuid4()).replace('-','')}"
+    temp_directory = f"/tmp/{str(uuid4()).replace('-','')}/"
     Path(temp_directory).mkdir()
 
     directories = [item for item in Path(directory).iterdir() if item.is_dir()]
