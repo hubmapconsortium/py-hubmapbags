@@ -217,9 +217,9 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["snrnaseq-10xgenomics-v3"] = "OBI:0003109"
     assay["mibi"] = "OBI:0003100"
     assay["cell-dive"] = "OBI:0003092"
-    assay["maldi-ims"] = "OBI:000309"
-    assay["maldi-ims-neg"] = "OBI:000309"
-    assay["maldi-ims-pos"] = "OBI:000309"
+    assay["maldi-ims"] = "OBI:0003099"
+    assay["maldi-ims-neg"] = "OBI:0003099"
+    assay["maldi-ims-pos"] = "OBI:0003099"
     assay["nanodesi"] = "OBI:0003101"
     assay["ms"] = "OBI:0000470"
 
