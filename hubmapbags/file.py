@@ -9,9 +9,7 @@ import pandas as pd
 
 
 def __get_persistent_id(file_uuid: str) -> str:
-    url = (
-        f"http://hubmap-drs.hubmapconsortium.org/ga4gh/drs/v1/objects/{file_uuid}"
-    )
+    url = f"http://hubmap-drs.hubmapconsortium.org/ga4gh/drs/v1/objects/{file_uuid}"
     return url
 
 
@@ -215,6 +213,7 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["scirnaseq"] = "OBI:0003105"
     assay["sciatacseq"] = "OBI:0003104"
     assay["scrnaseq-10xgenomics-v3"] = "OBI:0002631"
+    assay["scrnaseq-10xgenomics-v2"] = "OBI:0002631"
     assay["snrnaseq-10xgenomics-v3"] = "OBI:0003109"
     assay["mibi"] = "OBI:0003100"
     assay["cell-dive"] = "OBI:0003092"
