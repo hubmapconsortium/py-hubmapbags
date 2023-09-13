@@ -1333,7 +1333,7 @@ def generate_random_sample(directory: str, number_of_samples: int = 10):
     ]
 
     for tsv_file in tsv_files:
-        p = Path(temp_directory).glob(f"**/{file}")
+        p = Path(temp_directory).glob(f"**/{tsv_file}")
         files = list(p)
 
         for file in files:
