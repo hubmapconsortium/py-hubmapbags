@@ -3,7 +3,7 @@ import logging
 from uuid import uuid4
 import traceback
 import os
-from shutil import rmtree, move, copy
+from shutil import rmtree, move, copytree
 import pandas as pd
 from pathlib import Path
 from datetime import datetime
@@ -1279,7 +1279,7 @@ def generate_random_sample(directory: str, number_of_samples: int = 10):
     directories = sample(directories, number_of_samples)
 
     for directory in directories:
-        copy(directory, temp_directory)
+        copytree(directory, temp_directory)
 
     tsv_files = [
         "analysis_type.tsv",
