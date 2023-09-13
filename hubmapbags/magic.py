@@ -313,11 +313,9 @@ def __get_donor_url(donor_id: str, token: str, instance: str = "prod") -> str:
     """
 
     metadata = apis.get_entity_info(donor_id, instance=instance, token=token)
+    url = f'https://portal.hubmapconsortium.org/browse/donor/{metadata["uuid"]}'
 
-    if "registered_doi" in metadata.keys():
-        return f'https://doi.org/{metadata["registered_doi"]}'
-    else:
-        return f'https://portal.hubmapconsortium.org/browse/donor/{metadata["uuid"]}'
+    return url
 
 
 def __get_sample_url(sample_id: str, token: str, instance: str = "prod") -> str:
