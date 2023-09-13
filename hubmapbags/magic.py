@@ -1336,6 +1336,7 @@ def generate_random_sample(directory: str, number_of_samples: int = 10):
         p = Path(temp_directory).glob(f"**/{tsv_file}")
         files = list(p)
 
+        df = pd.DataFrame()
         for file in files:
             print(f"Appending file {file}")
             temp = pd.read_csv(file, sep="\t")
