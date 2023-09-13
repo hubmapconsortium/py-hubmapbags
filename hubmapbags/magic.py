@@ -1,7 +1,9 @@
+from random import sample
 import logging
+from uuid import uuid4
 import traceback
 import os
-from shutil import rmtree, move
+from shutil import rmtree, move, copy
 import pandas as pd
 from pathlib import Path
 from datetime import datetime
@@ -59,7 +61,6 @@ from . import (
     subject_substance,
     substance,
     utilities,
-    uuids,
 )
 
 
@@ -1102,6 +1103,7 @@ def do_it(
 
     return True
 
+
 def __get_dbgap_study_id(hubmap_id: str, token: str, debug: bool = False):
     """
     Get the dbGaP study ID associated with a HubMap ID.
@@ -1262,4 +1264,82 @@ def create_submission(
                 except Exception as e:
                     print(f'Failed to process dataset {dataset["hubmap_id"]}.')
                     traceback.print_exc()
->>>>>>> e4fff713b6a7b9d81f5423032217b876257876a3
+
+
+def generate_random_sample(directory: str, number_of_samples: int = 10):
+    output_directory = uuid4()
+    if Path(output_directory).exists():
+        rmtree(output_directory)
+    Path(output_directory).mkdir()
+
+    temp_directory = f"/tmp/{uuid4()}"
+    Path(temp_directory).mkdir()
+
+    directories = [item for item in Path(directory).iterdir() if item.is_dir()]
+    directories = sample(directories, number_of_samples)
+
+    for directory in directories:
+        copy(directory, temp_directory)
+
+    tsv_files = [
+        "analysis_type.tsv",
+        "anatomy.tsv",
+        "assay_type.tsv",
+        "biosample.tsv",
+        "biosample_disease.tsv",
+        "biosample_from_subject.tsv",
+        "biosample_gene.tsv",
+        "biosample_in_collection.tsv",
+        "biosample_substance.tsv",
+        "collection.tsv",
+        "collection_anatomy.tsv",
+        "collection_compound.tsv",
+        "collection_defined_by_project.tsv",
+        "collection_disease.tsv",
+        "collection_gene.tsv",
+        "collection_in_collection.tsv",
+        "collection_phenotype.tsv",
+        "collection_protein.tsv",
+        "collection_substance.tsv",
+        "collection_taxonomy.tsv",
+        "compound.tsv",
+        "data_type.tsv",
+        "dcc.tsv",
+        "disease.tsv",
+        "file.tsv",
+        "file_describes_biosample.tsv",
+        "file_describes_collection.tsv",
+        "file_describes_subject.tsv",
+        "file_format.tsv",
+        "file_in_collection.tsv",
+        "gene.tsv",
+        "id_namespace.tsv",
+        "ncbi_taxonomy.tsv",
+        "phenotype.tsv",
+        "phenotype_disease.tsv",
+        "phenotype_gene.tsv",
+        "project.tsv",
+        "project_in_project.tsv",
+        "protein.tsv",
+        "protein_gene.tsv",
+        "subject.tsv",
+        "subject_disease.tsv",
+        "subject_in_collection.tsv",
+        "subject_phenotype.tsv",
+        "subject_race.tsv",
+        "subject_role_taxonomy.tsv",
+        "subject_substance.tsv",
+        "substance.tsv",
+    ]
+
+    for tsv_file in tsv_files:
+        p = Path(temp_directory).glob(f"**/{file}")
+        files = list(p)
+
+        for file in files:
+            print(f"Appending file {file}")
+            temp = pd.read_csv(file, sep="\t")
+            df = pd.concat([df, temp], axis=0).reset_index(drop=True)
+
+        output_filename = f"{output_directory}/{tsv_file}"
+        df.to_csv(output_filename, sep="\t")
