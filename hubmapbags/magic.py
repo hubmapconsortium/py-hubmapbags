@@ -1267,12 +1267,12 @@ def create_submission(
 
 
 def generate_random_sample(directory: str, number_of_samples: int = 10):
-    output_directory = uuid4()
+    output_directory = str(uuid4())
     if Path(output_directory).exists():
         rmtree(output_directory)
     Path(output_directory).mkdir()
 
-    temp_directory = f"/tmp/{uuid4()}"
+    temp_directory = f"/tmp/{str(uuid4())}"
     Path(temp_directory).mkdir()
 
     directories = [item for item in Path(directory).iterdir() if item.is_dir()]
