@@ -1279,7 +1279,7 @@ def generate_random_sample(directory: str, number_of_samples: int = 10):
     directories = sample(directories, number_of_samples)
 
     for directory in directories:
-        copytree(directory, temp_directory)
+        copytree(directory, f"{temp_directory}/{Path(directory).stem}")
 
     tsv_files = [
         "analysis_type.tsv",
