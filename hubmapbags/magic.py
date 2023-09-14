@@ -30,7 +30,6 @@ from . import (
     collection_substance,
     collection_taxonomy,
     compound,
-    data_type,
     dcc,
     disease,
 )
@@ -672,7 +671,7 @@ def aggregate(directory: str):
         Path(output_directory).mkdir()
 
     for tsv_file in tsv_files:
-        p = Path(".").glob(f"**/{file}")
+        p = Path(".").glob(f"**/{tsv_file}")
         files = list(p)
 
         for file in files:
