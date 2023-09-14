@@ -671,6 +671,7 @@ def aggregate(directory: str):
         Path(output_directory).mkdir()
 
     for tsv_file in tsv_files:
+        df = pd.DataFrame()
         p = Path(".").glob(f"**/{tsv_file}")
         files = list(p)
 
