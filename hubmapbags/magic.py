@@ -1037,6 +1037,7 @@ def do_it(
                 file_describes_biosample.create_manifest(output_directory)
                 anatomy.create_manifest(output_directory)
                 assay_type.create_manifest(output_directory)
+                analysis_type.create_manifest(output_directory)
                 biosample_disease.create_manifest(output_directory)
                 biosample_gene.create_manifest(output_directory)
                 biosample_substance.create_manifest(output_directory)
