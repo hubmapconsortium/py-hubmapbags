@@ -31,7 +31,6 @@ def _build_dataframe(dataset_metadata: dict) -> pd.DataFrame:
             "persistent_id": dataset_metadata["persistent_id"],
             "creation_time": _convert_to_datetime(dataset_metadata["creation_time"]),
             "name": dataset_metadata["name"],
-            "description": None,
         },
         ignore_index=True,
     )
