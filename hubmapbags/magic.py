@@ -668,7 +668,7 @@ def aggregate(directory: str):
     output_directory = "submission"
     if Path(output_directory).exists():
         rmtree(output_directory)
-        Path(output_directory).mkdir()
+    Path(output_directory).mkdir()
 
     for tsv_file in tsv_files:
         df = pd.DataFrame()
