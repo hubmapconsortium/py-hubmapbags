@@ -681,7 +681,7 @@ def aggregate(directory: str):
             df = pd.concat([df, temp], axis=0).reset_index(drop=True)
 
         output_filename = f"{output_directory}/{tsv_file}"
-        df.to_csv(output_filename, sep="\t")
+        df.to_csv(output_filename, sep="\t", index=False)
 
 
 def do_it(
