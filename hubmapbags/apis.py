@@ -1498,7 +1498,7 @@ def get_assay_types(token: str, debug: bool = False) -> list:
     """
 
     if debug:
-        print("Get dataset information via the search-api.")
+        print("Getting dataset information via the search-api.")
     assays = __query_assay_types(token=token, debug=debug)
 
     return assays

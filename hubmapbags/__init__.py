@@ -2,7 +2,7 @@
 hubmapbags
 """
 
-__version__ = "2022.2"  # year 2022 2nd quarter
+__version__ = "2023.3"  # year 2023 3nd quarter
 __author__ = "Ivan Cao-Berg"
 __credits__ = "HuBMAP IEC Team"
 
@@ -27,6 +27,7 @@ from .collection_phenotype import *
 from .collection_protein import *
 from .collection_substance import *
 from .collection_taxonomy import *
+from .data_type import *
 from .file import *
 from .file_describes_biosample import *
 from .file_describes_collection import *
@@ -38,6 +39,7 @@ from .id_namespace import *
 from .magic import *
 from .ncbi_taxonomy import *
 from .primary_dcc_contact import *
+from .phenotype_disease import *
 from .project_in_project import *
 from .projects import *
 from .reports import *
