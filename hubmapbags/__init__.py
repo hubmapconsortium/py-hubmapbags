@@ -28,6 +28,7 @@ from .collection_protein import *
 from .collection_substance import *
 from .collection_taxonomy import *
 from .data_type import *
+from .dcc_contact import *
 from .file import *
 from .file_describes_biosample import *
 from .file_describes_collection import *
@@ -38,7 +39,6 @@ from .globus import *
 from .id_namespace import *
 from .magic import *
 from .ncbi_taxonomy import *
-from .primary_dcc_contact import *
 from .phenotype_disease import *
 from .project_in_project import *
 from .projects import *
