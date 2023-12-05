@@ -28,7 +28,7 @@ from .collection_protein import *
 from .collection_substance import *
 from .collection_taxonomy import *
 from .data_type import *
-from .dcc_contact import *
+from .dcc import *
 from .file import *
 from .file_describes_biosample import *
 from .file_describes_collection import *
