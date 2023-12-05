@@ -41,7 +41,7 @@ from .magic import *
 from .ncbi_taxonomy import *
 from .phenotype_disease import *
 from .project_in_project import *
-from .projects import *
+from .project import *
 from .reports import *
 from .subject import *
 from .subject_in_collection import *
