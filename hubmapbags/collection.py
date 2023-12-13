@@ -30,6 +30,7 @@ def _build_dataframe(dataset_metadata: dict) -> pd.DataFrame:
             "local_id": dataset_metadata["local_id"],
             "persistent_id": dataset_metadata["persistent_id"],
             "creation_time": _convert_to_datetime(dataset_metadata["creation_time"]),
+            "description": dataset_metadata["description"],
             "name": dataset_metadata["name"],
         },
         ignore_index=True,

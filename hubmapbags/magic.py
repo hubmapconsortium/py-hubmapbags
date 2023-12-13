@@ -560,7 +560,7 @@ def __get_dataset_metadata(hubmap_id: str, token: str, instance: str = "prod") -
     dataset_metadata["name"] = hubmap_id
 
     if "description" in metadata.keys():
-        dataset_metadata["description"] = metadata["description"]
+        dataset_metadata["description"] = metadata["title"]
     else:
         dataset_metadata["description"] = None
 
