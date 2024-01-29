@@ -301,3 +301,13 @@ def daily(token: str, ncores=16) -> pd.DataFrame:
             df.to_csv(report_output_filename, sep="\t", index=False)
         except:
             print(f"Unable to save dataframe to {report_output_filename}.")
+
+        hive_directory = "/hive/hubmap/bdbags/reports/"
+        report_output_backup_file = (
+            f'{hive_directory}/{str(now.strftime("%Y%m%d"))}.tsv'
+        )
+
+        symlink = "/hive/hubmap/bdbags/reports/today.tsv"
+        if Path(symlink).exists():
+            Path(symlink).unlink()
+            Path(symlink).symlink_to(report_output_backup_file)

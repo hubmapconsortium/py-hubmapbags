@@ -566,6 +566,16 @@ def __get_dataset_metadata(hubmap_id: str, token: str, instance: str = "prod") -
 
     return dataset_metadata
 
+    if (
+        "direct_ancestors" in metadata.keys()
+        and "dbgap_study_url" in metadata["direct_ancestors"]
+    ):
+        dataset_metadata["dbgap_study_id"] = (
+            metadata["direct_ancestors"][0]["dbgap_study_url"].split("=")[1].strip()
+        )
+    else:
+        dataset_metadata["dbgap_study_id"] = None
+
 
 def __get_biosample_metadata(
     hubmap_id: str, token: str, instance: str = "prod"
