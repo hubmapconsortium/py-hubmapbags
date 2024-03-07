@@ -193,8 +193,9 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["wgs"] = "OBI:0002117"  # WGS
     assay["codex"] = "OBI:0003093"  # CODEX
     assay["lightsheet"] = "OBI:0003098"  # Lightsheet
-    assay["imc"] = "OBI:0001977"  # IMC
-    assay["imc3d"] = "OBI:0001977"  # IMC
+    assay["imc"] = "OBI:0003096"  # IMC
+    assay["imc2d"] = "OBI:0003096"  # IMC
+    assay["imc3d"] = "OBI:0003096"  # IMC
     assay["maldi-ims-neg"] = "OBI:0003099"
     assay["maldi-ims-pos"] = "OBI:0003099"
     assay["pas"] = "OBI:0003103"
