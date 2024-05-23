@@ -41,7 +41,7 @@ def __get_md5(file: str) -> str:
     Helper method that computes and return a file md5 checksum.
     """
 
-    blocksize = 2 ** 20
+    blocksize = 2**20
     m = hashlib.md5()
 
     with open(file, "rb") as f:
@@ -69,7 +69,7 @@ def __get_sha256(file: str) -> str:
     Helper method that computes and return a file sha256 checksum.
     """
 
-    blocksize = 2 ** 20
+    blocksize = 2**20
     m = hashlib.md5()
 
     with open(file, "rb") as f:

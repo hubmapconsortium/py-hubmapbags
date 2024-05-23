@@ -1543,14 +1543,24 @@ def __query_assay_types(token: str, debug: bool = False) -> list:
         "aggs": {"fieldvals": {"terms": {"field": "data_types.keyword", "size": 500}}},
     }
 
-    data = requests.post(url=url, headers=headers, json=body).json()
-    data = data["aggregations"]["fieldvals"]["buckets"]
+    r = requests.post(url=url, headers=headers, json=body)
 
-    assays = []
-    for datum in data:
-        assays.append(datum["key"])
+    if r.status_code == 303:
+        link = r.content  # Amazon S3 bucket link
+        file = f"/tmp/{str(uuid.uuid4())}.json"
 
-    return sorted(assays)
+        with open(file, "wb") as f:
+            f.write(requests.get(link).content)
+            j = json.load(open(file, "rb"))
+    else:
+        j = json.loads(r.text)
+        data = j["aggregations"]["fieldvals"]["buckets"]
+
+        assays = []
+        for datum in data:
+            assays.append(datum["key"])
+
+        return sorted(assays)
 
 
 def get_dataset_type(
