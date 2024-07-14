@@ -301,3 +301,5 @@ def daily(token: str, ncores=16) -> pd.DataFrame:
             df.to_csv(report_output_filename, sep="\t", index=False)
         except:
             print(f"Unable to save dataframe to {report_output_filename}.")
+
+        return df
