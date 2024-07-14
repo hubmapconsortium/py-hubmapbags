@@ -536,7 +536,9 @@ def get_ids(assay_name: str, token: str, debug: bool = False) -> dict:
     return results
 
 
-def get_hubmap_ids(assay_name: str, token: str, debug: bool = False) -> dict:
+def get_hubmap_ids(
+    assay_name: str, token: str, instance: str = "prod", debug: bool = False
+) -> dict:
     """
     Retrieve HuBMAP IDs and associated metadata for a specific assay type.
 
@@ -1496,7 +1498,7 @@ def get_assay_types(token: str, debug: bool = False) -> list:
     """
 
     if debug:
-        print("Get dataset information via the search-api.")
+        print("Getting dataset information via the search-api.")
     assays = __query_assay_types(token=token, debug=debug)
 
     return assays
@@ -1541,14 +1543,24 @@ def __query_assay_types(token: str, debug: bool = False) -> list:
         "aggs": {"fieldvals": {"terms": {"field": "data_types.keyword", "size": 500}}},
     }
 
-    data = requests.post(url=url, headers=headers, json=body).json()
-    data = data["aggregations"]["fieldvals"]["buckets"]
+    r = requests.post(url=url, headers=headers, json=body)
 
-    assays = []
-    for datum in data:
-        assays.append(datum["key"])
+    if r.status_code == 303:
+        link = r.content  # Amazon S3 bucket link
+        file = f"/tmp/{str(uuid.uuid4())}.json"
 
-    return sorted(assays)
+        with open(file, "wb") as f:
+            f.write(requests.get(link).content)
+            j = json.load(open(file, "rb"))
+    else:
+        j = json.loads(r.text)
+        data = j["aggregations"]["fieldvals"]["buckets"]
+
+        assays = []
+        for datum in data:
+            assays.append(datum["key"])
+
+        return sorted(assays)
 
 
 def get_dataset_type(
@@ -1590,7 +1602,9 @@ def get_dataset_type(
         hubmap_id, instance="prod", token=token, overwrite=overwrite
     )
 
-    if metadata["direct_ancestors"][0]["entity_type"] == "Sample":
+    if "publication_ancillary" in metadata["data_types"]:
+        return "Publication"
+    elif metadata["direct_ancestors"][0]["entity_type"] == "Sample":
         return "Primary"
     elif metadata["direct_ancestors"][0]["entity_type"] == "Dataset":
         return "Derived"

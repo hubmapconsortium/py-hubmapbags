@@ -30,6 +30,7 @@ def by_data_type(df: pd.DataFrame) -> None:
     """
 
     # ./daily-report
+    now = datetime.now()
     fig = plt.gcf()
     fig.set_size_inches(30, 35)
     plt.rcParams["figure.dpi"] = 250
@@ -50,10 +51,13 @@ def by_data_type(df: pd.DataFrame) -> None:
         fontsize=10,
     )
 
+    title = (
+        f'HuBMAP Data Status as of {now.strftime("%Y%m%d")} {now.strftime("%H:%M:%S")}'
+    )
     g.set(
         xlabel="Data Type",
         ylabel="Count",
-        title=f'HuBMAP Data Status as of {now.strftime("%Y%m%d")} {now.strftime("%H:%M:%S")}',
+        title=title,
     )
     sns.move_legend(g, "right", ncol=2, title="Data Type", frameon=False)
 
@@ -61,7 +65,6 @@ def by_data_type(df: pd.DataFrame) -> None:
     if not Path(report_output_directory).exists():
         Path(report_output_directory).mkdir()
 
-    now = datetime.now()
     report_output_filename = (
         f'{report_output_directory}/data-type-{str(now.strftime("%Y%m%d"))}.png'
     )
@@ -115,6 +118,7 @@ def by_group(df: pd.DataFrame) -> None:
        - Errors encountered during saving or displaying the plot will be printed to the console.
     """
 
+    now = datetime.now()
     fig = plt.gcf()
     fig.set_size_inches(30, 35)
     plt.rcParams["figure.dpi"] = 250
@@ -131,12 +135,13 @@ def by_group(df: pd.DataFrame) -> None:
         aspect=1.5,
         log_scale=(False, False),
     )  # Apply log scale on y-axis
+
     plt.xticks(rotation=45, fontsize=10, ha="right")
 
     g.set(
         xlabel="Groups",
         ylabel="Count",
-        title=f'HuBMAP Data Status as of {now.strftime("%Y%m%d")} {now.strftime("%H:%M:%S")}',
+        title=f'HuBMAP Data Status as of {now.strftime("%Y%m%d")}',
     )
 
     plt.tight_layout()
@@ -145,7 +150,6 @@ def by_group(df: pd.DataFrame) -> None:
     if not Path(report_output_directory).exists():
         Path(report_output_directory).mkdir()
 
-    now = datetime.now()
     report_output_filename = (
         f'{report_output_directory}/group-{str(now.strftime("%Y%m%d"))}.png'
     )

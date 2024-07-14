@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from warnings import warn as warning
+import uuid
 
 import pandas as pd
 import requests
@@ -182,7 +183,7 @@ def get_uuids(
 
     if r.status_code == 303:
         link = r.content  # Amazon S3 bucket link
-        file = "/tmp/file.json"
+        file = f"/tmp/{str(uuid.uuid4())}.json"
 
         with open(file, "wb") as f:
             f.write(requests.get(link).content)

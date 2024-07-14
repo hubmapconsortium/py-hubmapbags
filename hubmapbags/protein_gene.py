@@ -8,7 +8,7 @@ def _build_dataframe() -> pd.DataFrame:
     Build a dataframe with minimal information for this entity.
     """
 
-    headers = ["id", "name", "description", "synonyms"]
+    headers = ["protein", "gene"]
 
     df = pd.DataFrame(columns=headers)
 
@@ -17,7 +17,7 @@ def _build_dataframe() -> pd.DataFrame:
 
 def create_manifest(output_directory: str) -> bool:
     try:
-        filename = os.path.join(output_directory, "assay_type.tsv")
+        filename = os.path.join(output_directory, "protein_gene.tsv")
         df = _build_dataframe()
         df.to_csv(filename, sep="\t", index=False)
 

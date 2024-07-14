@@ -4,14 +4,12 @@ import mimetypes
 import os
 from itertools import chain
 from pathlib import Path
-
+import hubmapinventory
 import pandas as pd
 
 
 def __get_persistent_id(file_uuid: str) -> str:
-    url = (
-        f"http://hubmap-drs.hubmapconsortium.org:9999/ga4gh/drs/v1/objects/{file_uuid}"
-    )
+    url = f"http://hubmap-drs.hubmapconsortium.org/v1/objects/{file_uuid}"
     return url
 
 
@@ -195,8 +193,9 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["wgs"] = "OBI:0002117"  # WGS
     assay["codex"] = "OBI:0003093"  # CODEX
     assay["lightsheet"] = "OBI:0003098"  # Lightsheet
-    assay["imc"] = "OBI:0001977"  # IMC
-    assay["imc3d"] = "OBI:0001977"  # IMC
+    assay["imc"] = "OBI:0003096"  # IMC
+    assay["imc2d"] = "OBI:0003096"  # IMC
+    assay["imc3d"] = "OBI:0003096"  # IMC
     assay["maldi-ims-neg"] = "OBI:0003099"
     assay["maldi-ims-pos"] = "OBI:0003099"
     assay["pas"] = "OBI:0003103"
@@ -215,9 +214,13 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["scirnaseq"] = "OBI:0003105"
     assay["sciatacseq"] = "OBI:0003104"
     assay["scrnaseq-10xgenomics-v3"] = "OBI:0002631"
+    assay["scrnaseq-10xgenomics-v2"] = "OBI:0002631"
     assay["snrnaseq-10xgenomics-v3"] = "OBI:0003109"
     assay["mibi"] = "OBI:0003100"
     assay["cell-dive"] = "OBI:0003092"
+    assay["maldi-ims"] = "OBI:0003099"
+    assay["nanodesi"] = "OBI:0003101"
+    assay["ms"] = "OBI:0000470"
 
     return assay[assay_type]
 
@@ -228,6 +231,7 @@ def _get_list_of_files(directory: str):
 
 def _build_dataframe(
     project_id: str,
+    token: None,
     assay_type: str,
     directory: str,
     dbgap_study_id: str,
@@ -250,115 +254,108 @@ def _build_dataframe(
         "uncompressed_size_in_bytes",
         "sha256",
         "md5",
-        "compression_format",
         "filename",
         "file_format",
+        "compression_format",
         "data_type",
         "assay_type",
+        "analysis_type",
         "mime_type",
-        "analysis_type" "bundle_collection_id_namespace",
+        "bundle_collection_id_namespace",
         "bundle_collection_local_id",
         "dbgap_study_id",
-        "hubmap_uuid",
-        "dataset_hmid",
-        "dataset_uuid",
-        "relative_local_id",
     ]
 
-    if not Path(".data").exists():
-        Path(".data").mkdir()
+    df = hubmapinventory.get(hubmap_id=dataset_hmid, token=token)
 
-    temp_file = f".data/{dataset_uuid}.tsv"
+    df["id_namespace"] = id_namespace
+    df["project_id_namespace"] = id_namespace
+    df["project_local_id"] = project_id
+    df["compression_format"] = None
+    df["bundle_collection_id_namespace"] = None
+    df["bundle_collection_local_id"] = None
+    df["uncompressed_size_in_bytes"] = None
+    df["data_type"] = None
+    df["analysis_type"] = None
 
-    if Path(temp_file).exists():
-        print("Temporary file " + temp_file + " found. Loading df into memory.")
-        with open(temp_file, "rb") as file:
-            df = pd.read_csv(file, sep="\t")
+    if "file_uuid" in df.keys():
+        df["local_id"] = df["file_uuid"]
+        df = df.drop(["file_uuid"], axis=1)
+    else:
+        df["local_id"] = None
 
-            df["id_namespace"] = id_namespace
-            df["project_id_namespace"] = id_namespace
-            df["project_local_id"] = project_id
-            df["compression_format"] = None
-            df["bundle_collection_id_namespace"] = None
-            df["bundle_collection_local_id"] = None
-            df["uncompressed_size_in_bytes"] = None
-            df["data_type"] = None
-            df["analysis_type"] = None
+    df["persistent_id"] = df["local_id"].apply(__get_persistent_id)
 
-            if "file_uuid" in df.keys():
-                df["local_id"] = df["file_uuid"]
-                df = df.drop(["file_uuid"], axis=1)
-            else:
-                df["local_id"] = None
+    df["dbgap_study_id"] = df["local_id"].apply(
+        __get_dbgap_study_id, dbgap_study_id=dbgap_study_id
+    )
 
-            df["persistent_id"] = df["local_id"].apply(__get_persistent_id)
+    if "modification_time" in df.keys():
+        df = df.rename(columns={"modification_time": "creation_time"})
 
-            if "modification_time" in df.keys():
-                df = df.rename(columns={"modification_time": "creation_time"})
+    if "size" in df.keys():
+        df["size_in_bytes"] = df["size"]
 
-            if "size" in df.keys():
-                df["size_in_bytes"] = df["size"]
+    def __fix_edam_string(edam):
+        try:
+            return edam.replace("http://edamontology.org/format_", "format:")
+        except:
+            return None
 
-            def __fix_edam_string(edam):
-                try:
-                    return edam.replace("http://edamontology.org/format_", "format:")
-                except:
-                    return None
+    if "file_format" in df.keys():
+        df["file_format"] = df["file_format"].apply(__fix_edam_string)
 
-            if "file_format" in df.keys():
-                df["file_format"] = df["file_format"].apply(__fix_edam_string)
+    if "relative_path" in df.keys():
+        df["relative_path"] = df["relative_path"].apply(
+            lambda str: str.replace(" ", "%20")
+        )
+        df = df.rename(columns={"relative_path": "relative_local_id"})
 
-            if "relative_path" in df.keys():
-                df["relative_path"] = df["relative_path"].apply(
-                    lambda str: str.replace(" ", "%20")
-                )
-                df = df.rename(columns={"relative_path": "relative_local_id"})
+    df = df.rename(columns={"dataset_id": "dataset_hmid"})
+    df["assay_type"] = __get_assay_type_from_obi(assay_type)
 
-            df = df.rename(columns={"dataset_id": "dataset_hmid"})
-            df["assay_type"] = __get_assay_type_from_obi(assay_type)
+    if "full_path" in df.keys():
+        df = df.drop(["full_path"], axis=1)
 
-            if "full_path" in df.keys():
-                df = df.drop(["full_path"], axis=1)
+    if "download_url" in df.keys():
+        df = df.drop(["download_url"], axis=1)
 
-            if "download_url" in df.keys():
-                df = df.drop(["download_url"], axis=1)
+    if "extension" in df.keys():
+        df = df.drop(["extension"], axis=1)
 
-            if "extension" in df.keys():
-                df = df.drop(["extension"], axis=1)
+    if "file_type" in df.keys():
+        df = df.drop(["file_type"], axis=1)
 
-            if "file_type" in df.keys():
-                df = df.drop(["file_type"], axis=1)
+    if "size" in df.keys():
+        df = df.drop(["size"], axis=1)
 
-            if "size" in df.keys():
-                df = df.drop(["size"], axis=1)
+    if "relative_local_id" in df.keys():
+        df = df.drop(["relative_local_id"], axis=1)
 
-            if "relative_local_id" in df.keys():
-                df = df.drop(["relative_local_id"], axis=1)
-
-            df = df[
-                [
-                    "id_namespace",
-                    "local_id",
-                    "project_id_namespace",
-                    "project_local_id",
-                    "persistent_id",
-                    "creation_time",
-                    "size_in_bytes",
-                    "uncompressed_size_in_bytes",
-                    "sha256",
-                    "md5",
-                    "filename",
-                    "file_format",
-                    "compression_format",
-                    "data_type",
-                    "assay_type",
-                    "analysis_type",
-                    "mime_type",
-                    "bundle_collection_id_namespace",
-                    "bundle_collection_local_id",
-                    "dbgap_study_id",
-                ]
-            ]
+    df = df[
+        [
+            "id_namespace",
+            "local_id",
+            "project_id_namespace",
+            "project_local_id",
+            "persistent_id",
+            "creation_time",
+            "size_in_bytes",
+            "uncompressed_size_in_bytes",
+            "sha256",
+            "md5",
+            "filename",
+            "file_format",
+            "compression_format",
+            "data_type",
+            "assay_type",
+            "analysis_type",
+            "mime_type",
+            "bundle_collection_id_namespace",
+            "bundle_collection_local_id",
+            "dbgap_study_id",
+        ]
+    ]
 
     return df
 
@@ -375,28 +372,17 @@ def create_manifest(
 ):
     filename = os.path.join(output_directory, "file.tsv")
 
-    if not Path(".data").exists():
-        Path(".data").mkdir()
+    df = _build_dataframe(
+        project_id,
+        token,
+        assay_type,
+        directory,
+        dbgap_study_id,
+        dataset_hmid,
+        dataset_uuid,
+    )
 
-    temp_file = f".data/{dataset_uuid}.tsv"
-    if not Path(directory).exists() and not Path(temp_file).exists():
-        print(
-            "Data directory "
-            + directory
-            + " does not exist. Temp file was not found either."
-        )
-        return False
-    else:
-        df = _build_dataframe(
-            project_id,
-            assay_type,
-            directory,
-            dbgap_study_id,
-            dataset_hmid,
-            dataset_uuid,
-        )
+    if Path(output_directory).exists():
+        df.to_csv(filename, sep="\t", index=False)
 
-        if Path(output_directory).exists():
-            df.to_csv(filename, sep="\t", index=False)
-
-        return True
+    return True
