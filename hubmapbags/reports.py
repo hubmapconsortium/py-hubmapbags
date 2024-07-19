@@ -254,45 +254,33 @@ def daily(token: str, ncores=16) -> pd.DataFrame:
         df = pd.read_csv(report_output_filename, sep="\t")
         return df
     else:
-        pandarallel.initialize(progress_bar=True, nb_workers=ncores)
+        url = "https://ingest.api.hubmapconsortium.org/datasets/data-status"  # The URL to get the data from
+        try:
+            response = requests.get(url)  # Send a request to the URL to get the data
+            response.raise_for_status()  # Check if the request was successful (no errors)
+            json_data = response.json()  # Convert the response to JSON format
 
-        utilities.pprint("Getting list of assay types")
-        assay_types = apis.get_assay_types(token=token)
-
-        print("Getting list of dataset IDs")
-        datasets = []
-        for assay_type in tqdm(assay_types):
-            hubmap_ids = apis.get_ids(assay_type, token=token)
-            datasets.extend(hubmap_ids)
-
-        df = pd.DataFrame(datasets)
-
-        utilities.pprint("Getting group name")
-        df["group_name"] = df["hubmap_id"].parallel_apply(__get_group_name, token=token)
-
-        utilities.pprint("Getting data type")
-        df["data_type"] = df["hubmap_id"].parallel_apply(__get_data_type, token=token)
-
-        utilities.pprint("Get dataset type")
-        df["dataset_type"] = df["hubmap_id"].parallel_apply(
-            __get_dataset_type, token=token
-        )
-
-        utilities.pprint("Getting creation timestamp")
-        df["created_datetime"] = df["hubmap_id"].parallel_apply(
-            __get_created_timestamp, token=token
-        )
-
-        utilities.pprint("Getting published timestamp")
-        df["published_datetime"] = df["hubmap_id"].parallel_apply(
-            __get_published_timestamp, token=token
-        )
-
-        utilities.pprint("Getting protected status")
-        df["is_protected"] = df["hubmap_id"].parallel_apply(__is_protected, token=token)
-
-        print("\nSorting dataframe")
-        df = df.sort_values("published_datetime", ascending=False)
+            # Ensure 'data' key exists in the JSON
+            if "data" in json_data:  # Check if the JSON contains the key 'data'
+                df = pd.DataFrame(
+                    json_data["data"]
+                )  # Create a DataFrame using the data under 'data' key
+                print("Data successfully loaded.")  # Print a message indicating success
+            else:
+                raise KeyError(
+                    "'data' key not found in the JSON response"
+                )  # Raise an error if 'data' key is missing
+        except (
+            ValueError,
+            KeyError,
+        ) as e:  # Catch errors related to value or missing keys
+            print(f"Error loading data: {e}")  # Print the error message
+            return pd.DataFrame()  # Return an empty DataFrame if there is an error
+        except (
+            requests.RequestException
+        ) as e:  # Catch errors related to the request itself
+            print(f"Request failed: {e}")  # Print the error message
+            return pd.DataFrame()  # Return an empty DataFrame if the request fails
 
         if not Path(report_output_directory).exists():
             Path(report_output_directory).mkdir()
