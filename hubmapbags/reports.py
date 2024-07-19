@@ -214,7 +214,7 @@ def __get_dataset_type(hubmap_id, token=None):
         return None
 
 
-def daily(token: str, ncores=16) -> pd.DataFrame:
+def daily() -> pd.DataFrame:
     """
     Generate a daily report of datasets with details like group name, data type, creation timestamp,
     and more, for given assay types.
