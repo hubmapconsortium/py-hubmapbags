@@ -1,6 +1,6 @@
 from datetime import datetime
 from pathlib import Path
-
+import requests
 import pandas as pd
 from pandarallel import pandarallel
 from tqdm import tqdm
@@ -265,7 +265,6 @@ def daily() -> pd.DataFrame:
                 df = pd.DataFrame(
                     json_data["data"]
                 )  # Create a DataFrame using the data under 'data' key
-                print("Data successfully loaded.")  # Print a message indicating success
             else:
                 raise KeyError(
                     "'data' key not found in the JSON response"
