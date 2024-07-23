@@ -16,7 +16,7 @@ def _missing_contributors_metadata_file(metadata):
 
 def _is_dataset_directory_empty(metadata):
     if metadata['entity_type'] == 'Dataset':
-        directory = f'/hive/hubmap/data/{metadata['local_directory_rel_path']}'
+        directory = f'/hive/hubmap/data/{metadata["local_directory_rel_path"]}'
         if Path(directory).exists():
             # List all files including hidden files (using .glob('**/*'))
             files = list(directory_path.glob('**/*'))
