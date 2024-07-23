@@ -25,6 +25,8 @@ def _is_dataset_directory_empty(metadata):
 
             # Return True if no files (including hidden ones) found
             return len(files) == 0
+    else:
+        return None
 
 def _is_contributors_metadata_file_empty(metadata):
     """Check if the contributors metadata file is empty."""
