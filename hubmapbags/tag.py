@@ -25,6 +25,9 @@ def _is_dataset_directory_empty(metadata):
 
             # Return True if no files (including hidden ones) found
             return len(files) == 0
+        else:
+            print('Directory {directory} does not exist')
+            return True
     else:
         return None
 
