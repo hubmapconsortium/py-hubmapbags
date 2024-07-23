@@ -2,31 +2,33 @@ from .apis import get_dataset_info
 
 
 def __is_upload_directory_empty(metadata):
-    return None
+    return 'Undefined'
 
+def __is_not_doi_url(metadata):
+    return 'Undefined'
 
 def __is_dataset_directory_empty(metadata):
-    return None
+    return 'Undefined'
 
 
 def __is_upload_directory_empty(metadata):
-    return None
+    return 'Undefined'
 
 
 def __has_registration_metadata(metadata):
-    return None
+    return 'Undefined'
 
 
 def __has_doi_url(metadata):
-    return None
+    return 'Undefined'
 
 
 def __has_orcid_contributor_metadata(metadata):
-    return None
+    return 'Undefined'
 
 
 def __has_empty_directories(metadata):
-    return None
+    return 'Undefined'
 
 
 def dataset(hubmap_id, token=None, debug=False):

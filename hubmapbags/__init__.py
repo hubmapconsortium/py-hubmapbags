@@ -2,9 +2,12 @@
 hubmapbags
 """
 
-__version__ = "2023.3"  # year 2023 3nd quarter
+__version__ = "2024.03"
 __author__ = "Ivan Cao-Berg"
 __credits__ = "HuBMAP IEC Team"
+
+# CFDE
+from .cfde.magic import *
 
 from .anatomy import *
 from .apis import *
@@ -37,7 +40,6 @@ from .file_format import *
 from .file_in_collection import *
 from .globus import *
 from .id_namespace import *
-from .magic import *
 from .ncbi_taxonomy import *
 from .phenotype_disease import *
 from .project_in_project import *
