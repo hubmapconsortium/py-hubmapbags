@@ -116,6 +116,10 @@ def dataset(hubmap_id, token=None, debug=False):
         return {}
 
     checks = {
+        "hubmap_id": metadata['hubmap_id'],
+        "uuid": metadata['uuid'],
+        "status": metadata["status"],
+        "dataset_type": metadata["metadata_type"],
         "missing_description_field_in_the_portal": __missing_description_field_in_the_portal(metadata),
         "is_flagged_for_deletion": __is_flagged_for_deletion(metadata),
         "failed_to_produce_derived_dataset": __failed_to_produce_derived_dataset(
