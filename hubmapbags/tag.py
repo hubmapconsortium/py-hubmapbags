@@ -19,7 +19,7 @@ def _is_dataset_directory_empty(metadata):
         directory = f'/hive/hubmap/data/{metadata["local_directory_rel_path"]}'
         if Path(directory).exists():
             # List all files including hidden files (using .glob('**/*'))
-            files = list(directory_path.glob('**/*'))
+            files = list(directory.glob('**/*'))
             # Exclude '.' and '..' (current and parent directory)
             files = [f for f in files if f.is_file() and not f.name.startswith('.')]
 
