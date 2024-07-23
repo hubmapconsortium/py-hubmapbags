@@ -7,9 +7,7 @@ def _is_upload_directory_empty(metadata):
 
 
 def _is_doi_org_url(metadata):
-    """Check if the DOI org URL is present."""
-    return None
-
+    return 'doi_url' in metadata and 'doi.org' in metadata['doi_url']
 
 def _missing_contributors_metadata_file(metadata):
     """Check if the contributors metadata file is missing."""
