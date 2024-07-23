@@ -115,7 +115,7 @@ def dataset(hubmap_id, token=None, debug=False):
         "hubmap_id": metadata["hubmap_id"],
         "uuid": metadata["uuid"],
         "status": metadata["status"],
-        "dataset_type": metadata["metadata_type"],
+        "dataset_type": metadata["dataset_type"],
         "missing_description_field_in_the_portal": __missing_description_field_in_the_portal(
             metadata
         ),
