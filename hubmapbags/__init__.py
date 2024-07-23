@@ -7,8 +7,7 @@ __author__ = "Ivan Cao-Berg"
 __credits__ = "HuBMAP IEC Team"
 
 # CFDE
-from .cfde.magic import *
-
+from .magic import *
 from .anatomy import *
 from .apis import *
 from .assay_type import *
