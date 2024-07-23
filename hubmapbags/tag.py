@@ -159,9 +159,5 @@ def dataset(hubmap_id, token=None, debug=False):
         "has_empty_directories": _has_empty_directories(metadata),
     }
 
-    checks = dict(sorted(checks.items()))
-    tags = {
-        key: check(metadata) for key, check in checks.items() if check(metadata) != None
-    }
-
+    tags = dict(sorted(checks.items()))
     return tags
