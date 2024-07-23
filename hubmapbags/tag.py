@@ -32,9 +32,7 @@ def _has_registration_metadata(metadata):
 
 
 def _has_doi_url(metadata):
-    """Check if the DOI URL is present."""
-    return None
-
+    return 'doi_url' in metadata
 
 def _missing_instrument_metadata_file(metadata):
     """Check if the instrument metadata file is missing."""
