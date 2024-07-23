@@ -1,52 +1,163 @@
 from .apis import get_dataset_info
 
 
-def __is_upload_directory_empty(metadata):
-    return 'Undefined'
-
-def __is_not_doi_url(metadata):
-    return 'Undefined'
-
-def __is_dataset_directory_empty(metadata):
-    return 'Undefined'
+def _is_upload_directory_empty(metadata):
+    """Check if the upload directory is empty."""
+    return None
 
 
-def __is_upload_directory_empty(metadata):
-    return 'Undefined'
+def _is_doi_org_url(metadata):
+    """Check if the DOI org URL is present."""
+    return None
 
 
-def __has_registration_metadata(metadata):
-    return 'Undefined'
+def _missing_contributors_metadata_file(metadata):
+    """Check if the contributors metadata file is missing."""
+    return None
 
 
-def __has_doi_url(metadata):
-    return 'Undefined'
+def _is_dataset_directory_empty(metadata):
+    """Check if the dataset directory is empty."""
+    return None
 
 
-def __has_orcid_contributor_metadata(metadata):
-    return 'Undefined'
+def _is_contributors_metadata_file_empty(metadata):
+    """Check if the contributors metadata file is empty."""
+    return None
 
 
-def __has_empty_directories(metadata):
-    return 'Undefined'
+def _has_registration_metadata(metadata):
+    """Check if the registration metadata is present."""
+    return None
+
+
+def _has_doi_url(metadata):
+    """Check if the DOI URL is present."""
+    return None
+
+
+def _missing_instrument_metadata_file(metadata):
+    """Check if the instrument metadata file is missing."""
+    return None
+
+
+def _has_orcid_contributor_metadata(metadata):
+    """Check if the ORCID contributor metadata is present."""
+    return None
+
+
+def _has_empty_directories(metadata):
+    """Check if there are empty directories."""
+    return None
+
+
+def _instrument_metadata_file_is_empty(metadata):
+    """Check if the instrument metadata file is empty."""
+    return None
+
+
+def _missing_assay_specific_files(metadata):
+    """Check if assay-specific files are missing."""
+    return None
+
+
+def _assay_specific_files_are_empty(metadata):
+    """Check if assay-specific files are empty."""
+    return None
+
+
+def _missing_dataset_files_in_metadata(metadata):
+    """Check if dataset files are missing in the metadata."""
+    return None
+
+
+def _extra_datasets_in_upload(metadata):
+    """Check if there are extra datasets in the upload."""
+    return None
+
+
+def __is_nonstandard_directory_structure(metadata):
+    return None
+
+
+def __has_nonstandard_filenames_extensions(metadata):
+    return None
+
+
+def __is_awating_review(metadata):
+    return None
+
+
+def __unrecognized_provenance(metadata):
+    return None
+
+
+def __is_awaiting_processing_pipeline(metadata):
+    return None
+
+
+def __failed_to_produce_derived_dataset(metadata):
+    return None
+
+
+def __is_flagged_for_deletion(metadata):
+    return None
+
+
+def __missing_description_field_in_the_portal(metadata):
+    return None
 
 
 def dataset(hubmap_id, token=None, debug=False):
+    """Retrieve dataset information and generate tags based on metadata."""
     metadata = get_dataset_info(hubmap_id, token=token)
     if not metadata:
         print("Unable to retrieve metadata.")
         return {}
-    else:
-        tags = {
-            "is_upload_directory_empty": __is_upload_directory_empty(metadata),
-            "is_dataset_directory_empty": __is_dataset_directory_empty(metadata),
-            "is_upload_directory_empty": __is_upload_directory_empty(metadata),
-            "has_registration_metadata": __has_registration_metadata(metadata),
-            "has_doi_url": __has_doi_url(metadata),
-            "has_orcid_contributor_metadata": __has_orcid_contributor_metadata(
-                metadata
-            ),
-            "has_empty_directories": __has_empty_directories(metadata),
-        }
 
-        return tags
+    checks = {
+        "missing_description_field_in_the_portal": __missing_description_field_in_the_portal(metadata),
+        "is_flagged_for_deletion": __is_flagged_for_deletion(metadata),
+        "failed_to_produce_derived_dataset": __failed_to_produce_derived_dataset(
+            metadata
+        ),
+        "is_awaiting_processing_pipeline": __is_awaiting_processing_pipeline(metadata),
+        "is_awating_review": __is_awating_review(metadata),
+        "unrecognized_provenance": __unrecognized_provenance(metadata),
+        "has_nonstandard_filenames_extensions": __has_nonstandard_filenames_extensions(
+            metadata
+        ),
+        "is_nonstandard_directory_structure": __is_nonstandard_directory_structure(
+            metadata
+        ),
+        "extra_datasets_in_upload": _extra_datasets_in_upload(metadata),
+        "missing_dataset_files_in_metadata": _missing_dataset_files_in_metadata(
+            metadata
+        ),
+        "assay_specific_files_are_empty": _assay_specific_files_are_empty(metadata),
+        "missing_assay_specific_files": _missing_assay_specific_files(metadata),
+        "is_upload_directory_empty": _is_upload_directory_empty(metadata),
+        "is_dataset_directory_empty": _is_dataset_directory_empty(metadata),
+        "is_doi_org_url": _is_doi_org_url(metadata),
+        "is_contributors_metadata_file_empty": _is_contributors_metadata_file_empty(
+            metadata
+        ),
+        "missing_contributors_metadata_file": _missing_contributors_metadata_file(
+            metadata
+        ),
+        "missing_instrument_metadata_file": _missing_instrument_metadata_file(metadata),
+        "has_registration_metadata": _has_registration_metadata(metadata),
+        "has_orcid_contributor_metadata": _has_orcid_contributor_metadata(metadata),
+        "instrument_metadata_file_is_empty": _instrument_metadata_file_is_empty(
+            metadata
+        ),
+        "has_doi_url": _has_doi_url(metadata),
+        "has_empty_directories": _has_empty_directories(metadata),
+    }
+
+    checks = dict(sorted(checks.items()))
+    tags = {
+        key: check(metadata) for key, check in checks.items() if check(metadata) != None
+    }
+
+    return tags
