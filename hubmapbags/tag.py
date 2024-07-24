@@ -1,39 +1,48 @@
 from .apis import get_dataset_info
 from pathlib import Path
 
+
 def _is_upload_directory_empty(metadata):
     """Check if the upload directory is empty."""
     return None
 
 
 def _is_doi_org_url(metadata):
-    return 'doi_url' in metadata and 'doi.org' in metadata['doi_url']
+    return "doi_url" in metadata and "doi.org" in metadata["doi_url"]
+
 
 def _missing_contributors_metadata_file(metadata):
     """Check if the contributors metadata file is missing."""
     return None
 
 
+def __get_directory(metadata):
+    if "protected" in metadata["local_directory_rel_path"]:
+        directory = f'/hive/hubmap/data/{metadata["local_directory_rel_path"]}'
+    else:
+        directory = f'/hive/hubmap/data/public/{metadata["uuid"]}'
+
+    return directory
+
+
 def _is_dataset_directory_empty(metadata):
-    if metadata['entity_type'] == 'Dataset' and metadata['status'] == 'Published':
-        if 'protected' in metadata['local_directory_rel_path']:
-            directory = f'/hive/hubmap/data/{metadata["local_directory_rel_path"]}'
-        else:
-            directory = f'/hive/hubmap/data/public/{metadata["uuid"]}'
-        
+    if metadata["entity_type"] == "Dataset" and metadata["status"] == "Published":
+        directory = __get_directory(metadata)
+
         if Path(directory).exists():
             # List all files including hidden files (using .glob('**/*'))
-            files = list(Path(directory).glob('**/*'))
+            files = list(Path(directory).glob("**/*"))
             # Exclude '.' and '..' (current and parent directory)
-            files = [f for f in files if f.is_file() and not f.name.startswith('.')]
+            files = [f for f in files if f.is_file() and not f.name.startswith(".")]
 
             # Return True if no files (including hidden ones) found
             return len(files) == 0
         else:
-            print(f'Directory {directory} does not exist')
+            print(f"Directory {directory} does not exist")
             return True
     else:
         return None
+
 
 def _is_contributors_metadata_file_empty(metadata):
     """Check if the contributors metadata file is empty."""
@@ -46,7 +55,8 @@ def _has_registration_metadata(metadata):
 
 
 def _has_doi_url(metadata):
-    return 'doi_url' in metadata
+    return "doi_url" in metadata
+
 
 def _missing_instrument_metadata_file(metadata):
     """Check if the instrument metadata file is missing."""
