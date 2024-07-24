@@ -52,11 +52,14 @@ def _is_dataset_directory_empty(metadata):
 
 def _is_contributors_metadata_file_empty(metadata):
     if not _missing_contributors_metadata_file(metadata):
-        contributors_file = f'{__get_directory(metadata)}/{metadata["ingest_metadata"]["metadata"]["contributors_path"]}'
-        if Path(contributors_file).stat().st_size == 0:
-            return True
+        if "ingest_metadata" in metadata and "metadata" in metadata["ingest_metadata"] and "contributors_path" in metadata["ingest_metadata"]["metadata"]:
+            contributors_file = f'{__get_directory(metadata)}/{metadata["ingest_metadata"]["metadata"]["contributors_path"]}'
+            if Path(contributors_file).stat().st_size == 0:
+                return True
+            else:
+                return False
         else:
-            return False
+            return None
     else:
         return None
 
