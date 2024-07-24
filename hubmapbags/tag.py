@@ -136,6 +136,36 @@ def __get_contributors_file(metadata):
 
 
 def _is_dataset_directory_empty(metadata):
+    """
+    Checks if the directory for a dataset is empty based on the metadata provided.
+
+    Parameters:
+    metadata (dict): A dictionary containing metadata information. It must include the "entity_type" key and relevant information to construct the directory path.
+
+    Returns:
+    bool or None:
+        - `True` if the directory exists and is empty.
+        - `False` if the directory exists and is not empty.
+        - `True` if the directory does not exist.
+        - `None` if the entity type is not "Dataset".
+
+    Example:
+    >>> metadata = {
+    ...     "entity_type": "Dataset",
+    ...     "local_directory_rel_path": "example/path",
+    ...     "uuid": "1234-5678"
+    ... }
+    >>> _is_dataset_directory_empty(metadata)
+    True  # Assuming the directory is empty
+
+    >>> metadata = {
+    ...     "entity_type": "Sample",
+    ...     "local_directory_rel_path": "example/path",
+    ...     "uuid": "1234-5678"
+    ... }
+    >>> _is_dataset_directory_empty(metadata)
+    None
+    """
     if metadata["entity_type"] == "Dataset":
         directory = __get_directory(metadata)
 
