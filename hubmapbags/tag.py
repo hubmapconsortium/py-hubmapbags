@@ -19,7 +19,7 @@ def _is_dataset_directory_empty(metadata):
         if 'protected' in metadata['local_directory_rel_path']:
             directory = f'/hive/hubmap/data/{metadata["local_directory_rel_path"]}'
         else:
-            directory = f'/hive/hubmap/data/{metadata['uuid']}'
+            directory = f'/hive/hubmap/data/{metadata["uuid"]}'
         
         if Path(directory).exists():
             # List all files including hidden files (using .glob('**/*'))
