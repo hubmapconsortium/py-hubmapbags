@@ -80,9 +80,11 @@ def _has_orcid_contributor_metadata(metadata):
 
 
 def _has_empty_directories(metadata):
-    """Check if there are empty directories."""
-    return None
-
+    directory = Path(__get_directory(metadata))
+    if [subdir for subdir in directory.rglob('*') if subdir.is_dir() and not any(subdir.iterdir())] > 0:
+        return True
+    else:
+        return False
 
 def _instrument_metadata_file_is_empty(metadata):
     """Check if the instrument metadata file is empty."""
