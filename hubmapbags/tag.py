@@ -11,7 +11,10 @@ def _is_doi_org_url(metadata):
     return "doi_url" in metadata and "doi.org" in metadata["doi_url"]
 
 def _missing_contributors_metadata_file(metadata):
-    return Path(__get_contributors_file(metadata)).exists()
+    if __get_contributors_file(metadata) is not None:
+        return Path(__get_contributors_file(metadata)).exists()
+    else:
+        return None
 
 def __get_directory(metadata):
     if "protected" in metadata["local_directory_rel_path"]:
