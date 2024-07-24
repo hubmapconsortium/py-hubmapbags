@@ -81,7 +81,7 @@ def _has_orcid_contributor_metadata(metadata):
 
 def _has_empty_directories(metadata):
     directory = Path(__get_directory(metadata))
-    if [subdir for subdir in directory.rglob('*') if subdir.is_dir() and not any(subdir.iterdir())] > 0:
+    if len([subdir for subdir in directory.rglob('*') if subdir.is_dir() and not any(subdir.iterdir())]) > 0:
         return True
     else:
         return False
