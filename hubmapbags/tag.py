@@ -87,7 +87,10 @@ def __get_directory(metadata):
     if "protected" in metadata["local_directory_rel_path"]:
         directory = f'/hive/hubmap/data/{metadata["local_directory_rel_path"]}'
     else:
-        directory = f'/hive/hubmap/data/public/{metadata["uuid"]}'
+        if metadata['status'] == 'Published':
+            directory = f'/hive/hubmap/data/public/{metadata["uuid"]}'
+        else:
+            directory = f'/hive/hubmap/data/{metadata["local_directory_rel_path"]}'
 
     return directory
 
