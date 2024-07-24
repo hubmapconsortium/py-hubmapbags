@@ -12,8 +12,14 @@ def _is_doi_org_url(metadata):
 
 
 def _missing_contributors_metadata_file(metadata):
-    """Check if the contributors metadata file is missing."""
-    return None
+    directory = __get_directory(metadata)
+    
+    if "ingest_metadata" in metadata and "metadata" in metadata["ingest_metadata"] and "contributors_path" in metadata["ingest_metadata"]["metadata"]:
+        contributors_file = f'directory/{metadata["ingest_metadata"]["metadata"]["contributors_path"]}'
+        print(contributors_file)
+        return Path(contributors_file).exists()
+    else:
+        return False  
 
 
 def __get_directory(metadata):
