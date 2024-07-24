@@ -48,7 +48,7 @@ def _is_dataset_directory_empty(metadata):
 
 def _is_contributors_metadata_file_empty(metadata):
     file = __get_contributors_file(metadata)
-    if file not None and Path(file).exists():
+    if file is not None and Path(file).exists():
         if Path(file).stat().st_size == 0:
             return True
         else:
