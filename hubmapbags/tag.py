@@ -8,15 +8,82 @@ def _is_upload_directory_empty(metadata):
 
 
 def _is_doi_org_url(metadata):
+    """
+    Checks if the metadata contains a DOI (Digital Object Identifier) URL that points to the 'doi.org' domain.
+
+    Parameters:
+    metadata (dict): A dictionary containing metadata information. It is expected to have a key "doi_url" if a DOI URL is present.
+
+    Returns:
+    bool: True if the metadata contains a "doi_url" key and the value of "doi_url" includes "doi.org", otherwise False.
+
+    Example:
+    >>> metadata = {"doi_url": "https://doi.org/10.1234/example"}
+    >>> _is_doi_org_url(metadata)
+    True
+
+    >>> metadata = {"doi_url": "https://example.com/10.1234/example"}
+    >>> _is_doi_org_url(metadata)
+    False
+
+    >>> metadata = {"title": "A Sample Paper"}
+    >>> _is_doi_org_url(metadata)
+    False
+    """
     return "doi_url" in metadata and "doi.org" in metadata["doi_url"]
 
+
 def _missing_contributors_metadata_file(metadata):
+    """
+    Checks if the contributors metadata file exists based on the metadata provided.
+
+    Parameters:
+    metadata (dict): A dictionary containing metadata information. It is expected to have the necessary information to locate the contributors file.
+
+    Returns:
+    bool or None:
+        - `True` if the contributors file is expected but does not exist.
+        - `False` if the contributors file exists.
+        - `None` if the contributors file is not specified in the metadata.
+
+    Example:
+    >>> metadata = {"contributors_file": "/path/to/contributors.txt"}
+    >>> _missing_contributors_metadata_file(metadata)
+    False  # Assuming the file exists
+
+    >>> metadata = {"contributors_file": "/path/to/missing_contributors.txt"}
+    >>> _missing_contributors_metadata_file(metadata)
+    True  # Assuming the file does not exist
+
+    >>> metadata = {"title": "A Sample Paper"}
+    >>> _missing_contributors_metadata_file(metadata)
+    None  # No contributors file specified in metadata
+    """
     if __get_contributors_file(metadata) is not None:
-        return Path(__get_contributors_file(metadata)).exists()
+        return not Path(__get_contributors_file(metadata)).exists()
     else:
         return None
 
+
 def __get_directory(metadata):
+    """
+    Constructs and returns the directory path based on the metadata provided.
+
+    Parameters:
+    metadata (dict): A dictionary containing metadata information. It should include the key "local_directory_rel_path" and, depending on its value, "uuid".
+
+    Returns:
+    str: The constructed directory path based on the metadata.
+
+    Example:
+    >>> metadata = {"local_directory_rel_path": "protected/example/path", "uuid": "1234-5678"}
+    >>> __get_directory(metadata)
+    '/hive/hubmap/data/protected/example/path'
+
+    >>> metadata = {"local_directory_rel_path": "example/path", "uuid": "1234-5678"}
+    >>> __get_directory(metadata)
+    '/hive/hubmap/data/public/1234-5678'
+    """
     if "protected" in metadata["local_directory_rel_path"]:
         directory = f'/hive/hubmap/data/{metadata["local_directory_rel_path"]}'
     else:
@@ -24,23 +91,26 @@ def __get_directory(metadata):
 
     return directory
 
+
 def __get_contributors_file(metadata):
-    if "ingest_metadata" in metadata and "metadata" in metadata["ingest_metadata"] and "contributors_path" in metadata["ingest_metadata"]["metadata"]:
+    if (
+        "ingest_metadata" in metadata
+        and "metadata" in metadata["ingest_metadata"]
+        and "contributors_path" in metadata["ingest_metadata"]["metadata"]
+    ):
         return f'{__get_directory(metadata)}/{metadata["ingest_metadata"]["metadata"]["contributors_path"]}'
     else:
         return None
 
+
 def _is_dataset_directory_empty(metadata):
-    if metadata["entity_type"] == "Dataset" and metadata["status"] == "Published":
+    if metadata["entity_type"] == "Dataset":
         directory = __get_directory(metadata)
 
         if Path(directory).exists():
-            # List all files including hidden files (using .glob('**/*'))
             files = list(Path(directory).glob("**/*"))
-            # Exclude '.' and '..' (current and parent directory)
             files = [f for f in files if f.is_file() and not f.name.startswith(".")]
 
-            # Return True if no files (including hidden ones) found
             return len(files) == 0
         else:
             print(f"Directory {directory} does not exist")
@@ -81,10 +151,20 @@ def _has_orcid_contributor_metadata(metadata):
 
 def _has_empty_directories(metadata):
     directory = Path(__get_directory(metadata))
-    if len([subdir for subdir in directory.rglob('*') if subdir.is_dir() and not any(subdir.iterdir())]) > 0:
+    if (
+        len(
+            [
+                subdir
+                for subdir in directory.rglob("*")
+                if subdir.is_dir() and not any(subdir.iterdir())
+            ]
+        )
+        > 0
+    ):
         return True
     else:
         return False
+
 
 def _instrument_metadata_file_is_empty(metadata):
     """Check if the instrument metadata file is empty."""
