@@ -10,17 +10,8 @@ def _is_upload_directory_empty(metadata):
 def _is_doi_org_url(metadata):
     return "doi_url" in metadata and "doi.org" in metadata["doi_url"]
 
-
 def _missing_contributors_metadata_file(metadata):
-    directory = __get_directory(metadata)
-    
-    if "ingest_metadata" in metadata and "metadata" in metadata["ingest_metadata"] and "contributors_path" in metadata["ingest_metadata"]["metadata"]:
-        contributors_file = f'directory/{metadata["ingest_metadata"]["metadata"]["contributors_path"]}'
-        print(contributors_file)
-        return Path(contributors_file).exists()
-    else:
-        return False  
-
+    return Path(__get_contributors_file(metadata)).exists()
 
 def __get_directory(metadata):
     if "protected" in metadata["local_directory_rel_path"]:
@@ -30,6 +21,11 @@ def __get_directory(metadata):
 
     return directory
 
+def __get_contributors_file(metadata):
+    if "ingest_metadata" in metadata and "metadata" in metadata["ingest_metadata"] and "contributors_path" in metadata["ingest_metadata"]["metadata"]:
+        return f'{__get_directory(metadata)}/{metadata["ingest_metadata"]["metadata"]["contributors_path"]}'
+    else:
+        return None
 
 def _is_dataset_directory_empty(metadata):
     if metadata["entity_type"] == "Dataset" and metadata["status"] == "Published":
@@ -51,15 +47,12 @@ def _is_dataset_directory_empty(metadata):
 
 
 def _is_contributors_metadata_file_empty(metadata):
-    if not _missing_contributors_metadata_file(metadata):
-        if "ingest_metadata" in metadata and "metadata" in metadata["ingest_metadata"] and "contributors_path" in metadata["ingest_metadata"]["metadata"]:
-            contributors_file = f'{__get_directory(metadata)}/{metadata["ingest_metadata"]["metadata"]["contributors_path"]}'
-            if Path(contributors_file).stat().st_size == 0:
-                return True
-            else:
-                return False
+    file = __get_contributors_file(metadata)
+    if Path(file).exists():
+        if Path(file).stat().st_size == 0:
+            return True
         else:
-            return None
+            return False
     else:
         return None
 
