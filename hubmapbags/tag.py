@@ -357,13 +357,9 @@ def __failed_to_produce_derived_dataset(metadata):
     return None
 
 
-def __is_flagged_for_deletion(metadata):
-    return None
-
-
 def __missing_description_field_in_the_portal(metadata):
-    if 'description' in metadata:
-        if len(metadata['description']) <= 45:
+    if "description" in metadata:
+        if len(metadata["description"]) <= 45:
             return True
         else:
             return False
