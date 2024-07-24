@@ -364,7 +364,7 @@ def __missing_description_field_in_the_portal(metadata):
     return None
 
 
-def get(hubmap_id, token=None, debug=False):
+def dataset(hubmap_id, token=None, debug=False):
     """
     Retrieve dataset information and generate tags based on metadata.
 
