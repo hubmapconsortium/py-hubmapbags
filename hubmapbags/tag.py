@@ -362,7 +362,13 @@ def __is_flagged_for_deletion(metadata):
 
 
 def __missing_description_field_in_the_portal(metadata):
-    return None
+    if 'description' in metadata:
+        if len(metadata['description']) <= 45:
+            return True
+        else:
+            return False
+    else:
+        return None
 
 
 def dataset(hubmap_id, token=None, debug=False):
@@ -404,12 +410,9 @@ def dataset(hubmap_id, token=None, debug=False):
         "missing_description_field_in_the_portal": __missing_description_field_in_the_portal(
             metadata
         ),
-        "is_flagged_for_deletion": __is_flagged_for_deletion(metadata),
         "failed_to_produce_derived_dataset": __failed_to_produce_derived_dataset(
             metadata
         ),
-        "is_awaiting_processing_pipeline": __is_awaiting_processing_pipeline(metadata),
-        "is_awating_review": __is_awating_review(metadata),
         "unrecognized_provenance": __unrecognized_provenance(metadata),
         "has_nonstandard_filenames_extensions": __has_nonstandard_filenames_extensions(
             metadata
