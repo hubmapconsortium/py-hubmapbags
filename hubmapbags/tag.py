@@ -93,6 +93,38 @@ def __get_directory(metadata):
 
 
 def __get_contributors_file(metadata):
+    """
+    Retrieves the path to the contributors file based on the metadata provided.
+
+    Parameters:
+    metadata (dict): A dictionary containing metadata information. It should include nested keys to locate the contributors file path.
+
+    Returns:
+    str or None: The constructed path to the contributors file if the relevant metadata is present, otherwise None.
+
+    Example:
+    >>> metadata = {
+    ...     "ingest_metadata": {
+    ...         "metadata": {
+    ...             "contributors_path": "contributors/contributors.txt"
+    ...         }
+    ...     },
+    ...     "local_directory_rel_path": "protected/example/path",
+    ...     "uuid": "1234-5678"
+    ... }
+    >>> __get_contributors_file(metadata)
+    '/hive/hubmap/data/protected/example/path/contributors/contributors.txt'
+
+    >>> metadata = {
+    ...     "ingest_metadata": {
+    ...         "metadata": {}
+    ...     },
+    ...     "local_directory_rel_path": "example/path",
+    ...     "uuid": "1234-5678"
+    ... }
+    >>> __get_contributors_file(metadata)
+    None
+    """
     if (
         "ingest_metadata" in metadata
         and "metadata" in metadata["ingest_metadata"]
