@@ -262,7 +262,7 @@ def __has_dbgap_url(hubmap_id, token=None):
     :param token: Authorization token to access the HuBMAP API. Default is None.
     :type token: str, optional
 
-    :return: The SRA experiment url for the dbgap study associated with the HuBMAP ID if found, otherwise None.
+    :return: The url for the dbGaP study associated with the HuBMAP ID if found, otherwise None.
 
     .. note::
        - The `apis.get_dataset_info` function should be properly implemented and imported.
