@@ -221,6 +221,10 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["maldi-ims"] = "OBI:0003099"
     assay["nanodesi"] = "OBI:0003101"
     assay["ms"] = "OBI:0000470"
+    assay["DESI"] = "OBI:0003671"  # data_type value for DESI
+    assay["MUSIC"] = "OBI:0003675"  # data_type value for MUSIC    
+    assay["SNARE-seq2"] = "OBI:0003377"  # data_type value for SNARE-seq2
+    assay["Visium (no probes)"] = "OBI:0003680"  # dataset_type value for SNARE-seq2
 
     return assay[assay_type]
 
