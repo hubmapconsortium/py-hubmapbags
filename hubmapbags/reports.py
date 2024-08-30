@@ -43,7 +43,6 @@ def __is_protected(hubmap_id, token=None):
     except:
         return None
 
-
 def __get_published_timestamp(hubmap_id, token=None):
     """
     Retrieve the publication timestamp associated with a given HuBMAP ID.
@@ -210,6 +209,76 @@ def __get_dataset_type(hubmap_id, token=None):
         return apis.get_dataset_type(
             hubmap_id, instance="prod", token=token, overwrite=False
         )
+    except:
+        return None
+
+
+def __has_sra_url(hubmap_id, token=None):
+    """
+    Determine whether a given HuBMAP ID as an existing value for the dbgap_sra_experiment_url metadata field.
+
+    This function calls the `get_dataset_info` function from the `apis` module to fetch the dataset metadata and
+    subsequently extracts the information indicating if the dataset contains human genetic sequences. If an error
+    occurs during the retrieval process or the information is not found, the function returns None.
+
+    :param hubmap_id: The HuBMAP ID for which the protection status is to be checked.
+    :type hubmap_id: str
+
+    :param token: Authorization token to access the HuBMAP API. Default is None.
+    :type token: str, optional
+
+    :return: The SRA experiment url for the dbgap study associated with the HuBMAP ID if found, otherwise None.
+
+    .. note::
+       - The `apis.get_dataset_info` function should be properly implemented and imported.
+       - This function is designed as a private helper function for the primary `daily` report generation function.
+
+    .. warning::
+       - Ensure that a valid token is provided if required by the HuBMAP API.
+       - The dbgap_sra_experiment_url key is not present in the metadata returned by the HuBMAP API if the datasets is not associated with a dbGaP study.
+
+    """
+
+    try:
+        metadata = apis.get_dataset_info(
+            hubmap_id, instance="prod", token=token, overwrite=False
+        )
+        return metadata["dbgap_sra_experiment_url"]
+    except:
+        return None
+
+
+def __has_dbgap_url(hubmap_id, token=None):
+    """
+    Determine whether a given HuBMAP ID as an existing value for the dbgap_study_url metadata field.
+
+    This function calls the `get_dataset_info` function from the `apis` module to fetch the dataset metadata and
+    subsequently extracts the information indicating if the dataset contains human genetic sequences. If an error
+    occurs during the retrieval process or the information is not found, the function returns None.
+
+    :param hubmap_id: The HuBMAP ID for which the protection status is to be checked.
+    :type hubmap_id: str
+
+    :param token: Authorization token to access the HuBMAP API. Default is None.
+    :type token: str, optional
+
+    :return: The url for the dbGaP study associated with the HuBMAP ID if found, otherwise None.
+
+    .. note::
+       - The `apis.get_dataset_info` function should be properly implemented and imported.
+       - This function is designed as a private helper function for the primary `daily` report generation function.
+
+    .. warning::
+       - Ensure that a valid token is provided if required by the HuBMAP API.
+       - The dbgap_study_url key is not present in the metadata returned by the HuBMAP API if the dataset is not associated with a dbGaP study.
+
+    """
+
+    try:
+        metadata = apis.get_dataset_info(
+            hubmap_id, instance="prod", token=token, overwrite=False
+        )
+        return metadata["dbgap_study_url"]
     except:
         return None
 
