@@ -1,3 +1,5 @@
+from hubmapinventory import inventory
+from tqdm import tqdm
 from random import sample
 import logging
 from uuid import uuid4
@@ -42,6 +44,7 @@ from . import (
     file_format,
     file_in_collection,
     gene,
+    reports,
     id_namespace,
     ncbi_taxonomy,
     phenotype,
@@ -61,6 +64,72 @@ from . import (
     substance,
     utilities,
 )
+
+def _convert_to_datetime(stamp):
+    try:
+        stamp = int(stamp) / 1000.0
+        return datetime.fromtimestamp(stamp)
+    except:
+        return None
+
+def create_submission(token: str, assay_types_to_ignore) -> bool:
+    answer = False
+
+    utilities.pprint("Creating daily")
+    try:
+        df = reports.daily()
+    except:
+        print("Unable to create daily report")
+        return answer
+    
+    print("Processing data from 2024")
+    df["published_date"] = df["published_timestamp"].apply(_convert_to_datetime)
+    df["published_date"] = pd.to_datetime(df["published_date"])
+    df = df[df["published_date"].dt.year == 2024]
+    df = df[df["status"] == "Published"]
+
+    print("Processing inventories for new data")
+    for index, datum in df.iterrows():
+        try:
+            dataset = inventory.create(
+                datum['hubmap_id'],
+                token=token,
+                ncores=10,
+                dbgap_study_id=None,
+                compute_uuids=True,
+                recompute_file_extension=False,
+            )
+        except:
+            print(f'Failed to process dataset {datum["hubmap_id"]}.')
+            print(traceback.format_exc())
+
+    print("Creating individual big data bags")
+    df = reports.daily()
+
+    print('Getting dataset types')
+    assays = apis.get_assay_types(token=token)
+    assays = [item for item in assays if item != "UNKNOWN"]
+    assays = [item for item in assays if item != "DESI"]
+
+    datasets = []
+    for assay in tqdm(assays):    
+        hubmap_ids = apis.get_ids(assay, token=token)
+        datasets.extend(hubmap_ids)
+    df = pd.DataFrame(datasets)
+
+    print(f'Number of datasets to process is {len(df)}')
+
+    output_directory = "cfdebdbags-" + datetime.today().strftime("%Y%m%d")
+    do_it(
+        id,
+        dbgap_study_id=None,
+        copy_output_to=output_directory,
+        instance="prod",
+        debug=True)
+
+    answer = True
+    return answer
+
 
 
 def __extract_dataset_info_from_db(
@@ -258,7 +327,7 @@ def __extract_datasets_from_input(
     """
 
     if os.path.isfile(input):
-        utilities.pprint("Extracting datasets from " + input)
+        utilities.pprint(f"Extracting datasets from {input}")
         metadata_file = input
         datasets = pd.read_csv(metadata_file, sep="\t")
 
