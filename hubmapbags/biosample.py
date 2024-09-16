@@ -48,7 +48,7 @@ def _build_dataframe(
     Build a dataframe with minimal information for this entity.
     """
 
-    id_namespace = "tag:hubmapconsortium.org,2023:"
+    id_namespace = "tag:hubmapconsortium.org,2024:"
     headers = [
         "id_namespace",
         "local_id",

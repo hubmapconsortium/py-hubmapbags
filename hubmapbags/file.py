@@ -1,15 +1,17 @@
 import datetime
 import hashlib
+from pprint import pprint
 import mimetypes
 import os
 from itertools import chain
 from pathlib import Path
 import hubmapinventory
 import pandas as pd
+from pprint import pprint
 
 
 def __get_persistent_id(file_uuid: str) -> str:
-    url = f"http://hubmap-drs.hubmapconsortium.org/v1/objects/{file_uuid}"
+    url = f"drs://drs.hubmapconsortium.org/{file_uuid}"
     return url
 
 
@@ -173,16 +175,6 @@ def __get_file_format(file: str) -> str:
         return None
 
 
-def __get_dbgap_study_id(file: str, dbgap_study_id: str) -> str:
-    if dbgap_study_id == "" or dbgap_study_id is None:
-        return ""
-    else:
-        if str(file).find("tar.gz") > 0:
-            return dbgap_study_id
-        else:
-            return ""
-
-
 def __get_assay_type_from_obi(assay_type: str) -> str:
     assay = {}
     assay["af"] = "OBI:0003087"  # AF
@@ -240,7 +232,8 @@ def _build_dataframe(
     token: None,
     assay_type: str,
     directory: str,
-    dbgap_study_id: str,
+    inventory_directory: str,
+    dbgap_study_id: str | None,
     dataset_hmid: str,
     dataset_uuid: str,
 ):
@@ -248,7 +241,7 @@ def _build_dataframe(
     Build a dataframe with minimal information for this entity.
     """
 
-    id_namespace = "tag:hubmapconsortium.org,2023:"
+    id_namespace = "tag:hubmapconsortium.org,2024:"
     headers = [
         "id_namespace",
         "local_id",
@@ -272,7 +265,12 @@ def _build_dataframe(
         "dbgap_study_id",
     ]
 
-    df = hubmapinventory.get(hubmap_id=dataset_hmid, token=token)
+    df = hubmapinventory.get(
+        hubmap_id=dataset_hmid, token=token, inventory_directory=inventory_directory
+    )
+
+    if df.empty:
+        pprint("Dataframe is empty, code will fail.")
 
     df["id_namespace"] = id_namespace
     df["project_id_namespace"] = id_namespace
@@ -292,9 +290,7 @@ def _build_dataframe(
 
     df["persistent_id"] = df["local_id"].apply(__get_persistent_id)
 
-    df["dbgap_study_id"] = df["local_id"].apply(
-        __get_dbgap_study_id, dbgap_study_id=dbgap_study_id
-    )
+    df["dbgap_study_id"] = dbgap_study_id
 
     if "modification_time" in df.keys():
         df = df.rename(columns={"modification_time": "creation_time"})
@@ -371,6 +367,7 @@ def create_manifest(
     assay_type: str,
     directory: str,
     output_directory: str,
+    inventory_directory: str,
     dbgap_study_id: str,
     token: str,
     dataset_hmid: str,
@@ -383,6 +380,7 @@ def create_manifest(
         token,
         assay_type,
         directory,
+        inventory_directory,
         dbgap_study_id,
         dataset_hmid,
         dataset_uuid,

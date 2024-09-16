@@ -8,7 +8,7 @@ def _build_dataframe(data_provider: str) -> pd.DataFrame:
     Build a dataframe with minimal information for this entity.
     """
 
-    id_namespace = "tag:hubmapconsortium.org,2023:"
+    id_namespace = "tag:hubmapconsortium.org,2024:"
     headers = [
         "parent_project_id_namespace",
         "parent_project_local_id",

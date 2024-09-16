@@ -23,7 +23,7 @@ def _build_dataframe() -> pd.DataFrame:
     df = df.append(
         {
             "id": "cfde_registry_dcc:hubmap",
-            "project_id_namespace": "tag:hubmapconsortium.org,2023:",
+            "project_id_namespace": "tag:hubmapconsortium.org,2024:",
             "project_local_id": "HuBMAP",
             "contact_email": "cfde-submissions@hubmapconsortium.org",
             "contact_name": "Ivan Cao-Berg",

@@ -8,12 +8,12 @@ def _build_dataframe() -> pd.DataFrame:
     Build a dataframe with minimal information for this entity.
     """
 
-    id_namespace = "tag:hubmapconsortium.org,2023:"
+    id_namespace = "tag:hubmapconsortium.org,2024:"
     headers = ["id", "abbreviation", "name", "description"]
     df = pd.DataFrame(columns=headers)
     df = df.append(
         {
-            "id": "tag:hubmapconsortium.org,2023:",
+            "id": "tag:hubmapconsortium.org,2024:",
             "abbreviation": "hubmap",
             "name": "hubmap",
             "description": "Human BioMolecular Atlas Program",
