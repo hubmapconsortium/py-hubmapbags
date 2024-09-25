@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="hubmapbags",
-    version="2024.02",
+    version="2024.04",
     description="Generates big data bags for public datasets in HuBMAP",
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
