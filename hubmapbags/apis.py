@@ -489,13 +489,14 @@ def get_ids(assay_name: str, token: str, debug: bool = False) -> dict:
 
     results = []
     for datum in data:
-        results.append(
+        row = pd.DataFrame(
             {
                 "uuid": datum["_source"]["uuid"],
                 "hubmap_id": datum["_source"]["hubmap_id"],
                 "status": datum["_source"]["status"],
             }
         )
+        results = pd.concat([results, row], ignore_index=True)
 
     return results
 
@@ -565,7 +566,7 @@ def get_hubmap_ids(
 
     results = []
     for datum in data:
-        results.append(
+        row = pd.DataFrame(
             {
                 "uuid": datum["_source"]["uuid"],
                 "hubmap_id": datum["_source"]["hubmap_id"],
@@ -580,6 +581,7 @@ def get_hubmap_ids(
                 "group_name": datum["_source"]["group_name"],
             }
         )
+        results = pd.concat([results, row], ignore_index=True)
 
     return results
 
@@ -776,6 +778,7 @@ def pretty_print_info_about_new_datasets(assay_name: str, debug: bool = False) -
     for datum in answer:
         if debug:
             print("Processing dataset " + datum["uuid"])
+
         if datum["status"] == "New":
             if Path(
                 "/hive/hubmap/data/consortium/"
@@ -821,7 +824,7 @@ def pretty_print_info_about_new_datasets(assay_name: str, debug: bool = False) -
                 contributors = ""
                 antibodies = ""
 
-            data.append(
+            row = pd.DataFrame(
                 [
                     datum["uuid"],
                     datum["hubmap_id"],
@@ -834,6 +837,8 @@ def pretty_print_info_about_new_datasets(assay_name: str, debug: bool = False) -
                     report,
                 ]
             )
+
+            data = pd.concat([data, row], ignore_index=True)
 
     table = tabulate(data, headers="firstrow", tablefmt="grid")
     utilities.pprint(assay_name)

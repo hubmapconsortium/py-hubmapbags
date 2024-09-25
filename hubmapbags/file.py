@@ -102,6 +102,7 @@ def __get_data_type(file: str) -> str:
 
     try:
         formats = {}
+        formats[".txt"] = "data:3671"  # txt
         formats[".tsv"] = "data:2526"  # tsv
         formats[".tif"] = "data:2968"  # tiff
         formats[".tiff"] = "data:2968"  # tiff
@@ -213,12 +214,14 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["maldi-ims"] = "OBI:0003099"
     assay["nanodesi"] = "OBI:0003101"
     assay["ms"] = "OBI:0000470"
-    assay["DESI"] = "OBI:0003671"  # data_type value for DESI
-    assay["MUSIC"] = "OBI:0003675"  # data_type value for MUSIC
-    assay["SNARE-seq2"] = "OBI:0003377"  # data_type value for SNARE-seq2
-    assay["Visium (no probes)"] = "OBI:0003680"  # dataset_type value for SNARE-seq2
-    assay["GeoMX (RNA)"] = "OBI:0003672"  # data_type value for GeoMx (NGS)
-    assay["Visium"] = "OBI:0003680"  # data_type value for Visium (with probes)
+    assay["histology"] = "OBI:0003103"
+    assay["rnaseq"] = " OBI:0001271"
+    assay["desi"] = "OBI:0003671"  # data_type value for DESI
+    assay["music"] = "OBI:0003675"  # data_type value for MUSIC
+    assay["snare-seq2"] = "OBI:0003377"  # data_type value for SNARE-seq2
+    assay["visium (no probes)"] = "OBI:0003680"
+    assay["geomx (rna)"] = "OBI:0003672"  # data_type value for GeoMx (NGS)
+    assay["visium"] = "OBI:0003680"  # data_type value for Visium (with probes)
 
     return assay[assay_type]
 

@@ -1,5 +1,5 @@
 import os
-
+import traceback
 import pandas as pd
 
 
@@ -16,16 +16,16 @@ def _build_dataframe(biosample_id: str, hubmap_id: str) -> pd.DataFrame:
         "collection_local_id",
     ]
     df = pd.DataFrame(columns=headers)
-    df = df.append(
+    row = pd.DataFrame(
         {
-            "biosample_id_namespace": id_namespace,
-            "biosample_local_id": biosample_id,
-            "collection_id_namespace": id_namespace,
-            "collection_local_id": hubmap_id,
+            "biosample_id_namespace": [id_namespace],
+            "biosample_local_id": [biosample_id],
+            "collection_id_namespace": [id_namespace],
+            "collection_local_id": [hubmap_id],
         },
-        ignore_index=True,
     )
 
+    df = pd.concat([df, row], ignore_index=True)
     return df
 
 
@@ -37,4 +37,5 @@ def create_manifest(biosample_id: str, hubmap_id: str, output_directory: str) ->
 
         return True
     except:
+        traceback.print_exc()
         return False

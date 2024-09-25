@@ -1,5 +1,5 @@
 import os
-
+import traceback
 import pandas as pd
 
 
@@ -22,25 +22,25 @@ def _build_dataframe(data_provider: str) -> pd.DataFrame:
 
     parent_local_id = "HuBMAP"
     parent_local_description = "Human BioMolecular Atlas Program"
-    df = df.append(
+    row = pd.DataFrame(
         {
-            "id_namespace": id_namespace,
-            "local_id": parent_local_id,
-            "abbreviation": parent_local_id,
-            "name": parent_local_description,
+            "id_namespace": [id_namespace],
+            "local_id": [parent_local_id],
+            "abbreviation": [parent_local_id],
+            "name": [parent_local_description],
         },
-        ignore_index=True,
     )
+    df = pd.concat([df, row], ignore_index=True)
 
-    df = df.append(
+    row = pd.DataFrame(
         {
-            "id_namespace": id_namespace,
-            "local_id": data_provider,
-            "abbreviation": data_provider.replace(" ", "_"),
-            "name": data_provider,
+            "id_namespace": [id_namespace],
+            "local_id": [data_provider],
+            "abbreviation": [data_provider.replace(" ", "_")],
+            "name": [data_provider],
         },
-        ignore_index=True,
     )
+    df = pd.concat([df, row], ignore_index=True)
 
     return df
 
@@ -53,4 +53,5 @@ def create_manifest(data_provider: str, output_directory: str) -> bool:
 
         return True
     except:
+        traceback.print_exc()
         return False

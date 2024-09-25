@@ -5,6 +5,7 @@ import traceback
 import os
 from shutil import rmtree, move, copytree
 import pandas as pd
+from pprint import pprint
 from pathlib import Path
 from datetime import datetime
 from . import (
@@ -119,7 +120,11 @@ def __extract_dataset_info_from_db(
     hmid = j.get("hubmap_id")
     hmuuid = j.get("uuid")
     status = j.get("status")
-    data_types = j.get("data_types")[0]
+    try:
+        data_types = j.get("data_types")[0]
+    except:
+        data_types = j.get("dataset_type")
+
     group_name = j.get("group_name")
     group_uuid = j.get("group_uuid")
     first_sample_id = j.get("direct_ancestors")[0].get("hubmap_id")
@@ -622,7 +627,6 @@ def aggregate(directory: str):
         "data_type.tsv",
         "dcc.tsv",
         "disease.tsv",
-        "file.tsv",
         "file_describes_biosample.tsv",
         "file_describes_collection.tsv",
         "file_describes_subject.tsv",
@@ -1086,6 +1090,8 @@ def create_submission(
     debug: bool = True,
 ):
 
+    broken_datasets = []
+
     df = reports.daily()
     df = df[df["status"] == "Published"]
     df = df[df["is_primary"] == True]
@@ -1098,7 +1104,6 @@ def create_submission(
                 f"Ignoring dataset {datum['hubmap_id']} with assay type {datum['dataset_type']}"
             )
         else:
-            utilities.pprint(f"Processing dataset {datum['hubmap_id']}")
             try:
                 if (
                     datum["status"] == "Published"
@@ -1108,7 +1113,6 @@ def create_submission(
                     dbgap_study_id = __get_dbgap_study_id(
                         hubmap_id=hubmap_id, token=token
                     )
-                    print(f"dbGaP study ID set to {dbgap_study_id}")
 
                     do_it(
                         hubmap_id,
@@ -1126,7 +1130,7 @@ def create_submission(
                     dbgap_study_id = __get_dbgap_study_id(
                         hubmap_id=hubmap_id, token=token
                     )
-                    print(f"dbGaP study ID set to {dbgap_study_id}")
+
                     do_it(
                         hubmap_id,
                         token=token,
@@ -1140,6 +1144,11 @@ def create_submission(
             except Exception as e:
                 print(f'Failed to process dataset {datum["hubmap_id"]}.')
                 traceback.print_exc()
+                broken_datasets += [datum["hubmap_id"]]
+
+    if not broken_datasets:
+        print(f"The datasets that failed to processs are")
+        pprint(broken_datasets)
 
 
 def generate_random_sample(directory: str, number_of_samples: int = 10):

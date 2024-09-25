@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+import traceback
 import pandas as pd
 
 
@@ -24,18 +25,18 @@ def _build_dataframe(dataset_metadata: dict) -> pd.DataFrame:
         "has_time_series_data",
     ]
     df = pd.DataFrame(columns=headers)
-    df = df.append(
+    row = pd.DataFrame(
         {
-            "id_namespace": id_namespace,
-            "local_id": dataset_metadata["local_id"],
-            "persistent_id": dataset_metadata["persistent_id"],
-            "creation_time": _convert_to_datetime(dataset_metadata["creation_time"]),
-            "description": dataset_metadata["description"],
-            "name": dataset_metadata["name"],
+            "id_namespace": [id_namespace],
+            "local_id": [dataset_metadata["local_id"]],
+            "persistent_id": [dataset_metadata["persistent_id"]],
+            "creation_time": [_convert_to_datetime(dataset_metadata["creation_time"])],
+            "description": [dataset_metadata["description"]],
+            "name": [dataset_metadata["name"]],
         },
-        ignore_index=True,
     )
 
+    df = pd.concat([df, row], ignore_index=True)
     return df
 
 
@@ -47,4 +48,5 @@ def create_manifest(dataset_metadata: dict, output_directory: str) -> bool:
 
         return True
     except:
+        traceback.print_exc()
         return False
