@@ -1,6 +1,9 @@
 import hubmapbags
 
-ids = [
+token = ""
+inventory_directory = "/Users/icaoberg/Documents/submission/inventory"
+
+hubmap_ids = [
     "HBM775.RVQX.376",
     "HBM599.GLRZ.888",
     "HBM233.CCCX.767",
@@ -64,9 +67,11 @@ ids = [
     "HBM876.NMKV.392",
 ]
 
-token = "<this-is-my-token>"
-
-for id in ids:
+for hubmap_id in hubmap_ids:
     hubmapbags.magic.do_it(
-        id, dbgap_study_id=None, token=token, instance="prod", debug=True
+        hubmap_id,
+        token=token,
+        build_bags=True,
+        inventory_directory=inventory_directory,
+        debug=True,
     )
