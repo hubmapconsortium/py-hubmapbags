@@ -1540,7 +1540,7 @@ def __query_assay_types(token: str, debug: bool = False) -> list:
     headers = {"Authorization": "Bearer " + token, "accept": "application/json"}
     body = {
         "query": {"bool": {"must": [{"match_phrase": {"entity_type": "dataset"}}]}},
-        "aggs": {"fieldvals": {"terms": {"field": "data_types.keyword", "size": 500}}},
+        "aggs": {"fieldvals": {"terms": {"field": "data_types.keyword", "size": 500}}}
     }
 
     r = requests.post(url=url, headers=headers, json=body)
