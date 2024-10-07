@@ -6,6 +6,7 @@ import logging
 from uuid import uuid4
 import traceback
 import os
+import time
 from shutil import rmtree, move, copytree
 import pandas as pd
 from pathlib import Path
@@ -1426,7 +1427,54 @@ def generate_random_sample(directory: str, number_of_samples: int = 10):
 
 def aggregate2(directory: str):
     tsv_files = [
-        "file.tsv"
+        "analysis_type.tsv",
+        "anatomy.tsv",
+        "assay_type.tsv",
+        "biosample.tsv",
+        "biosample_disease.tsv",
+        "biosample_from_subject.tsv",
+        "biosample_gene.tsv",
+        "biosample_in_collection.tsv",
+        "biosample_substance.tsv",
+        "collection.tsv",
+        "collection_anatomy.tsv",
+        "collection_compound.tsv",
+        "collection_defined_by_project.tsv",
+        "collection_disease.tsv",
+        "collection_gene.tsv",
+        "collection_in_collection.tsv",
+        "collection_phenotype.tsv",
+        "collection_protein.tsv",
+        "collection_substance.tsv",
+        "collection_taxonomy.tsv",
+        "compound.tsv",
+        "data_type.tsv",
+        "dcc.tsv",
+        "disease.tsv",
+        "file.tsv",
+        "file_describes_biosample.tsv",
+        "file_describes_collection.tsv",
+        "file_describes_subject.tsv",
+        "file_format.tsv",
+        "file_in_collection.tsv",
+        "gene.tsv",
+        "id_namespace.tsv",
+        "ncbi_taxonomy.tsv",
+        "phenotype.tsv",
+        "phenotype_disease.tsv",
+        "phenotype_gene.tsv",
+        "project.tsv",
+        "project_in_project.tsv",
+        "protein.tsv",
+        "protein_gene.tsv",
+        "subject.tsv",
+        "subject_disease.tsv",
+        "subject_in_collection.tsv",
+        "subject_phenotype.tsv",
+        "subject_race.tsv",
+        "subject_role_taxonomy.tsv",
+        "subject_substance.tsv",
+        "substance.tsv",
     ]
 
     output_directory = "duckdb-submission"
@@ -1441,6 +1489,8 @@ def aggregate2(directory: str):
         if files:  # Only proceed if there are files to process
             conn = duckdb.connect()  # Create an in-memory DuckDB connection
             for file in files:
+                start_time = time.time()  # Record the start time for the file
+
                 print(f"Appending file {file}")
                 conn.execute(f"""
                     CREATE TABLE temp_table AS 
@@ -1453,3 +1503,6 @@ def aggregate2(directory: str):
             output_filename = f"{output_directory}/{tsv_file}"
             conn.execute(f"COPY temp_table TO '{output_filename}' (DELIMITER '\t', HEADER TRUE)")
             conn.close()
+            end_time = time.time()  # Record the end time for the file
+            elapsed_time = end_time - start_time  # Calculate elapsed time
+            print(f"Time taken to process {file}: {elapsed_time:.2f} seconds")
