@@ -146,7 +146,7 @@ def __query_ancestors_info(
         return None
 
     if __get_instance(instance) == "prod":
-        URL = "https://entity.api.hubmapconsortium.org/ancestors/" + hubmap_id
+        URL = f"https://entity.api.hubmapconsortium.org/ancestors/{hubmap_id}"
     else:
         URL = (
             "https://entity-api"
@@ -261,11 +261,7 @@ def __query_provenance_info(
         return None
 
     if __get_instance(instance) == "prod":
-        URL = (
-            "https://entity.api.hubmapconsortium.org/datasets/"
-            + hubmap_id
-            + "/prov-info?format=json"
-        )
+        URL = f"https://entity.api.hubmapconsortium.org/datasets/{hubmap_id}/prov-info?format=json"
     else:
         URL = (
             "https://entity-api"
@@ -1218,7 +1214,7 @@ def __query_donor_info(
         return None
 
     if __get_instance(instance) == "prod":
-        URL = "https://entity.api.hubmapconsortium.org/entities/" + hubmap_id
+        URL = f"https://entity.api.hubmapconsortium.org/entities/{hubmap_id}"
     else:
         URL = (
             "https://entity-api"
@@ -1353,7 +1349,7 @@ def __query_entity_info(
         return None
 
     if __get_instance(instance) == "prod":
-        URL = "https://entity.api.hubmapconsortium.org/entities/" + hubmap_id
+        URL = f"https://entity.api.hubmapconsortium.org/entities/{hubmap_id}"
     else:
         URL = (
             "https://entity-api"
