@@ -189,7 +189,6 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["Auto-fluorescence"] = "OBI:0003087"  # HuBMAP dataset_type value for Auto-fluorescence Microscopy (see HBM956.HGCD.825)
     assay["atacseq-bulk"] = "OBI:0003089"  # Bulk ATAC-seq
     assay["bulk-rna"] = "OBI:0001271"  # Bulk RNA-seq
-    assay["RNAseq"] = "OBI:0001271" # HuBMAP and SenNet dataset_type value for Bulk RNAseq
     assay["scrna-seq-10x"] = "OBI:0002631"  # scRNA-seq
     assay["snatacseq"] = "OBI:0002762"  # snATAC-seq
     assay["wgs"] = "OBI:0002117"  # WGS
