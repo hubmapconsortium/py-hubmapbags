@@ -227,7 +227,7 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["Visium (no probes)"] = "OBI:0003680"  # dataset_type value for SNARE-seq2
     assay["GeoMX (RNA)"] = "OBI:0003672"  # data_type value for GeoMx (NGS)
     assay["Visium"] = "OBI:0003680"  # data_type value for Visium (with probes)
-    assay["Histology"] = "OBI:0003682"  # dataset_type value for H&E Stained Microscopy (has null data_type value)
+    assay["Histology"] = "OBI:0003682"  # HuBMAP dataset_type value for H&E Stained Microscopy (has null data_type value)
 
     return assay[assay_type]
 
