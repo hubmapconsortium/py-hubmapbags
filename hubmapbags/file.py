@@ -221,12 +221,22 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["maldi-ims"] = "OBI:0003099"
     assay["nanodesi"] = "OBI:0003101"
     assay["ms"] = "OBI:0000470"
-    assay["DESI"] = "OBI:0003671"  # data_type value for DESI
-    assay["MUSIC"] = "OBI:0003675"  # data_type value for MUSIC    
-    assay["SNARE-seq2"] = "OBI:0003377"  # data_type value for SNARE-seq2
-    assay["Visium (no probes)"] = "OBI:0003680"  # dataset_type value for SNARE-seq2
-    assay["GeoMX (RNA)"] = "OBI:0003672"  # data_type value for GeoMx (NGS)
-    assay["Visium"] = "OBI:0003680"  # data_type value for Visium (with probes)
+    assay["DESI"] = "OBI:0003671"  # HuBMAP data_type value for DESI
+    assay["MUSIC"] = "OBI:0003675"  # HuBMAP data_type value for MUSIC    
+    assay["SNARE-seq2"] = "OBI:0003377"  # HuBMAP data_type value for SNARE-seq2
+    assay["Visium (no probes)"] = "OBI:0003680"  # HuBMAP dataset_type value for Visium (no probes)
+    assay["GeoMX (RNA)"] = "OBI:0003672"  # SenNet data_type value for GeoMx (NGS) 
+    assay["Visium"] = "OBI:0003680"  # SenNet data_type value for Visium (with probes) and Visium (no probes) - same term is used for both
+    assay["CosMX (RNA)"] = "OBI:0003669"  # SenNet data_type value for CosMx
+    assay["10X Multiome"] = "OBI:0003668" # HuBMAP and SenNet dataset_type value for 10X Multiome
+    #assay "OBI:0003670" DBiT  - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003673" Hi-Fi Slide - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003674" Molecular Cartography - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003676" nanoSPLITS - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003677" Second Harmonic Generation - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003678" Secondary Ion Mass Spectrometry - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003679" Thick section Multiphoton MxIF - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003681" Xenium - no published data in HuBMAP or SenNet as of 10/30/24
 
     return assay[assay_type]
 
