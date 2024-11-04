@@ -6,13 +6,17 @@ from .apis import *
 
 
 def _build_dataframe(
-    hubmap_id: str, token: str, hubmap_uuid: str, directory: str
+    hubmap_id: str,
+    token: str,
+    hubmap_uuid: str,
+    inventory_directory: str,
+    directory: str,
 ) -> pd.DataFrame:
     """
     Build a dataframe with minimal information for this entity.
     """
 
-    id_namespace = "tag:hubmapconsortium.org,2023:"
+    id_namespace = "tag:hubmapconsortium.org,2024:"
     headers = [
         "file_id_namespace",
         "file_local_id",
@@ -20,7 +24,9 @@ def _build_dataframe(
         "collection_local_id",
     ]
 
-    df = hubmapinventory.get(hubmap_id=hubmap_id, token=token)
+    df = hubmapinventory.get(
+        hubmap_id=hubmap_id, token=token, inventory_directory=inventory_directory
+    )
     df = df[df["filename"].str.contains("metadata.tsv")]
     df["subject_id_namespace"] = id_namespace
     df["file_id_namespace"] = id_namespace
@@ -40,11 +46,20 @@ def _build_dataframe(
 
 
 def create_manifest(
-    hubmap_id: str, hubmap_uuid: str, token: str, directory: str, output_directory: str
+    hubmap_id: str,
+    hubmap_uuid: str,
+    token: str,
+    directory: str,
+    inventory_directory: str,
+    output_directory: str,
 ) -> bool:
     filename = os.path.join(output_directory, "file_describes_collection.tsv")
     df = _build_dataframe(
-        hubmap_id=hubmap_id, token=token, hubmap_uuid=hubmap_uuid, directory=directory
+        hubmap_id=hubmap_id,
+        token=token,
+        hubmap_uuid=hubmap_uuid,
+        inventory_directory=inventory_directory,
+        directory=directory,
     )
     df.to_csv(filename, sep="\t", index=False)
 

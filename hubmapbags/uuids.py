@@ -286,7 +286,8 @@ def generate(
                 filename = datum["local_id"][
                     datum["local_id"].find(duuid) + len(duuid) + 1 :
                 ]
-                file_info.append(
+
+                row = pd.DataFrame(
                     {
                         "path": filename,
                         "size": datum["size_in_bytes"],
@@ -294,6 +295,8 @@ def generate(
                         "base_dir": "DATA_UPLOAD",
                     }
                 )
+
+                file_info = pd.concat([file_info, row], ignore_index=True)
 
             payload = {}
             payload["parent_ids"] = [duuid]
@@ -369,7 +372,7 @@ def generate(
                 filename = datum["local_id"][
                     datum["local_id"].find(duuid) + len(duuid) + 1 :
                 ]
-                file_info.append(
+                row = pd.DataFrame(
                     {
                         "path": filename,
                         "size": datum["size_in_bytes"],
@@ -377,6 +380,8 @@ def generate(
                         "base_dir": "DATA_UPLOAD",
                     }
                 )
+
+                file_info = pd.concat([file_info, row], ignore_index=True)
 
             payload = {}
             payload["parent_ids"] = [duuid]

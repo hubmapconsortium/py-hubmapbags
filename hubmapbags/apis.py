@@ -4,7 +4,8 @@ import os
 from logging import warning
 from pathlib import Path
 from warnings import warn as warning
-
+import traceback
+from pprint import pprint
 import pandas as pd
 import requests
 from tabulate import tabulate
@@ -145,7 +146,7 @@ def __query_ancestors_info(
         return None
 
     if __get_instance(instance) == "prod":
-        URL = "https://entity.api.hubmapconsortium.org/ancestors/" + hubmap_id
+        URL = f"https://entity.api.hubmapconsortium.org/ancestors/{hubmap_id}"
     else:
         URL = (
             "https://entity-api"
@@ -260,11 +261,7 @@ def __query_provenance_info(
         return None
 
     if __get_instance(instance) == "prod":
-        URL = (
-            "https://entity.api.hubmapconsortium.org/datasets/"
-            + hubmap_id
-            + "/prov-info?format=json"
-        )
+        URL = f"https://entity.api.hubmapconsortium.org/datasets/{hubmap_id}/prov-info?format=json"
     else:
         URL = (
             "https://entity-api"
@@ -279,9 +276,7 @@ def __query_provenance_info(
     return r
 
 
-def __query_dataset_info(
-    hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
-) -> dict:
+def __query_dataset_info(hubmap_id: str, token: str, debug: bool = False) -> dict:
     """
     Query and retrieve dataset information for a given HuBMAP ID.
 
@@ -312,15 +307,7 @@ def __query_dataset_info(
         warning("Token not set.")
         return None
 
-    if __get_instance(instance) == "prod":
-        URL = "https://entity.api.hubmapconsortium.org/entities/" + hubmap_id
-    else:
-        URL = (
-            "https://entity-api"
-            + __get_instance(instance)
-            + ".hubmapconsortium.org/entities/"
-            + hubmap_id
-        )
+    URL = f"https://entity.api.hubmapconsortium.org/entities/{hubmap_id}"
 
     headers = {"Authorization": "Bearer " + token, "accept": "application/json"}
 
@@ -335,40 +322,13 @@ def get_dataset_info(
     overwrite: bool = True,
     debug: bool = True,
 ) -> dict:
-    """
-    Retrieve dataset information for a given HuBMAP ID.
-
-    This function fetches the dataset information of a specified HuBMAP ID either
-    from a local JSON file or by querying the HuBMAP entity API.
-
-    :param hubmap_id: The HuBMAP ID for which dataset information is required.
-    :type hubmap_id: str
-
-    :param token: Authentication token to access the HuBMAP entity API.
-    :type token: str
-
-    :param instance: Instance of the HuBMAP service. Default is "prod". Acceptable values are "dev", "prod", and "test".
-    :type instance: str, optional
-
-    :param overwrite: If True, it will overwrite any existing local JSON file and fetch data from the API. Default is True.
-    :type overwrite: bool, optional
-
-    :param debug: If True, will output additional debug information. Default is True.
-    :type debug: bool, optional
-
-    :return: Returns a dictionary containing dataset information. If an error occurs, appropriate warnings are raised.
-    :rtype: dict
-
-    .. warning::
-       - If the request response from the API is empty or an error, a warning is raised and the function might return None.
-    """
 
     directory = ".datasets"
     file = os.path.join(directory, hubmap_id + ".json")
     if os.path.exists(file) and not overwrite:
         j = json.load(open(file, "r"))
     else:
-        r = __query_dataset_info(hubmap_id, instance=instance, token=token, debug=debug)
+        r = __query_dataset_info(hubmap_id, token=token, debug=debug)
         if r is None:
             warning("JSON object is empty.")
             return r
@@ -525,13 +485,14 @@ def get_ids(assay_name: str, token: str, debug: bool = False) -> dict:
 
     results = []
     for datum in data:
-        results.append(
+        row = pd.DataFrame(
             {
                 "uuid": datum["_source"]["uuid"],
                 "hubmap_id": datum["_source"]["hubmap_id"],
                 "status": datum["_source"]["status"],
             }
         )
+        results = pd.concat([results, row], ignore_index=True)
 
     return results
 
@@ -601,7 +562,7 @@ def get_hubmap_ids(
 
     results = []
     for datum in data:
-        results.append(
+        row = pd.DataFrame(
             {
                 "uuid": datum["_source"]["uuid"],
                 "hubmap_id": datum["_source"]["hubmap_id"],
@@ -616,6 +577,7 @@ def get_hubmap_ids(
                 "group_name": datum["_source"]["group_name"],
             }
         )
+        results = pd.concat([results, row], ignore_index=True)
 
     return results
 
@@ -812,6 +774,7 @@ def pretty_print_info_about_new_datasets(assay_name: str, debug: bool = False) -
     for datum in answer:
         if debug:
             print("Processing dataset " + datum["uuid"])
+
         if datum["status"] == "New":
             if Path(
                 "/hive/hubmap/data/consortium/"
@@ -857,7 +820,7 @@ def pretty_print_info_about_new_datasets(assay_name: str, debug: bool = False) -
                 contributors = ""
                 antibodies = ""
 
-            data.append(
+            row = pd.DataFrame(
                 [
                     datum["uuid"],
                     datum["hubmap_id"],
@@ -870,6 +833,8 @@ def pretty_print_info_about_new_datasets(assay_name: str, debug: bool = False) -
                     report,
                 ]
             )
+
+            data = pd.concat([data, row], ignore_index=True)
 
     table = tabulate(data, headers="firstrow", tablefmt="grid")
     utilities.pprint(assay_name)
@@ -1249,7 +1214,7 @@ def __query_donor_info(
         return None
 
     if __get_instance(instance) == "prod":
-        URL = "https://entity.api.hubmapconsortium.org/entities/" + hubmap_id
+        URL = f"https://entity.api.hubmapconsortium.org/entities/{hubmap_id}"
     else:
         URL = (
             "https://entity-api"
@@ -1384,7 +1349,7 @@ def __query_entity_info(
         return None
 
     if __get_instance(instance) == "prod":
-        URL = "https://entity.api.hubmapconsortium.org/entities/" + hubmap_id
+        URL = f"https://entity.api.hubmapconsortium.org/entities/{hubmap_id}"
     else:
         URL = (
             "https://entity-api"
@@ -1540,7 +1505,9 @@ def __query_assay_types(token: str, debug: bool = False) -> list:
     headers = {"Authorization": "Bearer " + token, "accept": "application/json"}
     body = {
         "query": {"bool": {"must": [{"match_phrase": {"entity_type": "dataset"}}]}},
-        "aggs": {"fieldvals": {"terms": {"field": "data_types.keyword", "size": 500}}},
+        "aggs": {
+            "fieldvals": {"terms": {"field": "dataset_type.keyword", "size": 500}}
+        },
     }
 
     r = requests.post(url=url, headers=headers, json=body)
@@ -1553,8 +1520,12 @@ def __query_assay_types(token: str, debug: bool = False) -> list:
             f.write(requests.get(link).content)
             j = json.load(open(file, "rb"))
     else:
-        j = json.loads(r.text)
-        data = j["aggregations"]["fieldvals"]["buckets"]
+        try:
+            j = json.loads(r.text)
+            data = j["aggregations"]["fieldvals"]["buckets"]
+        except:
+            pprint(j)
+            traceback.print_exc()
 
         assays = []
         for datum in data:
