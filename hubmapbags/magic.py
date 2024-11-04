@@ -65,12 +65,14 @@ from . import (
     utilities,
 )
 
+
 def _convert_to_datetime(stamp):
     try:
         stamp = int(stamp) / 1000.0
         return datetime.fromtimestamp(stamp)
     except:
         return None
+
 
 def create_submission(token: str, assay_types_to_ignore) -> bool:
     answer = False
@@ -81,7 +83,7 @@ def create_submission(token: str, assay_types_to_ignore) -> bool:
     except:
         print("Unable to create daily report")
         return answer
-    
+
     print("Processing data from 2024")
     df["published_date"] = df["published_timestamp"].apply(_convert_to_datetime)
     df["published_date"] = pd.to_datetime(df["published_date"])
@@ -92,7 +94,7 @@ def create_submission(token: str, assay_types_to_ignore) -> bool:
     for index, datum in df.iterrows():
         try:
             dataset = inventory.create(
-                datum['hubmap_id'],
+                datum["hubmap_id"],
                 token=token,
                 ncores=10,
                 dbgap_study_id=None,
@@ -106,18 +108,19 @@ def create_submission(token: str, assay_types_to_ignore) -> bool:
     print("Creating individual big data bags")
     df = reports.daily()
 
-    print('Getting dataset types')
+    print("Getting dataset types")
     assays = apis.get_assay_types(token=token)
     assays = [item for item in assays if item != "UNKNOWN"]
     assays = [item for item in assays if item != "DESI"]
 
     datasets = []
-    for assay in tqdm(assays):    
+    for assay in tqdm(assays):
         hubmap_ids = apis.get_ids(assay, token=token)
         datasets.extend(hubmap_ids)
     df = pd.DataFrame(datasets)
+    df = df[df["status"] == "Published"]
 
-    print(f'Number of datasets to process is {len(df)}')
+    print(f"Number of datasets to process is {len(df)}")
 
     output_directory = "cfdebdbags-" + datetime.today().strftime("%Y%m%d")
     do_it(
@@ -125,11 +128,11 @@ def create_submission(token: str, assay_types_to_ignore) -> bool:
         dbgap_study_id=None,
         copy_output_to=output_directory,
         instance="prod",
-        debug=True)
+        debug=True,
+    )
 
     answer = True
     return answer
-
 
 
 def __extract_dataset_info_from_db(
