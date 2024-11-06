@@ -76,67 +76,6 @@ def _convert_to_datetime(stamp):
         return None
 
 
-def create_submission(token: str, assay_types_to_ignore) -> bool:
-    answer = False
-
-    utilities.pprint("Creating daily")
-    try:
-        df = reports.daily()
-    except:
-        print("Unable to create daily report")
-        return answer
-
-    print("Processing data from 2024")
-    df["published_date"] = df["published_timestamp"].apply(_convert_to_datetime)
-    df["published_date"] = pd.to_datetime(df["published_date"])
-    df = df[df["published_date"].dt.year == 2024]
-    df = df[df["status"] == "Published"]
-
-    print("Processing inventories for new data")
-    for index, datum in df.iterrows():
-        try:
-            dataset = inventory.create(
-                datum["hubmap_id"],
-                token=token,
-                ncores=10,
-                dbgap_study_id=None,
-                compute_uuids=True,
-                recompute_file_extension=False,
-            )
-        except:
-            print(f'Failed to process dataset {datum["hubmap_id"]}.')
-            print(traceback.format_exc())
-
-    print("Creating individual big data bags")
-    df = reports.daily()
-
-    print("Getting dataset types")
-    assays = apis.get_assay_types(token=token)
-    assays = [item for item in assays if item != "UNKNOWN"]
-    assays = [item for item in assays if item != "DESI"]
-
-    datasets = []
-    for assay in tqdm(assays):
-        hubmap_ids = apis.get_ids(assay, token=token)
-        datasets.extend(hubmap_ids)
-    df = pd.DataFrame(datasets)
-    df = df[df["status"] == "Published"]
-
-    print(f"Number of datasets to process is {len(df)}")
-
-    output_directory = "cfdebdbags-" + datetime.today().strftime("%Y%m%d")
-    do_it(
-        id,
-        dbgap_study_id=None,
-        copy_output_to=output_directory,
-        instance="prod",
-        debug=True,
-    )
-
-    answer = True
-    return answer
-
-
 def __extract_dataset_info_from_db(
     hubmap_id: str, token: str, instance: str = "prod", debug: bool = False
 ) -> pd.DataFrame:
@@ -774,6 +713,7 @@ def do_it(
     dbgap_study_id: None,
     instance: str = "prod",
     build_bags: bool = False,
+    backup_directory=None,
     overwrite: bool = False,
     debug: bool = True,
 ) -> bool:
@@ -1176,13 +1116,17 @@ def do_it(
 
             print(f"Creating final checkpoint {done}")
             logging.info(f"Creating final checkpoint {done}")
-            if build_bags:
-                if not Path("bags").exists():
-                    Path("bags").mkdir()
 
-                if Path(f"bags/{output_directory}").exists():
-                    rmtree(f"bags/{output_directory}")
-                move(output_directory, "bags")
+            if build_bags:
+                if not backup_directory:
+                    backup_directory = "bags"
+
+                if not Path(backup_directory).exists():
+                    Path(backup_directory).mkdir()
+
+                if Path(f"{backup_directory}/{output_directory}").exists():
+                    rmtree(f"{backup_directory}/{output_directory}")
+                move(output_directory, backup_directory)
 
     return True
 
@@ -1255,15 +1199,16 @@ def __get_dbgap_study_id(hubmap_id: str, token: str, debug: bool = False):
     return dbgap_study_id
 
 
-def create_submission(
+def create_big_data_bags(
     token: str,
-    data_types_to_ignore: list = [
+    dataset_types_to_ignore: list = [
         "LC-MS",
         "LC-MS-untargeted",
         "LC-MS_bottom_up",
         "LC-MS_top_down",
         "TMT-LC-MS",
     ],
+    backup_directory=None,
     debug: bool = True,
 ):
     """
@@ -1298,14 +1243,14 @@ def create_submission(
     assay_types = apis.get_assay_types(token=token, debug=debug)
 
     for assay_type in assay_types:
-        if assay_type in data_types_to_ignore:
+        if assay_type in dataset_types_to_ignore:
             utilities.pprint(f"Ignoring assay type {assay_type}")
         else:
             utilities.pprint(f"Processing assay type {assay_type}")
             print("Retrieving dataset IDs. This might take a while. Be patient.")
             datasets = apis.get_hubmap_ids(assay_type, token=token)
 
-            for dataset in datasets:
+            for index, dataset in datasets.iterrows():
                 try:
                     if (
                         dataset["status"] == "Published"
@@ -1318,6 +1263,7 @@ def create_submission(
                             token=token,
                             instance="prod",
                             overwrite=False,
+                            backup_directory=backup_directory,
                             dbgap_study_id=__get_dbgap_study_id(
                                 hubmap_id=hubmap_id, token=token
                             ),
@@ -1336,6 +1282,7 @@ def create_submission(
                             hubmap_id,
                             token=token,
                             instance="prod",
+                            backup_directory=backup_directory,
                             overwrite=False,
                             dbgap_study_id=None,
                             build_bags=True,

@@ -11,6 +11,7 @@ import requests
 from tabulate import tabulate
 
 from . import utilities
+from . import reports
 
 
 def is_primary(hubmap_id: str, token: str, instance: str = "prod") -> bool:
@@ -497,89 +498,21 @@ def get_ids(assay_name: str, token: str, debug: bool = False) -> dict:
     return results
 
 
+
 def get_hubmap_ids(
     assay_name: str, token: str, instance: str = "prod", debug: bool = False
 ) -> dict:
-    """
-    Retrieve HuBMAP IDs and associated metadata for a specific assay type.
 
-    This function communicates with the HuBMAP entity API to fetch detailed information associated with HuBMAP IDs
-    for a given assay type. It provides details such as UUID, status, protection state, primary state, data type, and group name.
+    df = reports.daily()
+    df = df[df['dataset_type']==assay_name]
 
-    :param assay_name: The name of the assay for which IDs and metadata are to be retrieved.
-    :type assay_name: str
+    is_protected = lambda s: s == 'protected'
 
-    :param token: Authentication token to access the HuBMAP entity API.
-    :type token: str
+    df['is_protected'] = df['data_access_level'].apply(is_protected)
+    df = df[['uuid','hubmap_id','status','is_primary','is_protected','dataset_type','group_name']] 
+    df = df.rename(columns={"dataset_type": "data_type"})
 
-    :param debug: If True, will print additional debug information. Default is False.
-    :type debug: bool, optional
-
-    :return: A list of dictionaries. Each dictionary contains 'uuid', 'hubmap_id', 'status', 'is_protected', 'is_primary',
-             'data_type', and 'group_name' for each HuBMAP ID of the given assay type.
-    :rtype: list[dict]
-
-    .. warning::
-       - If the token is not set or invalid, a warning is raised and the function might return None.
-       - If an error is present in the API response, a warning is raised with the error message.
-
-    .. note::
-       - The function internally relies on utility functions like '__query_hubmap_ids', 'is_protected', and 'is_primary' to
-         gather detailed information for each HuBMAP ID.
-       - The instance used for querying additional information (like protection and primary states) is hardcoded to 'prod'.
-         Adapt the code if a different instance needs to be targeted.
-    """
-
-    token = utilities.__get_token(token)
-    if token is None:
-        warning("Token not set.")
-        return None
-
-    if __get_instance(instance) == "prod":
-        URL = "https://search.api.hubmapconsortium.org/v3/assaytype?primary=true&simple=true"
-    else:
-        URL = (
-            "https://search-api"
-            + __get_instance(instance)
-            + ".hubmapconsortium.org/v3/assaytype?primary=true&simple=true"
-        )
-
-    headers = {"Authorization": "Bearer " + token, "accept": "application/json"}
-
-    r = requests.get(URL, headers=headers)
-
-    if token is None:
-        warning("Token not set.")
-        return None
-
-    answer = __query_hubmap_ids(assay_name, token=token, debug=debug)
-
-    if "error" in answer.keys():
-        warning(answer["error"])
-        return None
-
-    data = answer["hits"]["hits"]
-
-    results = []
-    for datum in data:
-        row = pd.DataFrame(
-            {
-                "uuid": datum["_source"]["uuid"],
-                "hubmap_id": datum["_source"]["hubmap_id"],
-                "status": datum["_source"]["status"],
-                "is_protected": is_protected(
-                    datum["_source"]["hubmap_id"], instance="prod", token=token
-                ),
-                "is_primary": is_primary(
-                    datum["_source"]["hubmap_id"], instance="prod", token=token
-                ),
-                "data_type": datum["_source"]["data_types"][0],
-                "group_name": datum["_source"]["group_name"],
-            }
-        )
-        results = pd.concat([results, row], ignore_index=True)
-
-    return results
+    return df
 
 
 def __query_hubmap_ids(assayname: str, token: str, debug: bool = False) -> dict:
@@ -1435,103 +1368,10 @@ def get_entity_info(
 
 
 def get_assay_types(token: str, debug: bool = False) -> list:
-    """
-    Retrieve a list of available assay types from the HuBMAP API.
-
-    Queries the HuBMAP API to get a list of assay types currently available.
-    Uses an internal function `__query_assay_types` to perform the API call.
-
-    :param token: Authorization token to access the HuBMAP API.
-    :type token: str
-
-    :param debug: If set to True, debug information will be printed. Default is False.
-    :type debug: bool, optional
-
-    :return: A list of assay types retrieved from the HuBMAP API.
-             Returns an empty list if no assays are available or there's an error in the request.
-
-    .. note::
-       - The function relies on the internal function `__query_assay_types` to query the HuBMAP API.
-
-    .. warning::
-       - Ensure that a valid token is provided to access the HuBMAP API.
-
-    .. example::
-       >>> get_assay_types("your_token_here")
-       ['assay_type_1', 'assay_type_2', ...]
-
-    """
-
-    if debug:
-        print("Getting dataset information via the search-api.")
-    assays = __query_assay_types(token=token, debug=debug)
+    df = reports.daily()
+    assays = df["dataset_type"].unique()
 
     return assays
-
-
-def __query_assay_types(token: str, debug: bool = False) -> list:
-    """
-    Internal function to query the HuBMAP API for available assay types.
-
-    Sends a POST request to the HuBMAP search API to get a list of available assay types.
-    Uses a defined query structure to filter out the required data.
-
-    :param token: Authorization token to access the HuBMAP API.
-    :type token: str
-
-    :param debug: If set to True, debug information will be printed. Default is False.
-    :type debug: bool, optional
-
-    :return: A sorted list of assay types retrieved from the HuBMAP API.
-             Returns an empty list if no assays are found or if there's an error in the request.
-
-    .. note::
-       - This is an internal function that is used primarily by the `get_assay_types` function.
-       - The function relies on the HuBMAP API's structure and response format, changes in which might affect the function's output.
-
-    .. warning::
-       - Ensure that a valid token is provided to access the HuBMAP API.
-       - As it's an internal function, direct use without knowledge of the complete flow might lead to unexpected results.
-
-    """
-
-    token = utilities.__get_token(token)
-    if token is None:
-        warning("Token not set.")
-        return None
-
-    url = "https://search.api.hubmapconsortium.org/v3/search"
-
-    headers = {"Authorization": "Bearer " + token, "accept": "application/json"}
-    body = {
-        "query": {"bool": {"must": [{"match_phrase": {"entity_type": "dataset"}}]}},
-        "aggs": {
-            "fieldvals": {"terms": {"field": "dataset_type.keyword", "size": 500}}
-        },
-    }
-
-    r = requests.post(url=url, headers=headers, json=body)
-
-    if r.status_code == 303:
-        link = r.content  # Amazon S3 bucket link
-        file = f"/tmp/{str(uuid.uuid4())}.json"
-
-        with open(file, "wb") as f:
-            f.write(requests.get(link).content)
-            j = json.load(open(file, "rb"))
-    else:
-        try:
-            j = json.loads(r.text)
-            data = j["aggregations"]["fieldvals"]["buckets"]
-        except:
-            pprint(j)
-            traceback.print_exc()
-
-        assays = []
-        for datum in data:
-            assays.append(datum["key"])
-
-        return sorted(assays)
 
 
 def get_dataset_type(
