@@ -1373,7 +1373,6 @@ def get_assay_types(token: str, debug: bool = False) -> list:
 
     return assays
 
-
 def get_dataset_type(
     hubmap_id: str, token: str, instance: str = "prod", overwrite: bool = False
 ) -> str:
