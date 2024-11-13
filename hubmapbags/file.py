@@ -232,8 +232,6 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["CosMX (RNA)"] = "OBI:0003669"  # SenNet data_type value for CosMx
     assay["10X Multiome"] = "OBI:0003668" # HuBMAP and SenNet dataset_type value for 10X Multiome
     assay["DART-FISH"] = "OBI:0003095" # HuBMAP data_type value for DARTfish
-    assay["ATACseq"] = "OBI:0002762" # HuBMAP dataset_type value for snATACseq
-    assay["RNAseq"] = "OBI:0003109" # HuBMAP dataset_type value for snRNAseq (10x Genomics v3)
     #assay "OBI:0003670" DBiT  - no published data in HuBMAP or SenNet as of 10/30/24
     #assay "OBI:0003673" Hi-Fi Slide - no published data in HuBMAP or SenNet as of 10/30/24
     #assay "OBI:0003674" Molecular Cartography - no published data in HuBMAP or SenNet as of 10/30/24
