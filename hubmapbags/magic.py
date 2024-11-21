@@ -714,6 +714,7 @@ def do_it(
     instance: str = "prod",
     build_bags: bool = False,
     backup_directory=None,
+    inventory_directory='/hive/hubmap/bdbags/inventory',
     overwrite: bool = False,
     debug: bool = True,
 ) -> bool:
