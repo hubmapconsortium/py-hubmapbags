@@ -26,7 +26,7 @@ def _build_dataframe() -> pd.DataFrame:
             "project_id_namespace": "tag:hubmapconsortium.org,2023:",
             "project_local_id": "HuBMAP",
             "contact_email": "cfde-submissions@hubmapconsortium.org",
-            "contact_name": "Ivan Cao-Berg",
+            "contact_name": "Jackie Uranic",
             "dcc_abbreviation": "HuBMAP",
             "dcc_name": "HuBMAP",
             "dcc_description": "Human BioMolecular Atlas Program",
