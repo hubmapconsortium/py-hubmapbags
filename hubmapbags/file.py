@@ -212,7 +212,7 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["snrnaseq-10xgenomics-v3"] = "OBI:0003109"
     assay["snRNA-seq"] = "OBI:0003109" # SenNet data_type value for snRNAseq (10x Genomics v3)
     assay["snare-atacseq2"] = "OBI:0003377" # data_type value for snATACseq (SNAREseq2)
-    assay["snare-rnaseq2"] = "OBI:0003108"
+    assay["snare-rnaseq2"] = "OBI:0003377"
     assay["snareseq"] = "OBI:0003108"
     assay["scirnaseq"] = "OBI:0003105"
     assay["sciatacseq"] = "OBI:0003104"
