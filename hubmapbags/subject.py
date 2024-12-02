@@ -1,6 +1,6 @@
 import os
-
 import pandas as pd
+import traceback
 
 
 def _build_dataframe(donor_metadata: str) -> pd.DataFrame:
@@ -22,19 +22,20 @@ def _build_dataframe(donor_metadata: str) -> pd.DataFrame:
         "age_at_enrollment",
     ]
     df = pd.DataFrame(columns=headers)
-    df = df.append(
+    row = pd.DataFrame(
         {
-            "id_namespace": id_namespace,
-            "local_id": donor_metadata["local_id"],
-            "project_id_namespace": id_namespace,
-            "project_local_id": donor_metadata["project_local_id"],
-            "persistent_id": donor_metadata["persistent_id"],
-            "granularity": donor_metadata["granularity"],
-            "sex": donor_metadata["sex"],
-            "ethnicity": donor_metadata["ethnicity"],
-        },
-        ignore_index=True,
+            "id_namespace": [id_namespace],
+            "local_id": [donor_metadata["local_id"]],
+            "project_id_namespace": [id_namespace],
+            "project_local_id": [donor_metadata["project_local_id"]],
+            "persistent_id": [donor_metadata["persistent_id"]],
+            "granularity": [donor_metadata["granularity"]],
+            "sex": [donor_metadata["sex"]],
+            "ethnicity": [donor_metadata["ethnicity"]],
+        }
     )
+
+    df = pd.concat([df, row], ignore_index=True)
 
     df = df[
         [
@@ -62,4 +63,5 @@ def create_manifest(donor_metadata: dict, output_directory: str) -> bool:
 
         return True
     except:
+        traceback.print_exc()
         return False

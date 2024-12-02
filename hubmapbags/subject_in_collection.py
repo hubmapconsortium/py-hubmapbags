@@ -1,5 +1,5 @@
 import os
-
+import traceback
 import pandas as pd
 
 
@@ -8,7 +8,7 @@ def _build_dataframe(donor_id: str, hubmap_id: str) -> pd.DataFrame:
     Build a dataframe with minimal information for this entity.
     """
 
-    id_namespace = "tag:hubmapconsortium.org,2023:"
+    id_namespace = "tag:hubmapconsortium.org,2024:"
     headers = [
         "subject_id_namespace",
         "subject_local_id",
@@ -16,16 +16,16 @@ def _build_dataframe(donor_id: str, hubmap_id: str) -> pd.DataFrame:
         "collection_local_id",
     ]
     df = pd.DataFrame(columns=headers)
-    df = df.append(
+    row = pd.DataFrame(
         {
-            "subject_id_namespace": id_namespace,
-            "subject_local_id": donor_id,
-            "collection_id_namespace": id_namespace,
-            "collection_local_id": hubmap_id,
+            "subject_id_namespace": [id_namespace],
+            "subject_local_id": [donor_id],
+            "collection_id_namespace": [id_namespace],
+            "collection_local_id": [hubmap_id],
         },
-        ignore_index=True,
     )
 
+    df = pd.concat([df, row], ignore_index=True)
     return df
 
 
@@ -37,4 +37,5 @@ def create_manifest(donor_id: str, hubmap_id: str, output_directory: str) -> boo
 
         return True
     except:
+        traceback.print_exc()
         return False

@@ -43,6 +43,7 @@ def __is_protected(hubmap_id, token=None):
     except:
         return None
 
+
 def __get_published_timestamp(hubmap_id, token=None):
     """
     Retrieve the publication timestamp associated with a given HuBMAP ID.

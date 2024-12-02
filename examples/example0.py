@@ -4,7 +4,7 @@ import hubmapbags
 
 token = ""
 
-hubmap_id = "HBM666.FFFW.363"
+hubmap_id = "HBM759.JWGJ.636"
 inventory_directory = "/Users/icaoberg/Documents/submission/inventory"
 
 hubmapbags.magic.do_it(

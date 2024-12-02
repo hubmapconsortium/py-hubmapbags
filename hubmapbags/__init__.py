@@ -2,7 +2,7 @@
 hubmapbags
 """
 
-__version__ = "2023.3"  # year 2023 3nd quarter
+__version__ = "2024.4"
 __author__ = "Ivan Cao-Berg"
 __credits__ = "HuBMAP IEC Team"
 
