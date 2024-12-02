@@ -68,7 +68,7 @@ def _build_dataframe(
             "local_id": [biosample_id],
             "project_id_namespace": [id_namespace],
             "project_local_id": [data_provider],
-            "persistent_id": [biosample_url],
+            "persistent_id": [None],
             "anatomy": [__get_organ_from_uberon(organ)],
         },
         index=[0],

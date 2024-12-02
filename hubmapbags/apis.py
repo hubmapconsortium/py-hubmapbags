@@ -498,18 +498,27 @@ def get_ids(assay_name: str, token: str, debug: bool = False) -> dict:
     return results
 
 
-
 def get_hubmap_ids(
     assay_name: str, token: str, instance: str = "prod", debug: bool = False
 ) -> dict:
 
     df = reports.daily()
-    df = df[df['dataset_type']==assay_name]
+    df = df[df["dataset_type"] == assay_name]
 
-    is_protected = lambda s: s == 'protected'
+    is_protected = lambda s: s == "protected"
 
-    df['is_protected'] = df['data_access_level'].apply(is_protected)
-    df = df[['uuid','hubmap_id','status','is_primary','is_protected','dataset_type','group_name']] 
+    df["is_protected"] = df["data_access_level"].apply(is_protected)
+    df = df[
+        [
+            "uuid",
+            "hubmap_id",
+            "status",
+            "is_primary",
+            "is_protected",
+            "dataset_type",
+            "group_name",
+        ]
+    ]
     df = df.rename(columns={"dataset_type": "data_type"})
 
     return df
@@ -1372,6 +1381,14 @@ def get_assay_types(token: str, debug: bool = False) -> list:
     assays = df["dataset_type"].unique()
 
     return assays
+
+
+def get_primary_assay_types(token: str, debug: bool = False) -> list:
+    df = reports.daily()
+    assays = df["dataset_type"].unique()
+
+    return assays
+
 
 def get_dataset_type(
     hubmap_id: str, token: str, instance: str = "prod", overwrite: bool = False

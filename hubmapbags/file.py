@@ -103,6 +103,7 @@ def __get_data_type(file: str) -> str:
     try:
         formats = {}
         formats[".txt"] = "data:3671"  # txt
+        formats[".txt"] = ""  # txt
         formats[".tsv"] = "data:2526"  # tsv
         formats[".tif"] = "data:2968"  # tiff
         formats[".tiff"] = "data:2968"  # tiff

@@ -131,7 +131,11 @@ def __extract_dataset_info_from_db(
     hmid = j.get("hubmap_id")
     hmuuid = j.get("uuid")
     status = j.get("status")
-    data_types = j.get("data_types")[0]
+    try:
+        data_types = j.get("data_types")[0]
+    except:
+        data_types = j.get("dataset_type")
+
     group_name = j.get("group_name")
     group_uuid = j.get("group_uuid")
     first_sample_id = j.get("direct_ancestors")[0].get("hubmap_id")
@@ -636,7 +640,7 @@ def __get_biosample_metadata(
     return biosample_metadata
 
 
-def aggregate(directory: str):
+def aggregate(directory: str, output_directory: str = "submission"):
     tsv_files = [
         "analysis_type.tsv",
         "anatomy.tsv",
@@ -688,7 +692,6 @@ def aggregate(directory: str):
         "substance.tsv",
     ]
 
-    output_directory = "submission"
     if Path(output_directory).exists():
         rmtree(output_directory)
     Path(output_directory).mkdir()
@@ -714,7 +717,7 @@ def do_it(
     instance: str = "prod",
     build_bags: bool = False,
     backup_directory=None,
-    inventory_directory='/hive/hubmap/bdbags/inventory',
+    inventory_directory="/hive/hubmap/bdbags/inventory",
     overwrite: bool = False,
     debug: bool = True,
 ) -> bool:
@@ -967,6 +970,7 @@ def do_it(
                     project_id=data_provider,
                     assay_type=data_type,
                     directory=data_directory,
+                    inventory_directory=inventory_directory,
                     output_directory=output_directory,
                     dbgap_study_id=dbgap_study_id,
                     token=token,
@@ -1024,6 +1028,7 @@ def do_it(
                     hubmap_id=hubmap_id,
                     token=token,
                     hubmap_uuid=hubmap_uuid,
+                    inventory_directory=inventory_directory,
                     directory=data_directory,
                     output_directory=output_directory,
                 )
@@ -1052,6 +1057,7 @@ def do_it(
                     hubmap_id=hubmap_id,
                     token=token,
                     hubmap_uuid=hubmap_uuid,
+                    inventory_directory=inventory_directory,
                     directory=data_directory,
                     output_directory=output_directory,
                 )
@@ -1378,7 +1384,7 @@ def generate_random_sample(directory: str, number_of_samples: int = 10):
         df.to_csv(output_filename, sep="\t", index=False)
 
 
-def aggregate2(directory: str):
+def aggregate2(directory: str, output_directory: str = "submission"):
     tsv_files = [
         "analysis_type.tsv",
         "anatomy.tsv",
@@ -1430,42 +1436,40 @@ def aggregate2(directory: str):
         "substance.tsv",
     ]
 
-    output_directory = "duckdb-submission"
     if Path(output_directory).exists():
         rmtree(output_directory)
     Path(output_directory).mkdir()
 
-    for tsv_file in tsv_files:
-        p = Path(directory).glob(f"**/{tsv_file}")
-        files = list(p)
+    if files:  # Only proceed if there are files to process
+        conn = duckdb.connect()  # Create an in-memory DuckDB connection
+        for file in files:
+            start_time = time.time()  # Record the start time for the file
 
-        if files:  # Only proceed if there are files to process
-            conn = duckdb.connect()  # Create an in-memory DuckDB connection
-            for file in files:
-                start_time = time.time()  # Record the start time for the file
-
-                print(f"Appending file {file}")
-                (
-                    conn.execute(
-                        f"""
-                    CREATE TABLE temp_table AS 
-                    SELECT * FROM read_csv_auto('{file}', delim='\t')
-                """
-                    )
-                    if file == files[0]
-                    else conn.execute(
-                        f"""
-                    INSERT INTO temp_table 
-                    SELECT * FROM read_csv_auto('{file}', delim='\t')
-                """
-                    )
+            print(f"Appending file {file}")
+            if file == files[0]:
+                # Create the table with data from the first file
+                conn.execute(
+                    f"""
+                    CREATE TABLE temp_table AS
+                     SELECT DISTINCT * FROM read_csv_auto('{file}', delim='\t')
+                    """
+                )
+            else:
+                # Insert into the table with data from subsequent files
+                conn.execute(
+                    f"""
+                    INSERT INTO temp_table
+                     SELECT DISTINCT * FROM read_csv_auto('{file}', delim='\t')
+                    """
                 )
 
-            output_filename = f"{output_directory}/{tsv_file}"
-            conn.execute(
-                f"COPY temp_table TO '{output_filename}' (DELIMITER '\t', HEADER TRUE)"
-            )
-            conn.close()
-            end_time = time.time()  # Record the end time for the file
-            elapsed_time = end_time - start_time  # Calculate elapsed time
-            print(f"Time taken to process {file}: {elapsed_time:.2f} seconds")
+        # Save the final table to a file
+        output_filename = f"{output_directory}/{tsv_file}"
+        conn.execute(
+            f"COPY (SELECT DISTINCT * FROM temp_table) TO '{output_filename}' WITH (FORMAT 'csv', DELIMITER '\t')"
+        )
+        print(f"Output written to {output_filename}")
+        conn.close()
+        end_time = time.time()  # Record the end time for the file
+        elapsed_time = end_time - start_time  # Calculate elapsed time
+        print(f"Time taken to process {file}: {elapsed_time:.2f} seconds")
