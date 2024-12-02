@@ -180,6 +180,7 @@ def __get_file_format(file: str) -> str:
 def __get_assay_type_from_obi(assay_type: str) -> str:
     assay = {}
     assay["af"] = "OBI:0003087"  # AF
+    assay["Auto-fluorescence"] = "OBI:0003087"  # HuBMAP dataset_type value for Auto-fluorescence Microscopy (see HBM956.HGCD.825)
     assay["atacseq-bulk"] = "OBI:0003089"  # Bulk ATAC-seq
     assay["bulk-rna"] = "OBI:0001271"  # Bulk RNA-seq
     assay["scrna-seq-10x"] = "OBI:0002631"  # scRNA-seq
@@ -202,27 +203,38 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["lc-ms"] = "OBI:0003097"
     assay["targeted-shotgun-lc-ms"] = "OBI:0003097"
     assay["snrnaseq"] = "OBI:0003109"
-    assay["snare-atacseq2"] = "OBI:0003108"
-    assay["snare-rnaseq2"] = "OBI:0003108"
+    assay["snrnaseq-10xgenomics-v3"] = "OBI:0003109"
+    assay["snRNA-seq"] = "OBI:0003109" # SenNet data_type value for snRNAseq (10x Genomics v3)
+    assay["snare-atacseq2"] = "OBI:0003377" # data_type value for snATACseq (SNAREseq2)
+    assay["snare-rnaseq2"] = "OBI:0003377"
     assay["snareseq"] = "OBI:0003108"
     assay["scirnaseq"] = "OBI:0003105"
     assay["sciatacseq"] = "OBI:0003104"
     assay["scrnaseq-10xgenomics-v3"] = "OBI:0002631"
     assay["scrnaseq-10xgenomics-v2"] = "OBI:0002631"
-    assay["snrnaseq-10xgenomics-v3"] = "OBI:0003109"
     assay["mibi"] = "OBI:0003100"
     assay["cell-dive"] = "OBI:0003092"
     assay["maldi-ims"] = "OBI:0003099"
     assay["nanodesi"] = "OBI:0003101"
     assay["ms"] = "OBI:0000470"
-    assay["histology"] = "OBI:0003103"
-    assay["rnaseq"] = " OBI:0001271"
-    assay["desi"] = "OBI:0003671"  # data_type value for DESI
-    assay["music"] = "OBI:0003675"  # data_type value for MUSIC
-    assay["snare-seq2"] = "OBI:0003377"  # data_type value for SNARE-seq2
-    assay["visium (no probes)"] = "OBI:0003680"
-    assay["geomx (rna)"] = "OBI:0003672"  # data_type value for GeoMx (NGS)
-    assay["visium"] = "OBI:0003680"  # data_type value for Visium (with probes)
+    assay["desi"] = "OBI:0003671"  # HuBMAP data_type value for DESI
+    assay["music"] = "OBI:0003675"  # HuBMAP data_type value for MUSIC    
+    assay["snare-seq2"] = "OBI:0003377"  # HuBMAP data_type value for SNARE-seq2
+    assay["visium (no probes)"] = "OBI:0003680"  # HuBMAP dataset_type value for Visium (no probes)
+    assay["geomx (rna)"] = "OBI:0003672"  # SenNet data_type value for GeoMx (NGS) 
+    assay["visium"] = "OBI:0003680"  # SenNet data_type value for Visium (with probes) and Visium (no probes) - same term is used for both
+    assay["cosmx (rna)"] = "OBI:0003669"  # SenNet data_type value for CosMx
+    assay["10x multiome"] = "OBI:0003668" # HuBMAP and SenNet dataset_type value for 10X Multiome
+    assay["dart-fish"] = "OBI:0003095" # HuBMAP data_type value for DARTfish
+    assay["stained slides"] = "OBI:0003682" # SenNet data_type value for H&E Stained Microscopy
+    #assay "OBI:0003670" DBiT  - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003673" Hi-Fi Slide - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003674" Molecular Cartography - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003676" nanoSPLITS - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003677" Second Harmonic Generation - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003678" Secondary Ion Mass Spectrometry - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003679" Thick section Multiphoton MxIF - no published data in HuBMAP or SenNet as of 10/30/24
+    #assay "OBI:0003681" Xenium - no published data in HuBMAP or SenNet as of 10/30/24
 
     return assay[assay_type]
 
