@@ -60,6 +60,7 @@ def _build_dataframe(
         "creation_time",
         "sample_prep_method",
         "anatomy",
+        "biofluid",
     ]
     df = pd.DataFrame(columns=headers)
     row = pd.DataFrame(
@@ -70,6 +71,7 @@ def _build_dataframe(
             "project_local_id": [data_provider],
             "persistent_id": [None],
             "anatomy": [__get_organ_from_uberon(organ)],
+            "biofluid": [None],
         },
         index=[0],
     )

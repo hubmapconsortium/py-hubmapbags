@@ -315,6 +315,32 @@ def __query_dataset_info(hubmap_id: str, token: str, debug: bool = False) -> dic
     r = requests.get(URL, headers=headers)
     return r
 
+def get_dataset_display_name(hubmap_id: str) -> str:
+
+    token = os.getenv("TOKEN")
+    if token is None:
+        print("TOKEN environment variable is not set")
+
+    url = "https://search.api.hubmapconsortium.org/v3/search"
+
+    if token is None:                                                                                  headers = {"Accept": "application/json"}
+    else:
+        headers = {"Authorization": f"Bearer {token} accept": "application/json"}
+
+    body = {
+        "_source": ["dataset_type_hierarchy.second_level", "hubmap_id"],
+        "size":4000,
+        "query":
+         {
+          "bool":
+           {
+               "filter": [{"match": {"entity_type": "Dataset", "hubmap_id", hubmap_id}}]
+           },
+    }
+
+    data = requests.post(url=url, headers=headers, json=body).json()
+
+    return data
 
 def get_dataset_info(
     hubmap_id: str,

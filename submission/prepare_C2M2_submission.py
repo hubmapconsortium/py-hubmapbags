@@ -21,6 +21,7 @@ import sys
 import gzip
 import subprocess
 from pathlib import Path
+from shutil import copy
 
 ##########################################################################################
 ##########################################################################################
@@ -29,6 +30,15 @@ from pathlib import Path
 ##########################################################################################
 ##########################################################################################
 ##########################################################################################
+
+source = 'C2M2_datapackage.json'
+if len(sys.argv) > 1:
+    destination = sys.argv[1]
+else:
+    destination = 'submission'
+
+destination = f'{destination}/{source}'
+copy(source, destination)
 
 ##########################################################################################
 # Directory containing full CV reference info (see below, 'cvFile' dictionary, for file

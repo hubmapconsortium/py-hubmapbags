@@ -35,6 +35,8 @@ from . import (
     collection_taxonomy,
     compound,
     dcc,
+    biofluid,
+    collection_biofluid,
     disease,
 )
 from . import file as files
@@ -1078,7 +1080,10 @@ def do_it(
                 collection_gene.create_manifest(output_directory)
                 collection_in_collection.create_manifest(output_directory)
                 collection_phenotype.create_manifest(output_directory)
-                collection_protein.create_manifest(output_directory)
+
+                collection_biofluid.create_manifest(output_directory)
+                biofluid.create_manifest(output_directory)
+
                 collection_substance.create_manifest(output_directory)
                 collection_taxonomy.create_manifest(output_directory)
                 analysis_type.create_manifest(output_directory)

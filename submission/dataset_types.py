@@ -1,6 +1,8 @@
+import sys
 import hubmapbags
 import os
 from pathlib import Path
+import traceback
 
 token = os.getenv("TOKEN")
 if token is None:
@@ -48,8 +50,12 @@ assays = [assay for assay in assays if "[" not in assay]
 assays.remove("Publication")
 assays.remove("UNKNOWN")
 assays.remove("Segmentation Mask")
+assays.remove("DARTfish")
+assays.remove("Histology")
 
+# 2024.04
 # assays.remove("RNAseq")
+
 assays.remove("MIBI")
 assays.remove("ATACseq")
 assays.remove("3D Imaging Mass Cytometry")
@@ -60,14 +66,13 @@ assays.remove("WGS")
 assays.remove("LC-MS")
 assays.remove("MALDI")
 assays.remove("Auto-fluorescence")
-assays.remove("Histology")
 assays.remove("seqFish")
-assays.remove("DARTfish")
 assays.remove("2D Imaging Mass Cytometry")
 assays.remove("Slide-seq")
 assays.remove("10X Multiome")
 assays.remove("DESI")
 assays.remove("SNARE-seq2")
+
 assays.remove("PhenoCycler")
 assays.remove("Visium (no probes)")
 assays.remove("MUSIC")
@@ -75,6 +80,7 @@ assays.remove("MUSIC")
 for dataset_type in assays:
     df = hubmapbags.reports.daily()
     df = df[df["dataset_type"] == dataset_type]
+    df = df[df["status"] == "Published"]
 
     for index, datum in df.iterrows():
         hubmap_id = datum["hubmap_id"]
@@ -91,10 +97,11 @@ for dataset_type in assays:
             log_dataset_error_with_timestamp(
                 hubmap_id, dataset_type, file_path="error_log.txt"
             )
+            traceback.print_exc()
+            sys.exit(1)
 
     data_directory = f"{dataset_type.replace(' ','_')}-bdbags"
     output_directory = f"{dataset_type.replace(' ','_')}-aggregate"
-    hubmapbags.magic.aggregate2(
+    hubmapbags.magic.aggregate(
         directory=data_directory, output_directory=output_directory
     )
-    break
