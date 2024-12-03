@@ -1,8 +1,12 @@
+import duckdb
+from hubmapinventory import inventory
+from tqdm import tqdm
 from random import sample
 import logging
 from uuid import uuid4
 import traceback
 import os
+import time
 from shutil import rmtree, move, copytree
 import pandas as pd
 from pathlib import Path
@@ -42,6 +46,7 @@ from . import (
     file_format,
     file_in_collection,
     gene,
+    reports,
     id_namespace,
     ncbi_taxonomy,
     phenotype,
@@ -61,6 +66,14 @@ from . import (
     substance,
     utilities,
 )
+
+
+def _convert_to_datetime(stamp):
+    try:
+        stamp = int(stamp) / 1000.0
+        return datetime.fromtimestamp(stamp)
+    except:
+        return None
 
 
 def __extract_dataset_info_from_db(
@@ -118,7 +131,11 @@ def __extract_dataset_info_from_db(
     hmid = j.get("hubmap_id")
     hmuuid = j.get("uuid")
     status = j.get("status")
-    data_types = j.get("data_types")[0]
+    try:
+        data_types = j.get("data_types")[0]
+    except:
+        data_types = j.get("dataset_type")
+
     group_name = j.get("group_name")
     group_uuid = j.get("group_uuid")
     first_sample_id = j.get("direct_ancestors")[0].get("hubmap_id")
@@ -258,7 +275,7 @@ def __extract_datasets_from_input(
     """
 
     if os.path.isfile(input):
-        utilities.pprint("Extracting datasets from " + input)
+        utilities.pprint(f"Extracting datasets from {input}")
         metadata_file = input
         datasets = pd.read_csv(metadata_file, sep="\t")
 
@@ -623,7 +640,7 @@ def __get_biosample_metadata(
     return biosample_metadata
 
 
-def aggregate(directory: str):
+def aggregate(directory: str, output_directory: str = "submission"):
     tsv_files = [
         "analysis_type.tsv",
         "anatomy.tsv",
@@ -675,7 +692,6 @@ def aggregate(directory: str):
         "substance.tsv",
     ]
 
-    output_directory = "submission"
     if Path(output_directory).exists():
         rmtree(output_directory)
     Path(output_directory).mkdir()
@@ -700,6 +716,8 @@ def do_it(
     dbgap_study_id: None,
     instance: str = "prod",
     build_bags: bool = False,
+    backup_directory=None,
+    inventory_directory="/hive/hubmap/bdbags/inventory",
     overwrite: bool = False,
     debug: bool = True,
 ) -> bool:
@@ -952,6 +970,7 @@ def do_it(
                     project_id=data_provider,
                     assay_type=data_type,
                     directory=data_directory,
+                    inventory_directory=inventory_directory,
                     output_directory=output_directory,
                     dbgap_study_id=dbgap_study_id,
                     token=token,
@@ -1009,6 +1028,7 @@ def do_it(
                     hubmap_id=hubmap_id,
                     token=token,
                     hubmap_uuid=hubmap_uuid,
+                    inventory_directory=inventory_directory,
                     directory=data_directory,
                     output_directory=output_directory,
                 )
@@ -1037,6 +1057,7 @@ def do_it(
                     hubmap_id=hubmap_id,
                     token=token,
                     hubmap_uuid=hubmap_uuid,
+                    inventory_directory=inventory_directory,
                     directory=data_directory,
                     output_directory=output_directory,
                 )
@@ -1102,13 +1123,17 @@ def do_it(
 
             print(f"Creating final checkpoint {done}")
             logging.info(f"Creating final checkpoint {done}")
-            if build_bags:
-                if not Path("bags").exists():
-                    Path("bags").mkdir()
 
-                if Path(f"bags/{output_directory}").exists():
-                    rmtree(f"bags/{output_directory}")
-                move(output_directory, "bags")
+            if build_bags:
+                if not backup_directory:
+                    backup_directory = "bags"
+
+                if not Path(backup_directory).exists():
+                    Path(backup_directory).mkdir()
+
+                if Path(f"{backup_directory}/{output_directory}").exists():
+                    rmtree(f"{backup_directory}/{output_directory}")
+                move(output_directory, backup_directory)
 
     return True
 
@@ -1181,15 +1206,16 @@ def __get_dbgap_study_id(hubmap_id: str, token: str, debug: bool = False):
     return dbgap_study_id
 
 
-def create_submission(
+def create_big_data_bags(
     token: str,
-    data_types_to_ignore: list = [
+    dataset_types_to_ignore: list = [
         "LC-MS",
         "LC-MS-untargeted",
         "LC-MS_bottom_up",
         "LC-MS_top_down",
         "TMT-LC-MS",
     ],
+    backup_directory=None,
     debug: bool = True,
 ):
     """
@@ -1224,14 +1250,14 @@ def create_submission(
     assay_types = apis.get_assay_types(token=token, debug=debug)
 
     for assay_type in assay_types:
-        if assay_type in data_types_to_ignore:
+        if assay_type in dataset_types_to_ignore:
             utilities.pprint(f"Ignoring assay type {assay_type}")
         else:
             utilities.pprint(f"Processing assay type {assay_type}")
             print("Retrieving dataset IDs. This might take a while. Be patient.")
             datasets = apis.get_hubmap_ids(assay_type, token=token)
 
-            for dataset in datasets:
+            for index, dataset in datasets.iterrows():
                 try:
                     if (
                         dataset["status"] == "Published"
@@ -1244,6 +1270,7 @@ def create_submission(
                             token=token,
                             instance="prod",
                             overwrite=False,
+                            backup_directory=backup_directory,
                             dbgap_study_id=__get_dbgap_study_id(
                                 hubmap_id=hubmap_id, token=token
                             ),
@@ -1262,6 +1289,7 @@ def create_submission(
                             hubmap_id,
                             token=token,
                             instance="prod",
+                            backup_directory=backup_directory,
                             overwrite=False,
                             dbgap_study_id=None,
                             build_bags=True,
@@ -1354,3 +1382,94 @@ def generate_random_sample(directory: str, number_of_samples: int = 10):
         output_filename = f"{output_directory}/{tsv_file}"
         df = df.drop_duplicates()
         df.to_csv(output_filename, sep="\t", index=False)
+
+
+def aggregate2(directory: str, output_directory: str = "submission"):
+    tsv_files = [
+        "analysis_type.tsv",
+        "anatomy.tsv",
+        "assay_type.tsv",
+        "biosample.tsv",
+        "biosample_disease.tsv",
+        "biosample_from_subject.tsv",
+        "biosample_gene.tsv",
+        "biosample_in_collection.tsv",
+        "biosample_substance.tsv",
+        "collection.tsv",
+        "collection_anatomy.tsv",
+        "collection_compound.tsv",
+        "collection_defined_by_project.tsv",
+        "collection_disease.tsv",
+        "collection_gene.tsv",
+        "collection_in_collection.tsv",
+        "collection_phenotype.tsv",
+        "collection_protein.tsv",
+        "collection_substance.tsv",
+        "collection_taxonomy.tsv",
+        "compound.tsv",
+        "data_type.tsv",
+        "dcc.tsv",
+        "disease.tsv",
+        "file.tsv",
+        "file_describes_biosample.tsv",
+        "file_describes_collection.tsv",
+        "file_describes_subject.tsv",
+        "file_format.tsv",
+        "file_in_collection.tsv",
+        "gene.tsv",
+        "id_namespace.tsv",
+        "ncbi_taxonomy.tsv",
+        "phenotype.tsv",
+        "phenotype_disease.tsv",
+        "phenotype_gene.tsv",
+        "project.tsv",
+        "project_in_project.tsv",
+        "protein.tsv",
+        "protein_gene.tsv",
+        "subject.tsv",
+        "subject_disease.tsv",
+        "subject_in_collection.tsv",
+        "subject_phenotype.tsv",
+        "subject_race.tsv",
+        "subject_role_taxonomy.tsv",
+        "subject_substance.tsv",
+        "substance.tsv",
+    ]
+
+    if Path(output_directory).exists():
+        rmtree(output_directory)
+    Path(output_directory).mkdir()
+
+    if files:  # Only proceed if there are files to process
+        conn = duckdb.connect()  # Create an in-memory DuckDB connection
+        for file in files:
+            start_time = time.time()  # Record the start time for the file
+
+            print(f"Appending file {file}")
+            if file == files[0]:
+                # Create the table with data from the first file
+                conn.execute(
+                    f"""
+                    CREATE TABLE temp_table AS
+                     SELECT DISTINCT * FROM read_csv_auto('{file}', delim='\t')
+                    """
+                )
+            else:
+                # Insert into the table with data from subsequent files
+                conn.execute(
+                    f"""
+                    INSERT INTO temp_table
+                     SELECT DISTINCT * FROM read_csv_auto('{file}', delim='\t')
+                    """
+                )
+
+        # Save the final table to a file
+        output_filename = f"{output_directory}/{tsv_file}"
+        conn.execute(
+            f"COPY (SELECT DISTINCT * FROM temp_table) TO '{output_filename}' WITH (FORMAT 'csv', DELIMITER '\t')"
+        )
+        print(f"Output written to {output_filename}")
+        conn.close()
+        end_time = time.time()  # Record the end time for the file
+        elapsed_time = end_time - start_time  # Calculate elapsed time
+        print(f"Time taken to process {file}: {elapsed_time:.2f} seconds")

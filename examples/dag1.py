@@ -1,6 +1,6 @@
 import hubmapbags
 
-token = "<this-is-my-token"
+token = ""
 
 hubmapbags.utilities.clean()
 hubmapbags.reports.daily(token=token)

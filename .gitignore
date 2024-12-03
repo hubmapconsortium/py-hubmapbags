@@ -1,1 +1,16 @@
 **/.ipynb_checkpoints
+**/*.computing
+**/*.done
+**/*.broken
+**/.ancestors/
+**/.datasets/
+**/.donor/
+**/.entity/
+**/.provenance/
+**/daily-report
+**/bags
+**/curated-submission
+**/external
+**/build
+**/dist
+**/hubmapbags.egg-info

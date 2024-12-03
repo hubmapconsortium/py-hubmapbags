@@ -7,3 +7,5 @@ seaborn>=0.13.2
 setuptools>=67.8.0
 tabulate
 tqdm
+duckdb
+
