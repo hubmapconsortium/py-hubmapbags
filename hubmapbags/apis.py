@@ -310,37 +310,40 @@ def __query_dataset_info(hubmap_id: str, token: str, debug: bool = False) -> dic
 
     URL = f"https://entity.api.hubmapconsortium.org/entities/{hubmap_id}"
 
-    headers = {"Authorization": "Bearer " + token, "accept": "application/json"}
+    headers = {"Authorization": f"Bearer {token}", "accept": "application/json"}
 
     r = requests.get(URL, headers=headers)
     return r
 
-def get_dataset_display_name(hubmap_id: str) -> str:
 
+def get_dataset_display_name(hubmap_id: str) -> str:
     token = os.getenv("TOKEN")
     if token is None:
         print("TOKEN environment variable is not set")
 
-    url = "https://search.api.hubmapconsortium.org/v3/search"
+    url = "https://search.api.hubmapconsortium.org/v3/portal/search"
 
-    if token is None:                                                                                  headers = {"Accept": "application/json"}
+    if token is None:
+        headers = {"Accept": "application/json"}
     else:
-        headers = {"Authorization": f"Bearer {token} accept": "application/json"}
+        headers = {"Authorization": f"Bearer {token}", "accept": "application/json"}
 
-    body = {
+    body = body = {
         "_source": ["dataset_type_hierarchy.second_level", "hubmap_id"],
-        "size":4000,
-        "query":
-         {
-          "bool":
-           {
-               "filter": [{"match": {"entity_type": "Dataset", "hubmap_id", hubmap_id}}]
-           },
+        "size": 1,
+        "query": {
+            "bool": {
+                "filter": [
+                    {"term": {"entity_type": "Dataset"}},
+                    {"term": {"hubmap_id": hubmap_id}},
+                ]
+            }
+        },
     }
 
     data = requests.post(url=url, headers=headers, json=body).json()
-
     return data
+
 
 def get_dataset_info(
     hubmap_id: str,
@@ -349,7 +352,6 @@ def get_dataset_info(
     overwrite: bool = True,
     debug: bool = True,
 ) -> dict:
-
     directory = ".datasets"
     file = os.path.join(directory, hubmap_id + ".json")
     if os.path.exists(file) and not overwrite:
@@ -527,7 +529,6 @@ def get_ids(assay_name: str, token: str, debug: bool = False) -> dict:
 def get_hubmap_ids(
     assay_name: str, token: str, instance: str = "prod", debug: bool = False
 ) -> dict:
-
     df = reports.daily()
     df = df[df["dataset_type"] == assay_name]
 

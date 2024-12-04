@@ -4,6 +4,7 @@ import pandas as pd
 from tabulate import tabulate
 import os
 
+
 def __get_token(token: str) -> str:
     """
     Helper method that gets the HuBMAP services token.

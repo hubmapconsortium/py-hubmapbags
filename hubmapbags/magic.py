@@ -1445,6 +1445,10 @@ def aggregate2(directory: str, output_directory: str = "submission"):
         rmtree(output_directory)
     Path(output_directory).mkdir()
 
+    for tsv_file in tsv_files:
+        p = Path(temp_directory).glob(f"**/{tsv_file}")
+        files = list(p)
+
     if files:  # Only proceed if there are files to process
         conn = duckdb.connect()  # Create an in-memory DuckDB connection
         for file in files:

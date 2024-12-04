@@ -87,7 +87,6 @@ def create_manifest(
     organ: str,
     output_directory: str,
 ) -> bool:
-
     try:
         filename = os.path.join(output_directory, "biosample.tsv")
         df = _build_dataframe(biosample_id, biosample_url, data_provider, organ)

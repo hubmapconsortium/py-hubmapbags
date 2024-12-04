@@ -176,21 +176,23 @@ def __get_file_format(file: str) -> str:
         print("Unable to find key for file format " + extension)
         return None
 
-def __get_assay_type(metadata) -> str:
-    data_type = metadata['data_type']
-    dataset_type = metadata['dataset_type']
 
-    if data_type is None or data_type == '' and dataset_type.lower() == 'rnaseq':
+def __get_assay_type(metadata) -> str:
+    data_type = metadata["data_type"]
+    dataset_type = metadata["dataset_type"]
+
+    if data_type is None or data_type == "" and dataset_type.lower() == "rnaseq":
         return None
 
     return None
 
+
 def __get_assay_type_from_obi(assay_type: str) -> str:
     assay = {}
     assay["af"] = "OBI:0003087"  # AF
-    assay["auto-fluorescence"] = (
-        "OBI:0003087"  # HuBMAP dataset_type value for Auto-fluorescence Microscopy (see HBM956.HGCD.825)
-    )
+    assay[
+        "auto-fluorescence"
+    ] = "OBI:0003087"  # HuBMAP dataset_type value for Auto-fluorescence Microscopy (see HBM956.HGCD.825)
     assay["atacseq-bulk"] = "OBI:0003089"  # Bulk ATAC-seq
     assay["bulk-rna"] = "OBI:0001271"  # Bulk RNA-seq
     assay["scrna-seq-10x"] = "OBI:0002631"  # scRNA-seq
@@ -214,9 +216,9 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["targeted-shotgun-lc-ms"] = "OBI:0003097"
     assay["snrnaseq"] = "OBI:0003109"
     assay["snrnaseq-10xgenomics-v3"] = "OBI:0003109"
-    assay["snRNA-seq"] = (
-        "OBI:0003109"  # SenNet data_type value for snRNAseq (10x Genomics v3)
-    )
+    assay[
+        "snRNA-seq"
+    ] = "OBI:0003109"  # SenNet data_type value for snRNAseq (10x Genomics v3)
     assay["snare-atacseq2"] = "OBI:0003377"  # data_type value for snATACseq (SNAREseq2)
     assay["snare-rnaseq2"] = "OBI:0003377"
     assay["snareseq"] = "OBI:0003108"
@@ -232,21 +234,21 @@ def __get_assay_type_from_obi(assay_type: str) -> str:
     assay["desi"] = "OBI:0003671"  # HuBMAP data_type value for DESI
     assay["music"] = "OBI:0003675"  # HuBMAP data_type value for MUSIC
     assay["snare-seq2"] = "OBI:0003377"  # HuBMAP data_type value for SNARE-seq2
-    assay["visium (no probes)"] = (
-        "OBI:0003680"  # HuBMAP dataset_type value for Visium (no probes)
-    )
+    assay[
+        "visium (no probes)"
+    ] = "OBI:0003680"  # HuBMAP dataset_type value for Visium (no probes)
     assay["geomx (rna)"] = "OBI:0003672"  # SenNet data_type value for GeoMx (NGS)
-    assay["visium"] = (
-        "OBI:0003680"  # SenNet data_type value for Visium (with probes) and Visium (no probes) - same term is used for both
-    )
+    assay[
+        "visium"
+    ] = "OBI:0003680"  # SenNet data_type value for Visium (with probes) and Visium (no probes) - same term is used for both
     assay["cosmx (rna)"] = "OBI:0003669"  # SenNet data_type value for CosMx
-    assay["10x multiome"] = (
-        "OBI:0003668"  # HuBMAP and SenNet dataset_type value for 10X Multiome
-    )
+    assay[
+        "10x multiome"
+    ] = "OBI:0003668"  # HuBMAP and SenNet dataset_type value for 10X Multiome
     assay["dart-fish"] = "OBI:0003095"  # HuBMAP data_type value for DARTfish
-    assay["stained slides"] = (
-        "OBI:0003682"  # SenNet data_type value for H&E Stained Microscopy
-    )
+    assay[
+        "stained slides"
+    ] = "OBI:0003682"  # SenNet data_type value for H&E Stained Microscopy
     assay["rnaseq"] = None
 
     # assay "OBI:0003670" DBiT  - no published data in HuBMAP or SenNet as of 10/30/24
