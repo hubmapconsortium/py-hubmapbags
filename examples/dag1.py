@@ -8,4 +8,4 @@ if token is None:
     exit(1)
 
 hubmapbags.utilities.clean()
-hubmapbags.reports.daily(token=token)
+hubmapbags.reports.daily()
