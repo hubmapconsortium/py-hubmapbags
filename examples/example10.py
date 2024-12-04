@@ -1,9 +1,13 @@
-from datetime import datetime
 from pathlib import Path
 import hubmapbags
 from datetime import datetime
+from os import getenv
+from sys import exit
 
-token = ""
+token = getenv("TOKEN")
+if token is None:
+    print("Error: TOKEN environment variable is not set")
+    exit(1)
 
 #set this variable to your local copy of the inventory files
 inventory_directory = "/Users/icaoberg/Documents/submission/inventory"
