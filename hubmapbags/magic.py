@@ -648,12 +648,14 @@ def aggregate(directory: str, output_directory: str = "submission"):
         "anatomy.tsv",
         "assay_type.tsv",
         "biosample.tsv",
+        "biofluid",
         "biosample_disease.tsv",
         "biosample_from_subject.tsv",
         "biosample_gene.tsv",
         "biosample_in_collection.tsv",
         "biosample_substance.tsv",
         "collection.tsv",
+        "collection_biofluid.tsv",
         "collection_anatomy.tsv",
         "collection_compound.tsv",
         "collection_defined_by_project.tsv",
@@ -1394,6 +1396,7 @@ def aggregate2(directory: str, output_directory: str = "submission"):
         "analysis_type.tsv",
         "anatomy.tsv",
         "assay_type.tsv",
+        "biofluid.tsv",
         "biosample.tsv",
         "biosample_disease.tsv",
         "biosample_from_subject.tsv",
@@ -1401,6 +1404,7 @@ def aggregate2(directory: str, output_directory: str = "submission"):
         "biosample_in_collection.tsv",
         "biosample_substance.tsv",
         "collection.tsv",
+        "collection_biofluid.tsv",
         "collection_anatomy.tsv",
         "collection_compound.tsv",
         "collection_defined_by_project.tsv",
@@ -1446,39 +1450,39 @@ def aggregate2(directory: str, output_directory: str = "submission"):
     Path(output_directory).mkdir()
 
     for tsv_file in tsv_files:
-        p = Path(temp_directory).glob(f"**/{tsv_file}")
+        p = Path(directory).glob(f"**/{tsv_file}")
         files = list(p)
 
-    if files:  # Only proceed if there are files to process
-        conn = duckdb.connect()  # Create an in-memory DuckDB connection
-        for file in files:
-            start_time = time.time()  # Record the start time for the file
+        if files:  # Only proceed if there are files to process
+            conn = duckdb.connect()  # Create an in-memory DuckDB connection
+            for file in files:
+                start_time = time.time()  # Record the start time for the file
 
-            print(f"Appending file {file}")
-            if file == files[0]:
-                # Create the table with data from the first file
-                conn.execute(
-                    f"""
-                    CREATE TABLE temp_table AS
-                     SELECT DISTINCT * FROM read_csv_auto('{file}', delim='\t')
-                    """
-                )
-            else:
-                # Insert into the table with data from subsequent files
-                conn.execute(
-                    f"""
-                    INSERT INTO temp_table
-                     SELECT DISTINCT * FROM read_csv_auto('{file}', delim='\t')
-                    """
-                )
+                print(f"Appending file {file}")
+                if file == files[0]:
+                    # Create the table with data from the first file
+                    conn.execute(
+                        f"""
+                        CREATE TABLE temp_table AS
+                        SELECT DISTINCT * FROM read_csv_auto('{file}', delim='\t')
+                        """
+                    )
+                else:
+                    # Insert into the table with data from subsequent files
+                    conn.execute(
+                        f"""
+                        INSERT INTO temp_table
+                        SELECT DISTINCT * FROM read_csv_auto('{file}', delim='\t')
+                        """
+                    )
 
-        # Save the final table to a file
-        output_filename = f"{output_directory}/{tsv_file}"
-        conn.execute(
-            f"COPY (SELECT DISTINCT * FROM temp_table) TO '{output_filename}' WITH (FORMAT 'csv', DELIMITER '\t')"
-        )
-        print(f"Output written to {output_filename}")
-        conn.close()
-        end_time = time.time()  # Record the end time for the file
-        elapsed_time = end_time - start_time  # Calculate elapsed time
-        print(f"Time taken to process {file}: {elapsed_time:.2f} seconds")
+            # Save the final table to a file
+            output_filename = f"{output_directory}/{tsv_file}"
+            conn.execute(
+                f"COPY (SELECT DISTINCT * FROM temp_table) TO '{output_filename}' WITH (FORMAT 'csv', DELIMITER '\t')"
+            )
+            print(f"Output written to {output_filename}")
+            conn.close()
+            end_time = time.time()  # Record the end time for the file
+            elapsed_time = end_time - start_time  # Calculate elapsed time
+            print(f"Time taken to process {file}: {elapsed_time:.2f} seconds")
